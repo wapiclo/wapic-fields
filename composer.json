@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "php": ">=7.4"
+        "php": ">=8.2",
+        "yahnis-elsts/plugin-update-checker": "^5.6"
     },
     "autoload": {
         "psr-4": {
@@ -20,19 +21,13 @@
             "bootstrap.php"
         ]
     },
-    "require-dev": {
-        "yahnis-elsts/plugin-update-checker": "^5.6"
-    },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "extra": {
-        "branch-alias": {
-            "dev-main": "1.0.x-dev"
-        }
-    },
     "archive": {
         "exclude": [
-            "assets/source/"
+            "assets/source/",
+            "vendor/",
+            "autoload.php"
         ]
     }
 }

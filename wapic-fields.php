@@ -4,7 +4,7 @@
  * Plugin Name: Wapic Fields
  * Plugin URI: https://wapiclo.com/wapic-fields
  * Description: A custom field for WordPress options page and meta box
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Wapiclo
  * Author URI: https://wapiclo.com/
  * Domain Path: /languages
