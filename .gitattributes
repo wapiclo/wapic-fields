@@ -23,6 +23,7 @@
 /tests/ export-ignore
 /node_modules/ export-ignore
 /vendor/ export-ignore
+/assets/source/ export-ignore
 *.md export-ignore
 *.log export-ignore
 *.lock export-ignore

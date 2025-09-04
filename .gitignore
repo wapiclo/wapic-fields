@@ -3,19 +3,10 @@ node_modules/
 vendor/
 composer.lock
 
-# Build files
-assets/css/*.css
-assets/css/*.map
-assets/js/*.min.js
-assets/js/*.map
-
 # Environment files
 .env
 .env.*
 !.env.example
-
-# Autoload generated files
-autoload.php
 
 # Editor directories and files
 .idea/

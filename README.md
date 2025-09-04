@@ -74,4 +74,4 @@ We provide examples for Meta, Options, and Term Meta. The example files are incl
 
 To load the examples in the WordPress admin, add the following code to your main theme or plugin file:
 
-```add_filters('wapic_fields_load_examples', '__return_true');```
+```add_filter('wapic_fields_load_examples', '__return_true');```
