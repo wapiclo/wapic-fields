@@ -51,7 +51,7 @@ Perfect for **theme & plugin developers** who want powerful custom fields withou
 ---
 ## Installation
 There are multiple ways to install Wapic Fields:
-- Instalasion via composer ```composer require wapiclo/wapic-fields```
+- Instalasion via composer (recommended) ```composer require wapiclo/wapic-fields```
 - As a WordPress Plugin
 [Installation instructions](https://github.com/wapiclo/wapic-fields/wiki/Installation?utm_source=chatgpt.com#as-wordpress-plugin)
 - Include via File

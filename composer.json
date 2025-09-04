@@ -29,12 +29,5 @@
         "branch-alias": {
             "dev-main": "1.0.x-dev"
         }
-    },
-    "archive": {
-        "exclude": [
-            "vendor/",
-            "assets/source/",
-            "autoload.php"
-        ]
     }
 }
