@@ -1,18 +1,18 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Force batch files to CRLF line endings so they can be executed in Windows
+# Force batch files to CRLF for Windows
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf
 
-# Force shell scripts to use LF line endings
+# Force shell scripts to LF
 *.sh text eol=lf
 
-# Binary files should not be modified
+# Binary files
 *.{png,jpg,jpeg,gif,ico,svg,woff,woff2,ttf,eot,otf} binary
 *.{pdf,zip,rar,7z,exe,dll} binary
 
-# Files to exclude from exports (similar to .distignore)
+# Files/folders to exclude from exports
 /.github/ export-ignore
 /.wordpress-org/ export-ignore
 /.gitattributes export-ignore
@@ -23,7 +23,7 @@
 /tests/ export-ignore
 /node_modules/ export-ignore
 /vendor/ export-ignore
-/assets/source/ export-ignore
+/assets/source/ export-ignore   # hanya folder source yang di-ignore
 *.md export-ignore
 *.log export-ignore
 *.lock export-ignore
