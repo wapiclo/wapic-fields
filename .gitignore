@@ -1,5 +1,7 @@
 # Composer dependencies
+/vendor/
 /composer.lock
+/autoload.php
 
 # Node modules (if using npm/yarn)
 node_modules/
