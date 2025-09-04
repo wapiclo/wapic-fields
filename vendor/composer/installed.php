@@ -3,7 +3,7 @@
         'name' => 'wapiclo/wapic-fields',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '9997a60a21985b2e3e806f0151c0dfacbba4e591',
+        'reference' => '6b2c96c4e6c2be2a772880f1651394e620d74f4c',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'wapiclo/wapic-fields' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '9997a60a21985b2e3e806f0151c0dfacbba4e591',
+            'reference' => '6b2c96c4e6c2be2a772880f1651394e620d74f4c',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
