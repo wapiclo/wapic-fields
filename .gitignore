@@ -1,0 +1,37 @@
+# Dependency directories
+node_modules/
+vendor/
+composer.lock
+
+# Build files
+assets/css/*.css
+assets/css/*.map
+assets/js/*.min.js
+assets/js/*.map
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Editor directories and files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+.DS_Store
+Thumbs.db
+
+# Logs
+debug.log
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+

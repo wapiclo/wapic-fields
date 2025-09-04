@@ -1,0 +1,103 @@
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+
+$base-font-size: 16;
+$breakpoints: (
+  xs: 320px,
+  sm: 576px,
+  md: 781px,
+  lg: 992px,
+  xl: 1200px,
+);
+
+/*=======================================
+* MEDIA MAX
+*=======================================*/
+@mixin media($media-breakpoint, $media-breakpoints: $breakpoints) {
+  @if map.has-key($media-breakpoints, $media-breakpoint) {
+    $media-breakpoint: map.get($media-breakpoints, $media-breakpoint);
+  }
+
+  @if $media-breakpoint > 1200 {
+    @media screen and (min-width: #{$media-breakpoint}) {
+      @content;
+    }
+  } @else {
+    @media screen and (max-width: #{$media-breakpoint}) {
+      @content;
+    }
+  }
+}
+
+/*=======================================
+* MEDIA MIN
+*=======================================*/
+@mixin media-min($media-breakpoint, $media-breakpoints: $breakpoints) {
+  @if map.has-key($media-breakpoints, $media-breakpoint) {
+    $media-breakpoint: map.get($media-breakpoints, $media-breakpoint);
+  }
+
+  @media screen and (min-width: #{$media-breakpoint}) {
+    @content;
+  }
+}
+
+/*=======================================
+* MEDIA ONLY
+*=======================================*/
+@mixin media-only($media, $media-breakpoints: $breakpoints) {
+  @if $media == 'xl' {
+    $min-breakpoint: map.get($media-breakpoints, $media);
+
+    @media screen and (min-width: #{$min-breakpoint}) {
+      @content;
+    }
+  }
+
+  @if $media == 'md' {
+    $min-breakpoint: map.get($media-breakpoints, $media);
+    $max-breakpoint: map.get($media-breakpoints, 'xl');
+
+    @media screen and (min-width: #{$min-breakpoint}) and (max-width: #{$max-breakpoint}) {
+      @content;
+    }
+  }
+
+  @if $media == 'sm' {
+    $max-breakpoint: map.get($media-breakpoints, $media);
+
+    @media screen and (max-width: #{$max-breakpoint}) {
+      @content;
+    }
+  }
+}
+
+/*=======================================
+* MEDIA RANGE
+*=======================================*/
+@mixin media-range($min-breakpoint, $max-breakpoint, $media-breakpoints: $breakpoints) {
+  $min-breakpoint: map.get($media-breakpoints, $min-breakpoint);
+  $max-breakpoint: map.get($media-breakpoints, $max-breakpoint);
+
+  @media screen and (min-width: #{$min-breakpoint}) and (max-width: #{$max-breakpoint - 1}) {
+    @content;
+  }
+}
+
+
+/// Convert px to rem
+@function rem($value) {
+  @if meta.type-of($value) == 'number' and math.unit($value) == 'px' {
+    $value: math.div($value, 1px); // remove unit
+  }
+  @return #{math.div($value, $base-font-size)}rem;
+}
+
+/// Convert px to em
+@function em($value, $context: $base-font-size) {
+  @if meta.type-of($value) == 'number' and math.unit($value) == 'px' {
+    $value: math.div($value, 1px); // remove unit
+  }
+  @return #{math.div($value, $context)}em;
+}
