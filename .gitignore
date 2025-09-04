@@ -1,17 +1,29 @@
-# Node dependencies
+# Composer dependencies
+/vendor/
+/composer.lock
+/autoload.php
+
+# Node modules (if using npm/yarn)
 node_modules/
 
 # Environment files
 .env
 .env.*
 !.env.example
-vendor/
-autoload.php
 
-# Editor directories
+# IDE/editor files
 .idea/
 .vscode/
 *.sublime-workspace
 *.sublime-project
+
+# System files
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+
+# Backup files
+*.bak
+*.tmp
