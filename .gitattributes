@@ -22,7 +22,6 @@
 /phpunit.xml.dist export-ignore
 /tests/ export-ignore
 /node_modules/ export-ignore
-/vendor/ export-ignore
 /assets/source/ export-ignore   # hanya folder source yang di-ignore
 *.md export-ignore
 *.log export-ignore
@@ -35,4 +34,3 @@
 .DS_Store export-ignore
 Thumbs.db export-ignore
 node_modules export-ignore
-autoload.php export-ignore
