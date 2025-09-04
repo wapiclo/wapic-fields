@@ -1,36 +1,5 @@
-# Auto detect text files and perform LF normalization
-* text=auto
-
-# Force batch files to CRLF for Windows
-*.{cmd,[cC][mM][dD]} text eol=crlf
-*.{bat,[bB][aA][tT]} text eol=crlf
-
-# Force shell scripts to LF
-*.sh text eol=lf
-
-# Binary files
-*.{png,jpg,jpeg,gif,ico,svg,woff,woff2,ttf,eot,otf} binary
-*.{pdf,zip,rar,7z,exe,dll} binary
-
-# Files/folders to exclude from exports
-/.github/ export-ignore
-/.wordpress-org/ export-ignore
-/.gitattributes export-ignore
-/.gitignore export-ignore
-/.editorconfig export-ignore
-/phpcs.xml.dist export-ignore
-/phpunit.xml.dist export-ignore
-/tests/ export-ignore
-/node_modules/ export-ignore
-/assets/source/ export-ignore   # hanya folder source yang di-ignore
+# Exclude files/folders from GitHub ZIP release
+assets/source/ export-ignore
 *.md export-ignore
-*.log export-ignore
-*.lock export-ignore
-*.dist export-ignore
-.env export-ignore
-.env.* export-ignore
-*.sublime-* export-ignore
-*.code-workspace export-ignore
-.DS_Store export-ignore
-Thumbs.db export-ignore
-node_modules export-ignore
+*.gitignore export-ignore
+*.gitattributes export-ignore
