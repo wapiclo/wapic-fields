@@ -32,8 +32,8 @@
     },
     "archive": {
         "exclude": [
-            "vendor/*",
-            "assets/source/*",
+            "vendor/",
+            "assets/source/",
             "autoload.php"
         ]
     }
