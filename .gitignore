@@ -13,6 +13,8 @@ assets/js/*.map
 .env
 .env.*
 !.env.example
+
+# Autoload generated files
 autoload.php
 
 # Editor directories and files
@@ -20,8 +22,6 @@ autoload.php
 .vscode/
 *.sublime-workspace
 *.sublime-project
-.DS_Store
-Thumbs.db
 
 # Logs
 debug.log
@@ -29,10 +29,8 @@ debug.log
 
 # OS generated files
 .DS_Store
-.DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
 Thumbs.db
-
