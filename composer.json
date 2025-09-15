@@ -1,7 +1,7 @@
 {
     "name": "wapiclo/wapic-fields",
     "description": "A lightweight and developer-friendly custom fields system for WordPress. Supports Options Page, Post Meta, and Taxonomy Term Meta.",
-    "type": "wordpress-plugin",
+    "type": "library",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
