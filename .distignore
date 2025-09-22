@@ -14,11 +14,14 @@ debug.log
 !.env.example
 composer.lock
 package-lock.json
+composer.json
+package.json
 yarn.lock
 phpcs.xml
 tests/
 phpunit.xml
 README.md
+LICENSE.md
 CHANGELOG.md
 CONTRIBUTING.md
 Gruntfile.js
