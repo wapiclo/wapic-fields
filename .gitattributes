@@ -1,0 +1,17 @@
+# Normalize line endings for all text files
+* text=auto
+
+# Exclude development/source files from git archive
+assets/source/ export-ignore
+vendor/        export-ignore
+.env           export-ignore
+.env.local     export-ignore
+phpunit.xml    export-ignore
+*.log          export-ignore
+wapic-fields.php export-ignore
+README.md export-ignore
+gulpfile.js export-ignore
+autoload.php export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.distignore export-ignore

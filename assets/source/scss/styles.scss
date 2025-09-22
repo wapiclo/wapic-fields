@@ -1,0 +1,953 @@
+:root {
+  --wcf-color-base: #fff;
+  --wcf-color-primary: #2271B1;
+  --wcf-color-meta: #666;
+
+  --wcf-color-background: #fff;
+  --wcf-color-foreground: #FBFBFC;
+
+  --wcf-border-color: #c3c4c7;
+  --wcf-border-color-soft: #e2e4e7;
+  --wcf-border-radius: 5px;
+
+  --wcf-btn-backround: #2271B1;
+  --wcf-btn-color: #fff;
+
+  --wcf-color-info: #476fdf;
+  --wcf-color-info-accent: #eff6ff;
+  --wcf-color-success: #15803d;
+  --wcf-color-success-accent: #f0fdf4;
+  --wcf-color-warning: #ff9900;
+  --wcf-color-warning-accent: #fefce8;
+  --wcf-color-danger: #c33e3e;
+  --wcf-color-danger-accent: #fef2f2;
+
+  --wcf-component-spacing: clamp(20px, 2vw, 40px);
+  --wcf-content-compact-size: 600px;
+}
+
+.wcf {
+  margin-right: 20px;
+  margin-top: 30px;
+
+  @media only screen and (max-width: 400px) {
+    margin-right: 15px;
+  }
+
+  // reset box
+  * {
+    box-sizing: border-box;
+
+    &:after,
+    &:before {
+      box-sizing: border-box;
+    }
+  }
+
+  // Layout
+  &>* {
+    margin-block-start: var(--wcf-component-spacing);
+    margin-block-end: 0;
+  }
+
+  &>*:first-child {
+    margin-block-start: 0;
+  }
+}
+
+.wcf-is-layout-compact {
+  max-width: 800px;
+}
+
+/*====================================================
+/* CONTAINER
+/*====================================================*/
+.wcf-container {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: start;
+  gap: 30px;
+
+  .wcf-panel {
+    flex: 1;
+  }
+}
+
+
+/*====================================================
+/* LAYOUT FLOW
+/*====================================================*/
+.wcf-is-layout-flow {
+  &>* {
+    margin-block-start: var(--wcf-component-spacing);
+    margin-block-end: 0;
+  }
+
+  &>*:first-child {
+    margin-block-start: 0;
+  }
+}
+
+/*====================================================
+/* LAYOUT
+/*====================================================*/
+.wcf-page-header {
+  margin-top: 0;
+  margin-bottom: var(--wcf-component-spacing);
+
+  &__description {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+}
+
+.wcf-page-body {
+  &>* {
+    margin-block-start: var(--wcf-component-spacing);
+    margin-block-end: 0;
+  }
+
+  &>*:first-child {
+    margin-block-start: 0;
+  }
+}
+
+/*====================================================
+/* PANEL
+/*====================================================*/
+.wcf-panel {
+  border: 1px solid var(--wcf-border-color);
+  background-color: var(--wcf-color-background);
+
+  &__header {
+    padding: 15px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--wcf-border-color-soft);
+    background-color: var(--wcf-color-foreground);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+  }
+
+  &__title {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  &__body {
+    padding: 15px;
+  }
+
+  &__footer {
+    padding: 15px;
+  }
+
+  p.submit {
+    padding: 6px 12px;
+    margin: 0;
+  }
+}
+
+.wcf-panel.is-style-compact {
+  .wcf-field {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--wcf-border-color-soft);
+    margin-top: 0;
+
+    .wcf-field__input,
+    .wp-editor-wrap,
+    .select2-container,
+    .wcf-field-gallery-preview {
+      max-width: 600px !important;
+      width: 100% !important;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+/*====================================================
+/* BADGES
+/*====================================================*/
+.wcf-badges {
+  display: inline-block;
+  font-size: 11px;
+  color: var(--wcf-color-info);
+  border-radius: var(--wcf-border-radius);
+  background-color: var(--wcf-color-info-accent);
+  border: 1px solid var(--wcf-color-info);
+  padding: 3px 5px;
+
+  &.is-style-success {
+    color: var(--wcf-color-success);
+    background-color: var(--wcf-color-success-accent);
+    border-color: var(--wcf-color-success);
+  }
+
+  &.is-style-warning {
+    color: var(--wcf-color-warning);
+    background-color: var(--wcf-color-warning-accent);
+    border-color: var(--wcf-color-warning);
+  }
+
+  &.is-style-danger {
+    color: var(--wcf-color-danger);
+    background-color: var(--wcf-color-danger-accent);
+    border-color: var(--wcf-color-danger);
+  }
+}
+
+/*====================================================
+/* ALERT
+/*====================================================*/
+.notice {
+  padding: 10px;
+  margin-left: 0;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/*====================================================
+/* ICON
+/*====================================================*/
+.wcf-icon {
+  svg {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: -0.125em;
+    fill: currentcolor;
+  }
+}
+
+/*====================================================
+/* GUTENBERG - METABOX ON SIDEBAR BLOCK EDITOR
+/*====================================================*/
+.postbox {
+  .wcf-panel {
+    border: none;
+    border-radius: 0;
+    margin-top: -6px;
+    margin-left: -12px;
+    margin-right: -12px;
+  }
+}
+
+.editor-sidebar__panel {
+  .postbox:first-child .postbox-header {
+    border-top: none !important;
+  }
+
+  .handle-actions {
+
+    .handle-order-higher,
+    .handle-order-lower {
+      display: none !important;
+    }
+  }
+
+  .postbox .inside,
+  .postbox-header h2 {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+
+  }
+
+  .postbox-header h2 {
+    font-weight: 400 !important;
+    cursor: default !important;
+  }
+
+  .meta-box-sortables select {
+    max-width: 210px !important;
+  }
+}
+
+.edit-post-layout__metaboxes {
+  .wcf-panel {
+    border-top: 1px solid var(--wcf-border-color-soft);
+  }
+}
+
+/*====================================================
+/* TAB
+/*====================================================*/
+.wcf-tabs-nav {
+  list-style: none;
+  padding: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 1px solid var(--wcf-border-color-soft);
+  background-color: var(--wcf-color-foreground);
+  margin-top: 0;
+
+  @media only screen and (min-width: 768px) {
+    padding-bottom: 0;
+  }
+
+  li {
+    margin-bottom: 0;
+  }
+
+  li a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid var(--wcf-border-color-soft);
+    cursor: pointer;
+    
+    @media only screen and (min-width: 768px) {
+      border-bottom: none;
+      margin-bottom: -1px;
+    }
+
+    &:focus {
+      box-shadow: none;
+      outline: none;
+    }
+  }
+
+  li.is-active a {
+    background-color: #fff;
+    @media only screen and (min-width: 768px) {
+      border-bottom: 1px solid #fff;
+    }
+  }
+}
+
+.wcf-tab-content {
+  display: none;
+
+  &.is-active {
+    display: block;
+  }
+}
+
+/*====================================================
+/* CONTROL - FIELD
+/*====================================================*/
+.wcf-field {
+
+  margin-top: 15px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  &__input {
+    max-width: 100% !important;
+    width: 100% !important;
+    vertical-align: middle;
+    outline: none;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  &__description {
+    color: var(--wcf-color-meta);
+    font-size: 12px;
+    margin-top: 5px;
+    margin-bottom: 0;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px var(--wcf-color-info) inset;
+    border-color: var(--wcf-color-info);
+  }
+
+  .required {
+    color: var(--wcf-color-danger);
+    margin-left: 3px;
+  }
+}
+
+/*====================================================
+/* CONTROL - HAS ERROR
+/*====================================================*/
+.wcf-field.has-field-error {
+  .wcf-field__input {
+    border-color: var(--wcf-color-danger);
+  }
+}
+
+.wcf-field-error {
+  color: var(--wcf-color-danger);
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+/*====================================================
+/* CONTROL - HTML
+/*====================================================*/
+.wcf-field-type-html {
+  &>* {
+    margin-top: var(--wcf-component-spacing);
+    margin-bottom: 0;
+  }
+
+  &>*:first-child {
+    margin-top: 0;
+  }
+}
+
+/*====================================================
+/* CONTROL - TEXTAREA
+/*====================================================*/
+.wcf-field-textarea {
+  height: 90px;
+}
+
+/*====================================================
+/* CONTROL - TOGGLE
+/*====================================================*/
+.wcf-field-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: Arial, sans-serif;
+
+  &-switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+
+    input[type="checkbox"] {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .slider {
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 24px;
+      transition: 0.4s;
+      z-index: 1;
+
+      &:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        border-radius: 50%;
+        transition: 0.4s;
+      }
+    }
+
+    input[type="checkbox"]:checked+.slider {
+      background-color: var(--wcf-color-primary);
+
+      &:before {
+        transform: translateX(22px);
+      }
+    }
+  }
+
+}
+
+/*====================================================
+/* CONTROL - IMAGE
+/*====================================================*/
+.wcf-field-image-preview {
+  position: relative;
+}
+
+.wcf-field-image-thumb {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+  }
+
+  .wcf-field-remove-image {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    background-color: var(--wcf-color-danger);
+    color: white;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1;
+    text-decoration: none;
+
+    &:hover {
+      background-color: var(--wcf-color-danger);
+    }
+  }
+}
+
+/*====================================================
+/* CONTROL - GALLERY
+/*====================================================*/
+.wcf-field-gallery-preview {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.wcf-field-gallery-thumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+  }
+
+  .wcf-field-remove-gallery-thumb {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    background-color: var(--wcf-color-danger);
+    color: white;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1;
+    text-decoration: none;
+
+    &:hover {
+      background-color: var(--wcf-color-danger);
+    }
+  }
+}
+
+/*====================================================
+/* CONTROL - FILE UPLOAD
+/*====================================================*/
+.wcf-file-upload-wrapper {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+}
+
+/*====================================================
+/* CONTROL - CHECKBOX & RADIO
+/*====================================================*/
+.wcf-field-checkbox,
+.wcf-field-radio {
+  input {
+    margin-top: -3px;
+  }
+}
+.wcf-field-type-checkbox,
+.wcf-field-type-radio {
+  legend {
+    margin-bottom: 5px;
+    padding: 0;
+  }
+}
+
+/*====================================================
+/* SELECT2 - GUTENBERG STYLE
+/*====================================================*/
+.wcf-field {
+  .select2-container {
+    --wp-admin-theme-color: #3858e9;
+    --wp-admin-theme-color-darker-10: #2145e6;
+    --wp-admin-theme-color-darker-20: #183ad6;
+    --wp-admin-border-width-focus: 1.5px;
+
+    width: 100% !important;
+
+    .select2-selection {
+      min-height: 36px;
+      border: 1px solid #949494;
+      border-radius: 2px;
+      transition: all 0.2s ease;
+      background: #fff;
+
+      &:focus {
+        border-color: var(--wp-admin-theme-color);
+        box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
+        outline: 2px solid transparent;
+      }
+    }
+
+    .select2-selection--multiple {
+      min-height: 36px;
+      padding: 3px 8px;
+
+      .select2-selection__choice {
+        background: #f0f0f0;
+        border: 1px solid #ccc;
+        color: #1e1e1e;
+        border-radius: 2px;
+        padding: 0 8px;
+        margin: 3px 8px 3px 0;
+        font-size: 13px;
+        line-height: 1.8;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: none;
+        position: relative;
+
+        &__remove {
+          color: #757575;
+          margin-right: 4px;
+          padding-right: 4px;
+          font-size: 18px;
+          line-height: 1;
+          border: none;
+          background: none;
+          cursor: pointer;
+
+          &:hover {
+            color: #d63638;
+            background: transparent;
+          }
+        }
+      }
+
+      .select2-search__field {
+        margin: 0;
+        padding: 0;
+        min-height: 28px;
+
+        &::placeholder {
+          color: #757575;
+          opacity: 0.5;
+        }
+      }
+    }
+
+    .select2-dropdown {
+      border: 1px solid #949494;
+      border-radius: 2px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      margin-top: 4px;
+
+      .select2-results__option {
+        padding: 8px 12px;
+        font-size: 13px;
+        line-height: 1.4;
+
+        &--highlighted,
+        &--selected {
+          background: #f0f0f0;
+          color: #1e1e1e;
+        }
+
+        &--selected {
+          background: var(--wp-admin-theme-color);
+          color: #fff;
+        }
+      }
+    }
+
+    &.select2-container--focus .select2-selection {
+      border-color: var(--wp-admin-theme-color);
+      box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
+    }
+  }
+}
+
+.wcf-field.has-field-error {
+  .select2-container .select2-selection {
+    border-color: var(--wcf-color-danger);
+  }
+}
+
+/*====================================================
+/* CONTROL - DATEPICKER
+==================================================== */
+.wcf-datepicker-theme {
+  --wcf-datepicker-bg: #fff;
+  --wcf-datepicker-border: #757575;
+  --wcf-datepicker-text: #1e1e1e;
+  --wcf-datepicker-hover: #f0f0f0;
+  --wcf-datepicker-active: #2271b1;
+  --wcf-datepicker-disabled: #f0f0f0;
+  --wcf-datepicker-disabled-text: #a7aaad;
+  --wcf-datepicker-today: #f0f7fc;
+
+  &.ui-datepicker {
+    background: var(--wcf-datepicker-bg);
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    box-shadow: 0 3px 30px rgba(25, 30, 35, 0.1);
+    padding: 12px;
+    width: 280px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--wcf-datepicker-text);
+    z-index: 160001 !important; // Above WP admin bar
+
+    .ui-datepicker-header {
+      background: transparent;
+      border: none;
+      padding: 0 0 12px;
+      position: relative;
+    }
+
+    .ui-datepicker-title {
+      margin: 0 24px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      line-height: 28px;
+      color: var(--wcf-datepicker-text);
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+
+      select {
+        background: #f0f0f0;
+        border: 1px solid #8c8f94;
+        border-radius: 2px;
+        color: var(--wcf-datepicker-text);
+        font-size: 13px;
+        line-height: 1.4;
+        padding: 2px 24px 2px 8px;
+        height: 28px;
+        max-width: 45%;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        $dropdown-arrow: "data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 8l5 5 5-5z' fill='%23555'/%3E%3C/svg%3E";
+        background-image: url($dropdown-arrow);
+        background-repeat: no-repeat;
+        background-position: right 5px center;
+        background-size: 16px;
+        cursor: pointer;
+
+        &:focus {
+          border-color: var(--wcf-datepicker-active);
+          box-shadow: 0 0 0 1px var(--wcf-datepicker-active);
+          outline: 2px solid transparent;
+        }
+      }
+    }
+
+    .ui-datepicker-prev,
+    .ui-datepicker-next {
+      position: absolute;
+      top: 0;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+      transition: background 0.1s ease-in-out;
+
+      &:hover {
+        background: #f0f0f0;
+      }
+
+      span {
+        display: none;
+      }
+    }
+
+    .ui-datepicker-prev {
+      left: 0;
+
+      &:before {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 5px 5px 5px 0;
+        border-color: transparent #555 transparent transparent;
+        margin-right: 2px;
+      }
+    }
+
+    .ui-datepicker-next {
+      right: 0;
+
+      &:before {
+        content: "";
+        display: block;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 5px 0 5px 5px;
+        border-color: transparent transparent transparent #555;
+        margin-left: 2px;
+      }
+    }
+
+    .ui-datepicker-calendar {
+      margin: 0;
+      width: 100%;
+      border-collapse: collapse;
+      border-spacing: 0;
+
+      thead th {
+        color: #646970;
+        font-size: 11px;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 4px 0;
+        border: none;
+      }
+
+      tbody {
+        border: none;
+      }
+
+      td {
+        padding: 2px;
+        border: none;
+        text-align: center;
+
+        a,
+        span {
+          display: block;
+          padding: 4px 8px;
+          text-decoration: none;
+          color: var(--wcf-datepicker-text);
+          font-size: 13px;
+          line-height: 1.5;
+          border-radius: 2px;
+          transition: all 0.1s ease-in-out;
+          border: 1px solid transparent;
+        }
+
+        a {
+          &:hover {
+            background: var(--wcf-datepicker-hover);
+            color: var(--wcf-datepicker-text);
+          }
+        }
+
+        &.ui-datepicker-today a {
+          background: var(--wcf-datepicker-today);
+          color: var(--wcf-datepicker-active);
+          font-weight: 500;
+        }
+
+        &.ui-datepicker-current-day a {
+          background: var(--wcf-datepicker-active);
+          color: #fff;
+          font-weight: 500;
+          border-color: var(--wcf-datepicker-active);
+        }
+
+        &.ui-datepicker-other-month {
+
+          a,
+          span {
+            color: var(--wcf-datepicker-disabled-text);
+          }
+        }
+
+        &.ui-state-disabled {
+          span {
+            color: var(--wcf-datepicker-disabled-text);
+            cursor: default;
+          }
+        }
+      }
+    }
+
+    .ui-datepicker-buttonpane {
+      margin: 12px -12px -12px;
+      padding: 12px;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      background: #f6f7f7;
+      border-bottom-left-radius: 2px;
+      border-bottom-right-radius: 2px;
+
+      button {
+        background: #f6f7f7;
+        border: 1px solid #2271b1;
+        color: #2271b1;
+        padding: 4px 12px;
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.5;
+        height: auto;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+
+        &:hover {
+          background: #f0f6fc;
+          border-color: #2271b1;
+          color: #135e96;
+        }
+
+        &:focus {
+          box-shadow: 0 0 0 1px #fff, 0 0 0 3px var(--wcf-datepicker-active);
+          outline: 2px solid transparent;
+        }
+
+        &.ui-datepicker-close {
+          background: #f6f7f7;
+          border-color: #757575;
+          color: #1e1e1e;
+          margin-right: 8px;
+
+          &:hover {
+            background: #f0f0f0;
+            border-color: #1e1e1e;
+          }
+        }
+      }
+    }
+  }
+
+  // Make sure the datepicker is above other elements
+  .ui-datepicker {
+    z-index: 999999 !important;
+  }
+}
