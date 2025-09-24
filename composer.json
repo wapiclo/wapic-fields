@@ -13,7 +13,9 @@
         "php": ">=8.2"
     },
     "autoload": {
-        "classmap": ["core/"],
+        "psr-4": {
+            "Wapic_Fields\\": "core/"
+        },
         "files": [
             "bootstrap.php"
         ]
