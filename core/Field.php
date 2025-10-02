@@ -4,7 +4,7 @@
  *
  * @package    Wapic_Fields
  * @subpackage Core
- * @since      1.0.0
+ * @since      1.2.0
  * @author     Wapic Team
  * @license    GPL-2.0+
  * @link       https://wapiclo.com/
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * validation, conditions, and custom attributes. It's designed to be flexible
  * and extensible for different types of form fields.
  *
- * @since 1.0.0
+ * @since 1.2.0
  */
 class Field {
 
@@ -173,8 +173,14 @@ class Field {
 		$this->id          = $args['id'];
 		$this->name        = $args['name'] ?: $args['id'];
 		$this->type        = $args['type'];
-		$this->value       = $args['value'];
 		$this->default     = $args['default'];
+		// Use value if it has actual content, otherwise use default
+		// For arrays, check if not empty. For strings/numbers, check if not empty string
+		if ( is_array( $args['value'] ) ) {
+			$this->value = ! empty( $args['value'] ) ? $args['value'] : $args['default'];
+		} else {
+			$this->value = ( isset( $args['value'] ) && $args['value'] !== '' ) ? $args['value'] : $args['default'];
+		}
 		$this->label       = $args['label'];
 		$this->description = $args['description'];
 		$this->options     = $args['options'];
@@ -284,14 +290,13 @@ class Field {
 		// Mark color picker as required
 		Assets::get_instance()->require_asset( 'colorpicker' );
 
-		$value = ! empty( $this->value ) ? $this->value : $this->default;
 		$class = 'wcf-field-color wcf-field__input';
 
 		printf(
 			'<input type="text" id="%s" name="%s" value="%s" class="%s" %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
-			esc_attr( $value ),
+			esc_attr( $this->value ),
 			esc_attr( $class ),
 			$required
 		);
@@ -320,8 +325,8 @@ class Field {
 		echo '<div class="wcf-field-editor-wrap">';
 		if ( function_exists( 'wp_editor' ) ) {
 			ob_start();
-			$value = ! empty( $this->value ) ? $this->value : $this->default;
-			wp_editor( $value, $editor_id, $settings );
+			// $this->value already contains default if value is empty
+			wp_editor( $this->value, $editor_id, $settings );
 			echo ob_get_clean();
 		} else {
 			printf(
@@ -329,7 +334,7 @@ class Field {
 				$editor_id,
 				esc_attr( $this->name ),
 				$required,
-				esc_textarea( ! empty( $this->value ) ? $this->value : $this->default )
+				esc_textarea( $this->value )
 			);
 		}
 		echo '</div>';
@@ -368,7 +373,7 @@ class Field {
 			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-text wcf-field__input" %s %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
-			esc_attr( ! empty( $this->value ) ? $this->value : $this->default ),
+			esc_attr( $this->value ),
 			$required,
 			$attributes
 		);
@@ -380,7 +385,7 @@ class Field {
 			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-number wcf-field__input" min="1" %s %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
-			esc_attr( ! empty( $this->value ) ? $this->value : $this->default ),
+			esc_attr( $this->value ),
 			$required,
 			$attributes
 		);
@@ -392,7 +397,7 @@ class Field {
 			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-email wcf-field__input" %s %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
-			esc_attr( ! empty( $this->value ) ? $this->value : $this->default ),
+			esc_attr( $this->value ),
 			$required,
 			$attributes
 		);
@@ -404,7 +409,7 @@ class Field {
 			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-phone wcf-field__input" %s %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
-			esc_attr( ! empty( $this->value ) ? $this->value : $this->default ),
+			esc_attr( $this->value ),
 			$required,
 			$attributes
 		);
@@ -416,7 +421,7 @@ class Field {
 			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-url wcf-field__input" %s %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
-			esc_attr( ! empty( $this->value ) ? $this->value : $this->default ),
+			esc_attr( $this->value ),
 			$required,
 			$attributes
 		);
@@ -430,7 +435,7 @@ class Field {
 			esc_attr( $this->name ),
 			$required,
 			$attributes,
-			esc_textarea( ! empty( $this->value ) ? $this->value : $this->default )
+			esc_textarea( $this->value )
 		);
 	}
 
@@ -518,8 +523,18 @@ class Field {
 		if ( $this->label ) {
 			echo '<legend class="wcf-field__label"><strong>' . esc_html( $this->label ) . '</strong></legend>';
 		}
+		
+		// Determine current values (use value if set, otherwise use default)
+		$current_values = array();
+		if ( ! empty( $this->value ) && is_array( $this->value ) ) {
+			$current_values = $this->value;
+		} elseif ( ! empty( $this->default ) ) {
+			// Default can be array or single value
+			$current_values = is_array( $this->default ) ? $this->default : array( $this->default );
+		}
+		
 		foreach ( $this->options as $key => $label ) {
-			$checked = is_array( $this->value ) && in_array( $key, $this->value );
+			$checked = in_array( $key, $current_values );
 			printf(
 				'<label class="wcf-field-checkbox" for="%s"><input id="%s" type="checkbox" name="%s[]" value="%s" %s %s> %s</label>',
 				"{$this->name}_{$key}",
@@ -539,7 +554,7 @@ class Field {
 		if ( $this->label ) {
 			echo '<legend class="wcf-field__label"><strong>' . esc_html( $this->label ) . '</strong></legend>';
 		}
-
+		
 		foreach ( $this->options as $key => $label ) {
 			printf(
 				'<label class="wcf-field-radio" for="%s"><input id="%s" type="radio" name="%s" value="%s" %s %s> %s</label>',
@@ -600,7 +615,7 @@ class Field {
 			'<input type="hidden" id="%s" name="%s" value="%s" %s>',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
-			esc_attr( ! empty( $this->value ) ? $this->value : $this->default ),
+			esc_attr( $this->value ),
 			$required
 		);
 		echo '<button type="button" class="button wcf-field-image-upload" data-target="' . esc_attr( $this->id ) . '">' . esc_html( $label ) . '</button>';
@@ -664,7 +679,7 @@ class Field {
 			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-date wcf-field__input" autocomplete="off" %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
-			esc_attr( ! empty( $this->value ) ? $this->value : $this->default ),
+			esc_attr( $this->value ),
 			$required
 		);
 	}
@@ -673,8 +688,7 @@ class Field {
 		// Mark that media uploader is needed
 		Assets::get_instance()->require_asset( 'media' );
 
-		$value   = ! empty( $this->value ) ? $this->value : $this->default;
-		$img_url = $value ? wp_get_attachment_url( $value ) : '';
+		$img_url = $this->value ? wp_get_attachment_url( $this->value ) : '';
 
 		echo '<div class="wcf-media-upload-wrapper">';
 
@@ -700,7 +714,7 @@ class Field {
 			'<input type="hidden" id="%s" name="%s" value="%s" %s class="wcf-media-id" />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
-			esc_attr( $value ),
+			esc_attr( $this->value ),
 			$required
 		);
 
@@ -714,8 +728,6 @@ class Field {
 		// Mark that media uploader is needed
 		Assets::get_instance()->require_asset( 'media' );
 
-		$value = ! empty( $this->value ) ? $this->value : $this->default;
-
 		// Main container
 		echo '<div class="wcf-file-upload-wrapper">';
 
@@ -724,7 +736,7 @@ class Field {
 			'<input type="text" id="%1$s" name="%2$s" value="%3$s" class="wcf-field-file-url wcf-field__input" placeholder="' . esc_attr__( 'File URL', 'wapic-fields' ) . '" data-validate="url" %4$s/>',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
-			esc_url( $value ),
+			esc_url( $this->value ),
 			$required ? 'required' : ''
 		);
 

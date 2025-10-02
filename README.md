@@ -60,13 +60,13 @@ There are multiple ways to install Wapic Fields:
 ## For Usage
 Here are examples to help you get started:
 
-- Options Example: [Usage Example](https://github.com/wapiclo/wapic-fields/wiki/Usage?utm_source=chatgpt.com#options-page-example)
-- Metabox Example: [Usage Example](https://github.com/wapiclo/wapic-fields/wiki/Usage?utm_source=chatgpt.com#options-page-example)
+- Options Example: [Usage Example](https://github.com/wapiclo/wapic-fields/wiki/Usage#options-page-example)
+- Metabox Example: [Usage Example](https://github.com/wapiclo/wapic-fields/wiki/Usage?#meta-box-example)
 - Taxonomy Example: [Usage Example](https://github.com/wapiclo/wapic-fields/wiki/Usage#taxonomy-example)
 
 ## Field
 You can use various field types provided by Wapic Fields:
-[Field Types Documentation](https://github.com/wapiclo/wapic-fields/wiki/Field-Types?utm_source=chatgpt.com)
+[Field Types Documentation](https://github.com/wapiclo/wapic-fields/wiki/Field-Types)
 
 ## Example
 
@@ -75,3 +75,6 @@ We provide examples for Meta, Options, and Term Meta. The example files are incl
 To load the examples in the WordPress admin, add the following code to your main theme or plugin file:
 
 ```add_filter('wapic_fields_load_examples', '__return_true');```
+
+## Changelog
+[Changelog](https://github.com/wapiclo/wapic-fields/wiki/Changelog)
