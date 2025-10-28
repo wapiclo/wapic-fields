@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Wapic Fields - Field Management
  *
@@ -174,13 +175,7 @@ class Field {
 		$this->name        = $args['name'] ?: $args['id'];
 		$this->type        = $args['type'];
 		$this->default     = $args['default'];
-		// Use value if it has actual content, otherwise use default
-		// For arrays, check if not empty. For strings/numbers, check if not empty string
-		if ( is_array( $args['value'] ) ) {
-			$this->value = ! empty( $args['value'] ) ? $args['value'] : $args['default'];
-		} else {
-			$this->value = ( isset( $args['value'] ) && $args['value'] !== '' ) ? $args['value'] : $args['default'];
-		}
+		$this->value       = $args['value'];
 		$this->label       = $args['label'];
 		$this->description = $args['description'];
 		$this->options     = $args['options'];
@@ -189,6 +184,18 @@ class Field {
 		$this->condition   = $args['condition'];
 		$this->attributes  = $args['attributes'];
 
+		// Handle default value
+		// If it's an edit action, use the default value if the value is null or false
+		// If it's a new action, use the default value if the value is null, false, or empty string
+		$is_edit = isset( $_GET['action'] ) || isset( $_GET['tag_ID'] ) || isset( $_GET['page'] ) || isset( $_GET['user_id'] ) || isset( $_GET['wp_http_referer'] );
+
+		$allow_empty = ! $is_edit; // Saat add new, izinkan string kosong
+
+		$invalid = $args['value'] === null || $args['value'] === false || ( $allow_empty && $args['value'] === '' );
+
+		$this->value = $invalid ? $args['default'] : $args['value'];
+
+		// Add wrapper class
 		$wrapper_class = 'wcf-field wcf-field-type-' . esc_attr( $this->type );
 		if ( ! empty( $this->class ) ) {
 			$wrapper_class .= ' ' . esc_attr( $this->class );
@@ -293,12 +300,13 @@ class Field {
 		$class = 'wcf-field-color wcf-field__input';
 
 		printf(
-			'<input type="text" id="%s" name="%s" value="%s" class="%s" %s />',
+			'<input type="text" id="%s" name="%s" value="%s" class="%s" %s data-default-color="%s" />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
 			esc_attr( $this->value ),
 			esc_attr( $class ),
-			$required
+			$required,
+			esc_attr( $this->default ?? '' )
 		);
 	}
 
@@ -325,7 +333,6 @@ class Field {
 		echo '<div class="wcf-field-editor-wrap">';
 		if ( function_exists( 'wp_editor' ) ) {
 			ob_start();
-			// $this->value already contains default if value is empty
 			wp_editor( $this->value, $editor_id, $settings );
 			echo ob_get_clean();
 		} else {
@@ -369,20 +376,9 @@ class Field {
 	 */
 	private function control_text( $required ) {
 		$attributes = $this->get_attributes_string();
+
 		printf(
 			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-text wcf-field__input" %s %s />',
-			esc_attr( $this->id ),
-			esc_attr( $this->name ),
-			esc_attr( $this->value ),
-			$required,
-			$attributes
-		);
-	}
-
-	private function control_number( $required ) {
-		$attributes = $this->get_attributes_string();
-		printf(
-			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-number wcf-field__input" min="1" %s %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
 			esc_attr( $this->value ),
@@ -394,7 +390,7 @@ class Field {
 	private function control_email( $required ) {
 		$attributes = $this->get_attributes_string();
 		printf(
-			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-email wcf-field__input" %s %s />',
+			'<input type="email" id="%s" name="%s" value="%s" class="wcf-field-email wcf-field__input" %s %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
 			esc_attr( $this->value ),
@@ -406,7 +402,19 @@ class Field {
 	private function control_phone( $required ) {
 		$attributes = $this->get_attributes_string();
 		printf(
-			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-phone wcf-field__input" %s %s />',
+			'<input type="tel" id="%s" name="%s" value="%s" class="wcf-field-phone wcf-field__input" %s %s />',
+			esc_attr( $this->id ),
+			esc_attr( $this->name ),
+			esc_attr( $this->value ),
+			$required,
+			$attributes
+		);
+	}
+
+	private function control_number( $required ) {
+		$attributes = $this->get_attributes_string();
+		printf(
+			'<input type="number" id="%s" name="%s" value="%s" class="wcf-field-number wcf-field__input" min="1" %s %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
 			esc_attr( $this->value ),
@@ -418,7 +426,7 @@ class Field {
 	private function control_url( $required ) {
 		$attributes = $this->get_attributes_string();
 		printf(
-			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-url wcf-field__input" %s %s />',
+			'<input type="url" id="%s" name="%s" value="%s" class="wcf-field-url wcf-field__input" %s %s />',
 			esc_attr( $this->id ),
 			esc_attr( $this->name ),
 			esc_attr( $this->value ),
@@ -429,6 +437,7 @@ class Field {
 
 	private function control_textarea( $required ) {
 		$attributes = $this->get_attributes_string();
+
 		printf(
 			'<textarea id="%s" name="%s" class="wcf-field-textarea wcf-field__input" %s %s>%s</textarea>',
 			esc_attr( $this->id ),
@@ -441,6 +450,7 @@ class Field {
 
 	private function control_select( $required ) {
 		$attributes = $this->get_attributes_string();
+
 		echo '<select id="' . esc_attr( $this->id ) . '" name="' . esc_attr( $this->name ) . '" class="wcf-field-select wcf-field__input" ' . $required . ' ' . $attributes . '>';
 		foreach ( $this->options as $value => $label ) {
 			$selected = selected( $this->value, $value, false );
@@ -460,32 +470,24 @@ class Field {
 		$allow_clear = ! empty( $this->attributes['allow_clear'] ) ? 'true' : 'false';
 		$width       = ! empty( $this->attributes['width'] ) ? $this->attributes['width'] : '100%';
 
-		// Handle multiple values
-		$values          = $this->value;
+		// Ensure selected_values is always an array
 		$selected_values = array();
-
 		if ( $is_multiple ) {
-			if ( is_array( $values ) ) {
-				$selected_values = $values;
-			} elseif ( ! empty( $values ) ) {
-				$selected_values = array_map( 'trim', explode( ',', $values ) );
+			if ( is_array( $this->value ) ) {
+				$selected_values = $this->value;
+			} elseif ( is_string( $this->value ) && ! empty( $this->value ) ) {
+				$selected_values = array_map( 'trim', explode( ',', $this->value ) );
 			}
 		} else {
-			$selected_values = array( $values );
+			$selected_values = $this->value ? (array) $this->value : array();
 		}
 
 		// Add required class for validation if needed
 		$required_class = strpos( $required, 'required' ) !== false ? 'wcf-required' : '';
 
-		// Add a hidden field to store the actual value (for multiple select)
-		if ( $is_multiple ) {
-			$field_value = is_array( $values ) ? implode( ',', $values ) : $values;
-			echo '<input type="hidden" id="' . esc_attr( $this->id ) . '_value" name="' . esc_attr( $this->name ) . '" value="' . esc_attr( $field_value ) . '" ' . $required . '>';
-		}
-
 		// Output the select element
 		echo '<select id="' . esc_attr( $this->id ) . '" 
-                     name="' . esc_attr( $is_multiple ? $this->name . '[]' : $this->name ) . '"
+                     name="' . esc_attr( $name_attr ) . '"
                      class="wcf-field-select2 wcf-field__input ' . esc_attr( $required_class ) . '" 
                      data-placeholder="' . esc_attr( $placeholder ) . '"
                      data-allow-clear="' . esc_attr( $allow_clear ) . '"
@@ -505,17 +507,28 @@ class Field {
 		}
 		echo '</select>';
 
-		// Add script to handle multiple select values
-		if ( $is_multiple ) {
-			echo '<script>
-            jQuery(document).ready(function($) {
-                $("#' . esc_js( $this->id ) . '").on("change", function() {
-                    var values = $(this).val() ? $(this).val().join(",") : "";
-                    $("#' . esc_js( $this->id ) . '_value").val(values);
-                });
+		// Add script to handle select2 initialization
+		echo '<script>
+        jQuery(document).ready(function($) {
+            $("#' . esc_js( $this->id ) . '").select2({
+                width: "' . esc_js( $width ) . '",
+                placeholder: "' . esc_js( $placeholder ) . '",
+                allowClear: ' . $allow_clear . ',
+                ' . ( $is_multiple ? 'closeOnSelect: false,' : '' ) . '
+                templateResult: function(data) {
+                    if (!data.id) { return data.text; }
+                    return data.text;
+                },
+                templateSelection: function(data) {
+                    if (!data.id) { return data.text; }
+                    return data.text;
+                }
             });
-            </script>';
-		}
+        });
+        </script>';
+
+		// Add hidden field to store the value as JSON for proper form submission
+		echo '<input type="hidden" name="' . esc_attr( $this->name . '_is_array' ) . '" value="1">';
 	}
 
 	private function control_checkbox( $required ) {
@@ -523,16 +536,14 @@ class Field {
 		if ( $this->label ) {
 			echo '<legend class="wcf-field__label"><strong>' . esc_html( $this->label ) . '</strong></legend>';
 		}
-		
-		// Determine current values (use value if set, otherwise use default)
+
 		$current_values = array();
-		if ( ! empty( $this->value ) && is_array( $this->value ) ) {
-			$current_values = $this->value;
-		} elseif ( ! empty( $this->default ) ) {
-			// Default can be array or single value
+		if ( ( empty( $this->value ) || $this->value === null || $this->value === false ) && $this->default !== null ) {
 			$current_values = is_array( $this->default ) ? $this->default : array( $this->default );
+		} else {
+			$current_values = is_array( $this->value ) ? $this->value : array( $this->value );
 		}
-		
+
 		foreach ( $this->options as $key => $label ) {
 			$checked = in_array( $key, $current_values );
 			printf(
@@ -554,7 +565,7 @@ class Field {
 		if ( $this->label ) {
 			echo '<legend class="wcf-field__label"><strong>' . esc_html( $this->label ) . '</strong></legend>';
 		}
-		
+
 		foreach ( $this->options as $key => $label ) {
 			printf(
 				'<label class="wcf-field-radio" for="%s"><input id="%s" type="radio" name="%s" value="%s" %s %s> %s</label>',
@@ -571,7 +582,7 @@ class Field {
 	}
 
 	private function control_toggle( $required ) {
-		$checked = ( $this->value === 'yes' ) ? 'checked' : '';
+		$checked = ( $this->value === 'yes' || $this->value === true || $this->value === '1' || $this->value === 1 ) ? 'checked' : '';
 		echo '<div class="wcf-field-toggle">';
 
 		printf(
@@ -622,7 +633,7 @@ class Field {
 	}
 
 	private function control_gallery( $required ) {
-		// Tandai bahwa media uploader diperlukan
+		// Mark that media uploader is needed
 		Assets::get_instance()->require_asset( 'media' );
 
 		// Always store as comma-separated string in options
@@ -631,10 +642,9 @@ class Field {
 		if ( is_array( $this->value ) ) {
 			// Convert array to comma-separated string
 			$ids_str = implode( ',', array_filter( array_map( 'intval', $this->value ) ) );
-		} elseif ( is_string( $this->value ) ) {
-			// Clean up existing string
-			$ids     = array_filter( array_map( 'intval', explode( ',', $this->value ) ) );
-			$ids_str = implode( ',', $ids );
+		} elseif ( ! empty( $this->value ) ) {
+			// Already a string, ensure it's clean
+			$ids_str = implode( ',', array_filter( array_map( 'intval', explode( ',', $this->value ) ) ) );
 		}
 
 		// Convert back to array for display
@@ -731,6 +741,8 @@ class Field {
 		// Main container
 		echo '<div class="wcf-file-upload-wrapper">';
 
+		// Use default value if value is not set
+
 		// URL input - this is now the main input that stores the URL directly
 		printf(
 			'<input type="text" id="%1$s" name="%2$s" value="%3$s" class="wcf-field-file-url wcf-field__input" placeholder="' . esc_attr__( 'File URL', 'wapic-fields' ) . '" data-validate="url" %4$s/>',
@@ -789,20 +801,20 @@ class Field {
 		switch ( $type ) {
 			case 'select2':
 				if ( empty( $value ) ) {
-					return '';
+					return array();
 				}
 				if ( is_array( $value ) ) {
 					// If it's an array (from multiple select), sanitize each value
-					$sanitized = array_map( 'sanitize_text_field', $value );
-					return implode( ',', array_filter( $sanitized ) );
+					return array_filter( array_map( 'sanitize_text_field', $value ) );
 				}
 				// If it's a string, it might be comma-separated values
 				if ( strpos( $value, ',' ) !== false ) {
-					$values    = array_map( 'trim', explode( ',', $value ) );
-					$sanitized = array_map( 'sanitize_text_field', $values );
-					return implode( ',', array_filter( $sanitized ) );
+					$values = array_map( 'trim', explode( ',', $value ) );
+					return array_filter( array_map( 'sanitize_text_field', $values ) );
 				}
-				return sanitize_text_field( $value );
+				// For single value, return as array with one element
+				$sanitized = sanitize_text_field( $value );
+				return $sanitized !== '' ? array( $sanitized ) : array();
 			case 'url':
 				return esc_url_raw( $value );
 			case 'textarea':
