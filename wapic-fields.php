@@ -3,7 +3,7 @@
  * Plugin Name:       Wapic Fields
  * Plugin URI:        https://wapiclo.com/wapic-fields
  * Description:       A custom field for WordPress options page and meta box
- * Version:           1.2.1
+ * Version:           1.2.2
  * Requires at least: 5.8
  * Requires PHP:      8.2
  * Author:            Wapiclo
