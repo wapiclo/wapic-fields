@@ -1,19 +1,18 @@
 .wcf-repeater {
-  border: 1px solid #dcdcde;
-  background-color: #fafafa;
+  border: 1px solid var(--wcf-border-color);
+  background-color: var(--wcf-color-foreground);
   border-radius: 4px;
   padding: 8px;
-  background: #f6f7f7;
   max-width: 600px;
 }
 .wcf-repeater .wcf-repeater-actions {
   margin-top: 8px;
 }
 .wcf-repeater-row {
-  border: 1px solid #dcdcde;
+  border: 1px solid var(--wcf-border-color);
   border-radius: 4px;
   margin-bottom: 8px;
-  background: #fff;
+  background: var(--wcf-color-background);
   overflow: hidden;
 }
 .wcf-repeater-row-header {
@@ -22,8 +21,11 @@
   gap: 8px;
   justify-content: space-between;
   padding: 8px 10px;
-  background: #fff;
-  border-bottom: 1px solid #dcdcde;
+  background: var(--wcf-color-background);
+  border-bottom: 1px solid var(--wcf-border-color);
+}
+.wcf-repeater-row:not(.is-active) .wcf-repeater-row-header {
+  border-bottom: none;
 }
 .wcf-repeater-drag-handle {
   cursor: move;
@@ -31,8 +33,8 @@
   user-select: none;
 }
 .wcf-repeater-accordion-toggle {
-  background: #fff;
-  border: 1px solid #dcdcde;
+  background: var(--wcf-color-background);
+  border: 1px solid var(--wcf-border-color);
   padding: 2px 6px;
   cursor: pointer;
   font-size: 12px;
@@ -64,8 +66,8 @@
   margin-bottom: 4px;
 }
 .wcf-repeater-placeholder {
-  border: 2px dashed #c3c4c7;
-  background: #fafafa;
+  border: 2px dashed var(--wcf-border-color);
+  background: var(--wcf-color-foreground);
   height: 44px;
   margin-bottom: 8px;
 }
