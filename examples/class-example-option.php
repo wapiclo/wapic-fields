@@ -110,10 +110,16 @@ class CustomOption extends \Wapic_Fields\Field {
 			'value' => get_option('_my_repeater'),
 			'options' => [
 				'fields' => [
-					['id' => 'title', 'label' => 'Title', 'type' => 'text', 'required'    => true],
+					['id' => 'title', 'label' => 'Title', 'type' => 'text', 'required' => true],
 					['id' => 'qty', 'label' => 'Qty', 'type' => 'number', 'attributes' => ['min' => 0]],
 					['id' => 'type', 'label' => 'Type', 'type' => 'select', 'options' => ['a' => 'Type A', 'b' => 'Type B']],
+					['id' => 'tag', 'label' => 'Tags (Select2)', 'type' => 'select2', 'options' => ['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue'], 'attributes' => ['multiple' => true, 'placeholder' => 'Choose tags', 'allow_clear' => true]],
+					['id' => 'agree', 'label' => 'Agree', 'type' => 'checkbox'],
+					['id' => 'choice', 'label' => 'Choice', 'type' => 'radio', 'options' => ['x' => 'Option X', 'y' => 'Option Y']],
+					['id' => 'due', 'label' => 'Due Date', 'type' => 'date'],
+					['id' => 'fileurl', 'label' => 'File URL', 'type' => 'file'],
 					['id' => 'editor', 'label' => 'Editor', 'type' => 'editor'],
+					['id' => 'colorpicker', 'label' => 'Color', 'type' => 'color'],
 				],
 				'title_field' => 'title',
 				'min' => 0,

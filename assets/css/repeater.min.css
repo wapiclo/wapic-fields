@@ -11,3 +11,8 @@
 .wcf-repeater-field{margin-bottom:10px}
 .wcf-repeater-field .wcf-field__label{display:block;margin-bottom:4px}
 .wcf-repeater-placeholder{border:2px dashed #c3c4c7; background:#fafafa; height:44px; margin-bottom:8px}
+/* Fix checkbox and radio layout inside repeater */
+.wcf-repeater .wcf-field__checkbox,
+.wcf-repeater .wcf-field__radio{display:flex;align-items:center;gap:8px;margin:0 0 6px 0}
+.wcf-repeater .wcf-field__checkbox input,
+.wcf-repeater .wcf-field__radio input{width:auto;display:inline-block}
