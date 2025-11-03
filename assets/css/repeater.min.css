@@ -1,18 +1,82 @@
-.wcf-repeater{border:1px solid #dcdcde;border-radius:4px;padding:8px;background:#fff}
-.wcf-repeater .wcf-repeater-actions{margin-top:8px}
-.wcf-repeater-row{border:1px solid #dcdcde;border-radius:4px;margin-bottom:8px;background:#fff;overflow:hidden}
-.wcf-repeater-row-header{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:8px 10px;background:#f6f7f7;border-bottom:1px solid #dcdcde}
-.wcf-repeater-drag-handle{cursor:move;color:#777;user-select:none}
-.wcf-repeater-accordion-toggle{background:#fff;border:1px solid #dcdcde;padding:2px 6px;cursor:pointer;font-size:12px;border-radius:3px}
-.wcf-repeater-row-title{font-weight:600;flex:1}
-.wcf-repeater-row-controls{display:flex;align-items:center;gap:6px}
-.wcf-repeater-row-controls .wcf-repeater-remove{color:#b32d2e}
-.wcf-repeater-row-body{padding:10px;display:none}
-.wcf-repeater-field{margin-bottom:10px}
-.wcf-repeater-field .wcf-field__label{display:block;margin-bottom:4px}
-.wcf-repeater-placeholder{border:2px dashed #c3c4c7; background:#fafafa; height:44px; margin-bottom:8px}
+.wcf-repeater {
+  border: 1px solid #dcdcde;
+  background-color: #fafafa;
+  border-radius: 4px;
+  padding: 8px;
+  background: #fff;
+}
+.wcf-repeater .wcf-repeater-actions {
+  margin-top: 8px;
+}
+.wcf-repeater-row {
+  border: 1px solid #dcdcde;
+  max-width: 600px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+.wcf-repeater-row-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: #f6f7f7;
+  border-bottom: 1px solid #dcdcde;
+}
+.wcf-repeater-drag-handle {
+  cursor: move;
+  color: #777;
+  user-select: none;
+}
+.wcf-repeater-accordion-toggle {
+  background: #fff;
+  border: 1px solid #dcdcde;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 3px;
+}
+.wcf-repeater-row-title {
+  font-weight: 600;
+  flex: 1;
+}
+.wcf-repeater-row-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.wcf-repeater-row-controls .wcf-repeater-remove {
+  color: #b32d2e;
+}
+.wcf-repeater-row-body {
+  padding: 10px;
+  display: none;
+}
+.wcf-repeater-field {
+  margin-bottom: 10px;
+}
+.wcf-repeater-field .wcf-field__label {
+  display: block;
+  margin-bottom: 4px;
+}
+.wcf-repeater-placeholder {
+  border: 2px dashed #c3c4c7;
+  background: #fafafa;
+  height: 44px;
+  margin-bottom: 8px;
+}
 /* Fix checkbox and radio layout inside repeater */
 .wcf-repeater .wcf-field__checkbox,
-.wcf-repeater .wcf-field__radio{display:flex;align-items:center;gap:8px;margin:0 0 6px 0}
+.wcf-repeater .wcf-field__radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px 0;
+}
 .wcf-repeater .wcf-field__checkbox input,
-.wcf-repeater .wcf-field__radio input{width:auto;display:inline-block}
+.wcf-repeater .wcf-field__radio input {
+  width: auto;
+  display: inline-block;
+}

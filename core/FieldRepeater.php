@@ -196,10 +196,18 @@ class FieldRepeater {
             } elseif ($ftype === 'file') {
                 echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '" class="wcf-field__input wcf-field-file-url' . $req_class . '" placeholder="' . esc_attr__('File URL', 'wapic-fields') . '"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'image') {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '" class="wcf-field__input wcf-field-file-url' . $req_class . '" placeholder="' . esc_attr__('Image URL', 'wapic-fields') . '"' . $attrs . $data_req . $disabled . ' />';
+                echo '<div class="wcf-media-field">';
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '" class="wcf-field__input wcf-field-file-url' . $req_class . '" placeholder="' . esc_attr__('Image URL', 'wapic-fields') . '"' . $attrs . $data_req . $disabled . ' /> ';
+                echo '<button type="button" class="button wcf-media-select" data-media-type="image" data-target="#' . esc_attr($input_id) . '">' . esc_html__('Select', 'wapic-fields') . '</button> ';
+                echo '<button type="button" class="button wcf-media-clear" data-target="#' . esc_attr($input_id) . '">' . esc_html__('Clear', 'wapic-fields') . '</button>';
+                echo '</div>';
             } elseif ($ftype === 'gallery') {
                 $val_str = is_array($fval) ? implode(',', array_map('strval', $fval)) : (string)$fval;
-                echo '<textarea id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field__input' . $req_class . '" placeholder="' . esc_attr__('Comma separated IDs', 'wapic-fields') . '"' . $attrs . $data_req . $disabled . '>' . esc_textarea($val_str) . '</textarea>';
+                echo '<div class="wcf-media-field">';
+                echo '<textarea id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field__input' . $req_class . '" placeholder="' . esc_attr__('Comma separated IDs', 'wapic-fields') . '"' . $attrs . $data_req . $disabled . '>' . esc_textarea($val_str) . '</textarea> ';
+                echo '<button type="button" class="button wcf-media-select" data-media-type="gallery" data-target="#' . esc_attr($input_id) . '">' . esc_html__('Select', 'wapic-fields') . '</button> ';
+                echo '<button type="button" class="button wcf-media-clear" data-target="#' . esc_attr($input_id) . '">' . esc_html__('Clear', 'wapic-fields') . '</button>';
+                echo '</div>';
             } elseif ($ftype === 'editor') {
                 if (function_exists('wp_editor') && ! $is_template) {
                     ob_start();

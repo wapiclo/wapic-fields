@@ -134,6 +134,11 @@ class Assets {
 		// Needed for repeater sortable feature
 		wp_enqueue_script( 'jquery-ui-sortable' );
 
+		// Needed for image/gallery media frames
+		if ( function_exists( 'wp_enqueue_media' ) ) {
+			wp_enqueue_media();
+		}
+
 		// Repeater assets
 		wp_enqueue_style( 'wapic-field-repeater', WAPIC_FIELDS_ASSETS . 'assets/css/repeater.min.css', array( 'wapic-field' ), WAPIC_FIELDS_VERSION );
 		wp_enqueue_script( 'wapic-field-repeater', WAPIC_FIELDS_ASSETS . 'assets/js/repeater.min.js', array( 'jquery' ), WAPIC_FIELDS_VERSION, true );
