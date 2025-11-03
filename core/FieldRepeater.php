@@ -26,8 +26,11 @@ class FieldRepeater {
             $value = array();
         }
 
-        if ($min > 0 && count($value) < $min) {
-            $value = array_pad($value, $min, array());
+        // Do not auto-pad to min here; UI should enforce min via JS to avoid phantom empty rows
+
+        // Remove submission marker if present
+        if (isset($value['_wcf_marker'])) {
+            unset($value['_wcf_marker']);
         }
 
         foreach ($schema_fields as $sf) {
@@ -53,8 +56,29 @@ class FieldRepeater {
         echo '<input type="hidden" name="' . esc_attr($name_base) . '[_wcf_marker]" value="1" />';
 
         $index = 0;
-        foreach ($value as $row) {
-            self::render_row($ctx, $schema_fields, $name_base, $index, is_array($row) ? $row : array(), $required, false, $title_field);
+        foreach ($value as $k => $row) {
+            if (!is_numeric($k)) {
+                continue; // ignore non-index keys
+            }
+            if (!is_array($row)) {
+                continue; // skip non-array artifacts
+            }
+            // Skip empty rows: deep check for any non-empty scalar
+            $has_nonempty = false;
+            foreach ($row as $rv) {
+                if (is_array($rv)) {
+                    foreach ($rv as $iv) {
+                        $sv = is_string($iv) ? trim($iv) : (is_null($iv) ? '' : (string)$iv);
+                        if ($sv !== '') { $has_nonempty = true; break; }
+                    }
+                } else {
+                    $sv = is_string($rv) ? trim($rv) : (is_null($rv) ? '' : (string)$rv);
+                    if ($sv !== '') { $has_nonempty = true; }
+                }
+                if ($has_nonempty) break;
+            }
+            if (! $has_nonempty) continue;
+            self::render_row($ctx, $schema_fields, $name_base, $index, $row, $required, false, $title_field);
             $index++;
         }
 
@@ -185,8 +209,14 @@ class FieldRepeater {
                     echo '<label class="wcf-field-checkbox" for="' . esc_attr($input_id) . '"><input type="checkbox" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="yes" class="' . $req_class . '"' . $data_req . ' ' . $disabled . ' ' . $checked . ' /> ' . esc_html__('Yes', 'wapic-fields') . '</label>';
                 }
             } elseif ($ftype === 'toggle') {
-                $checked = !empty($fval) && ($fval === 'yes' || $fval === '1' || $fval === 1 || $fval === true) ? 'checked' : '';
-                echo '<label class="wcf-field-checkbox" for="' . esc_attr($input_id) . '"><input type="checkbox" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="yes" class="wcf-field__input wcf-field-toggle' . $req_class . '"' . $data_req . ' ' . $disabled . ' ' . $checked . ' /> ' . esc_html__('Yes', 'wapic-fields') . '</label>';
+                $checked = ($fval === 'yes' || $fval === true || $fval === '1' || $fval === 1) ? 'checked' : '';
+                echo '<div class="wcf-field-toggle">';
+                echo '<label class="wcf-field-toggle-switch" for="' . esc_attr($input_id) . '">';
+                // Only checkbox; no hidden "no" to prevent phantom non-empty rows
+                echo '<input type="checkbox" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="yes" ' . $checked . $data_req . ' ' . $disabled . ' class="' . trim('wcf-field__input wcf-field-toggle' . $req_class) . '">';
+                echo '<span class="slider"></span>';
+                echo '</label>';
+                echo '</div>';
             } elseif ($ftype === 'radio') {
                 foreach ($fopts as $ov => $ol) {
                     $checked = checked((string)$fval, (string)$ov, false);
@@ -196,17 +226,45 @@ class FieldRepeater {
             } elseif ($ftype === 'file') {
                 echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '" class="wcf-field__input wcf-field-file-url' . $req_class . '" placeholder="' . esc_attr__('File URL', 'wapic-fields') . '"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'image') {
-                echo '<div class="wcf-media-field">';
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '" class="wcf-field__input wcf-field-file-url' . $req_class . '" placeholder="' . esc_attr__('Image URL', 'wapic-fields') . '"' . $attrs . $data_req . $disabled . ' /> ';
-                echo '<button type="button" class="button wcf-media-select" data-media-type="image" data-target="#' . esc_attr($input_id) . '">' . esc_html__('Select', 'wapic-fields') . '</button> ';
-                echo '<button type="button" class="button wcf-media-clear" data-target="#' . esc_attr($input_id) . '">' . esc_html__('Clear', 'wapic-fields') . '</button>';
+                // store attachment ID, show preview like core Field::control_image
+                $img_url = $fval ? wp_get_attachment_image_url(intval($fval), 'large') : '';
+                $label   = $img_url ? __('Edit Image', 'wapic-fields') : __('Add Image', 'wapic-fields');
+                echo '<div id="' . esc_attr($input_id) . '_preview" class="wcf-field-image-preview">';
+                if ($img_url) {
+                    echo '<span class="wcf-field-image-thumb">';
+                    echo '<img src="' . esc_url($img_url) . '">';
+                    echo '<a href="#" class="wcf-field-remove-image" title="' . esc_attr__('Remove image', 'wapic-fields') . '">×</a>';
+                    echo '</span>';
+                }
                 echo '</div>';
+                echo '<input type="hidden" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '"' . $data_req . ' ' . $disabled . ' class="wcf-media-id">';
+                echo '<button type="button" class="button wcf-field-image-upload" data-target="' . esc_attr($input_id) . '">' . esc_html($label) . '</button>';
             } elseif ($ftype === 'gallery') {
-                $val_str = is_array($fval) ? implode(',', array_map('strval', $fval)) : (string)$fval;
-                echo '<div class="wcf-media-field">';
-                echo '<textarea id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field__input' . $req_class . '" placeholder="' . esc_attr__('Comma separated IDs', 'wapic-fields') . '"' . $attrs . $data_req . $disabled . '>' . esc_textarea($val_str) . '</textarea> ';
-                echo '<button type="button" class="button wcf-media-select" data-media-type="gallery" data-target="#' . esc_attr($input_id) . '">' . esc_html__('Select', 'wapic-fields') . '</button> ';
-                echo '<button type="button" class="button wcf-media-clear" data-target="#' . esc_attr($input_id) . '">' . esc_html__('Clear', 'wapic-fields') . '</button>';
+                // value as comma-separated IDs, preview thumbs
+                $ids_str = '';
+                if (is_array($fval)) {
+                    $ids_str = implode(',', array_filter(array_map('intval', $fval)));
+                } elseif (!empty($fval)) {
+                    $ids_str = implode(',', array_filter(array_map('intval', explode(',', (string)$fval))));
+                }
+                $ids = $ids_str ? array_map('intval', explode(',', $ids_str)) : array();
+                $label = $ids_str ? __('Edit Gallery', 'wapic-fields') : __('Add Gallery', 'wapic-fields');
+                echo '<div id="' . esc_attr($input_id) . '_preview" class="wcf-field-gallery-preview">';
+                if (!empty($ids)) {
+                    foreach ($ids as $img_id) {
+                        $thumb = wp_get_attachment_image_url($img_id, 'thumbnail');
+                        if ($thumb) {
+                            echo '<span class="wcf-field-gallery-thumb" data-id="' . esc_attr($img_id) . '">';
+                            echo '<img src="' . esc_url($thumb) . '" alt="' . esc_attr__('Gallery image', 'wapic-fields') . '">';
+                            echo '<a href="#" class="wcf-field-remove-gallery-thumb" title="' . esc_attr__('Remove image', 'wapic-fields') . '">×</a>';
+                            echo '</span>';
+                        }
+                    }
+                }
+                echo '</div>';
+                echo '<input type="hidden" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr($ids_str) . '"' . $data_req . ' ' . $disabled . ' class="wcf-gallery-ids">';
+                echo '<div class="wcf-gallery-actions">';
+                echo '<button type="button" class="button wcf-field-gallery-upload" data-target="' . esc_attr($input_id) . '">' . esc_html($label) . '</button>';
                 echo '</div>';
             } elseif ($ftype === 'editor') {
                 if (function_exists('wp_editor') && ! $is_template) {
@@ -258,14 +316,26 @@ class FieldRepeater {
             }
             $clean = array();
             foreach ($row as $k => $v) {
-                if (is_scalar($v) || $v === null) {
-                    $clean[(string) $k] = is_string($v) ? sanitize_text_field($v) : (string) $v;
-                } elseif (is_array($v)) {
-                    $clean[(string) $k] = array_map(function ($iv) {
-                        return is_string($iv) ? sanitize_text_field($iv) : (string) $iv;
-                    }, $v);
+                $key = (string) $k;
+                if (is_array($v)) {
+                    // sanitize array and drop empty elements
+                    $san = array_values(array_filter(array_map(function ($iv) {
+                        $sv = is_string($iv) ? sanitize_text_field($iv) : (is_null($iv) ? '' : (string)$iv);
+                        return $sv;
+                    }, $v), function ($sv) {
+                        return $sv !== '' && $sv !== null;
+                    }));
+                    if (!empty($san)) {
+                        $clean[$key] = $san;
+                    }
+                } else {
+                    $sv = is_string($v) ? sanitize_text_field($v) : (is_null($v) ? '' : (string)$v);
+                    if ($sv !== '') {
+                        $clean[$key] = $sv;
+                    }
                 }
             }
+            // Only push row if it has at least one non-empty value
             if (!empty($clean)) {
                 $rows[] = $clean;
             }

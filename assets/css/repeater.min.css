@@ -3,14 +3,14 @@
   background-color: #fafafa;
   border-radius: 4px;
   padding: 8px;
-  background: #fff;
+  background: #f6f7f7;
+  max-width: 600px;
 }
 .wcf-repeater .wcf-repeater-actions {
   margin-top: 8px;
 }
 .wcf-repeater-row {
   border: 1px solid #dcdcde;
-  max-width: 600px;
   border-radius: 4px;
   margin-bottom: 8px;
   background: #fff;
@@ -22,7 +22,7 @@
   gap: 8px;
   justify-content: space-between;
   padding: 8px 10px;
-  background: #f6f7f7;
+  background: #fff;
   border-bottom: 1px solid #dcdcde;
 }
 .wcf-repeater-drag-handle {
@@ -48,7 +48,9 @@
   gap: 6px;
 }
 .wcf-repeater-row-controls .wcf-repeater-remove {
-  color: #b32d2e;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 .wcf-repeater-row-body {
   padding: 10px;
