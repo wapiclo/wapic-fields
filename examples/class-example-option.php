@@ -2,7 +2,7 @@
 
 namespace Wapic_Fields;
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
@@ -11,8 +11,8 @@ class CustomOption extends \Wapic_Fields\Field {
 	private $id = 'wapic-field-option';
 
 	public function __construct() {
-		add_action( 'admin_menu', array( $this, 'register' ) );
-		add_action( 'admin_init', array( $this, 'save' ) );
+		add_action('admin_menu', array($this, 'register'));
+		add_action('admin_init', array($this, 'save'));
 	}
 
 	public function register() {
@@ -21,7 +21,7 @@ class CustomOption extends \Wapic_Fields\Field {
 			'Wapic Fields',                // Menu title
 			'manage_options',                // Capability
 			$this->id,                 // Menu slug
-			array( $this, 'render' ),  // Callback
+			array($this, 'render'),  // Callback
 			'dashicons-admin-generic',       // Icon
 			9999                             // Position
 		);
@@ -103,12 +103,31 @@ class CustomOption extends \Wapic_Fields\Field {
 			)
 		);
 
+		$this->add_control([
+			'id' => '_my_repeater',
+			'type' => 'repeater',
+			'label' => 'Items',
+			'value' => get_option('_my_repeater'),
+			'options' => [
+				'fields' => [
+					['id' => 'title', 'label' => 'Title', 'type' => 'text', 'required'    => true],
+					['id' => 'qty', 'label' => 'Qty', 'type' => 'number', 'attributes' => ['min' => 0]],
+					['id' => 'type', 'label' => 'Type', 'type' => 'select', 'options' => ['a' => 'Type A', 'b' => 'Type B']],
+					['id' => 'editor', 'label' => 'Editor', 'type' => 'editor'],
+				],
+				'title_field' => 'title',
+				'min' => 0,
+				'max' => 0,
+				'add_button_label' => 'Tambah Item',
+			],
+		]);
+
 		$this->add_control(
 			array(
 				'id'    => '_sample_text',
 				'type'  => 'text',
 				'label' => 'Regular Text',
-				'value' => get_option( '_sample_text' ),
+				'value' => get_option('_sample_text'),
 			)
 		);
 
@@ -117,7 +136,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'id'    => '_sample_email',
 				'type'  => 'email',
 				'label' => 'Email',
-				'value' => get_option( '_sample_email' ),
+				'value' => get_option('_sample_email'),
 			)
 		);
 
@@ -126,7 +145,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'id'    => '_sample_phone',
 				'type'  => 'phone',
 				'label' => 'Phone',
-				'value' => get_option( '_sample_phone' ),
+				'value' => get_option('_sample_phone'),
 			)
 		);
 
@@ -135,7 +154,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'id'         => '_sample_number',
 				'type'       => 'number',
 				'label'      => 'Number',
-				'value'      => get_option( '_sample_number' ),
+				'value'      => get_option('_sample_number'),
 				'attributes' => array(
 					'min' => 0,
 					'max' => 100,
@@ -148,7 +167,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'id'    => '_sample_url',
 				'type'  => 'url',
 				'label' => 'URL',
-				'value' => get_option( '_sample_url' ),
+				'value' => get_option('_sample_url'),
 			)
 		);
 
@@ -157,7 +176,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'id'    => '_sample_textarea',
 				'type'  => 'textarea',
 				'label' => 'Textarea',
-				'value' => get_option( '_sample_textarea' ),
+				'value' => get_option('_sample_textarea'),
 			)
 		);
 
@@ -171,7 +190,7 @@ class CustomOption extends \Wapic_Fields\Field {
 					'option_2' => 'Option 2',
 					'option_3' => 'Option 3',
 				),
-				'value'   => get_option( '_sample_select' ),
+				'value'   => get_option('_sample_select'),
 			)
 		);
 
@@ -185,7 +204,7 @@ class CustomOption extends \Wapic_Fields\Field {
 					'option_2' => 'Option 2',
 					'option_3' => 'Option 3',
 				),
-				'value'   => get_option( '_sample_checkbox' ),
+				'value'   => get_option('_sample_checkbox'),
 			)
 		);
 
@@ -199,7 +218,7 @@ class CustomOption extends \Wapic_Fields\Field {
 					'option_2' => 'Option 2',
 					'option_3' => 'Option 3',
 				),
-				'value'   => get_option( '_sample_radio' ),
+				'value'   => get_option('_sample_radio'),
 			)
 		);
 	}
@@ -215,7 +234,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'type'        => 'text',
 				'label'       => 'Regular Text Required',
 				'description' => 'Regular text field.',
-				'value'       => get_option( '_sample_text_required' ),
+				'value'       => get_option('_sample_text_required'),
 				'required'    => true,
 			)
 		);
@@ -226,7 +245,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'type'  => 'number',
 				'label' => 'Price',
 				'class' => 'regular-price',
-				'value' => get_option( '_sample_price' ),
+				'value' => get_option('_sample_price'),
 			)
 		);
 
@@ -237,7 +256,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'label'       => 'Sale Price',
 				'class'       => 'sale-price',
 				'description' => 'Sale price must be less than regular price',
-				'value'       => get_option( '_sample_sale_price' ),
+				'value'       => get_option('_sample_sale_price'),
 			)
 		);
 
@@ -246,7 +265,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'id'    => '_sample_toggle_conditional',
 				'type'  => 'toggle',
 				'label' => 'Toggle Conditional',
-				'value' => get_option( '_sample_toggle_conditional' ),
+				'value' => get_option('_sample_toggle_conditional'),
 			)
 		);
 
@@ -256,7 +275,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'type'        => 'url',
 				'label'       => 'URL Conditional',
 				'description' => 'URL field required when toggle conditional is on or value is "yes"',
-				'value'       => get_option( '_sample_url_conditional' ),
+				'value'       => get_option('_sample_url_conditional'),
 				'condition'   => array(
 					'field' => '_sample_toggle_conditional',
 					'value' => 'yes',
@@ -275,7 +294,7 @@ class CustomOption extends \Wapic_Fields\Field {
 					'option_2' => 'Option 2',
 					'option_3' => 'Option 3',
 				),
-				'value'       => get_option( '_sample_select_conditional' ),
+				'value'       => get_option('_sample_select_conditional'),
 				'condition'   => array(
 					'field' => '_sample_toggle_conditional',
 					'value' => 'yes',
@@ -295,7 +314,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'type'        => 'image',
 				'label'       => 'Image',
 				'description' => 'Image field.',
-				'value'       => get_option( '_sample_image' ),
+				'value'       => get_option('_sample_image'),
 			)
 		);
 
@@ -305,7 +324,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'type'        => 'gallery',
 				'label'       => 'Gallery',
 				'description' => 'Gallery field.',
-				'value'       => get_option( '_sample_gallery' ),
+				'value'       => get_option('_sample_gallery'),
 			)
 		);
 
@@ -315,7 +334,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'type'        => 'file',
 				'label'       => 'File',
 				'description' => 'File field.',
-				'value'       => get_option( '_sample_file' ),
+				'value'       => get_option('_sample_file'),
 			)
 		);
 
@@ -325,7 +344,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'type'        => 'toggle',
 				'label'       => 'Toggle',
 				'description' => 'Toggle field.',
-				'value'       => get_option( '_sample_toggle' ),
+				'value'       => get_option('_sample_toggle'),
 			)
 		);
 
@@ -335,7 +354,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'type'        => 'color',
 				'label'       => 'Color Picker',
 				'description' => 'Color Picker field.',
-				'value'       => get_option( '_sample_color' ),
+				'value'       => get_option('_sample_color'),
 			)
 		);
 
@@ -345,7 +364,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'type'        => 'date',
 				'label'       => 'Date Picker',
 				'description' => 'Date Picker field.',
-				'value'       => get_option( '_sample_date' ),
+				'value'       => get_option('_sample_date'),
 			)
 		);
 
@@ -354,7 +373,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'id'         => '_sample_select2',
 				'type'       => 'select2',
 				'label'      => 'Select Options',
-				'value'      => get_option( '_sample_select2' ),
+				'value'      => get_option('_sample_select2'),
 				'options'    => array(
 					'option1'  => 'Option 1',
 					'option2'  => 'Option 2',
@@ -381,7 +400,7 @@ class CustomOption extends \Wapic_Fields\Field {
 				'type'        => 'editor',
 				'label'       => 'WP Editor',
 				'description' => 'WP Editor field.',
-				'value'       => get_option( '_sample_editor' ),
+				'value'       => get_option('_sample_editor'),
 			)
 		);
 	}
@@ -389,6 +408,7 @@ class CustomOption extends \Wapic_Fields\Field {
 	public function save() {
 		// First, ensure the options exist with autoload = 'no'
 		$fields = array(
+			'_my_repeater'             => 'repeater',
 			'_sample_text'               => 'text',
 			'_sample_email'              => 'email',
 			'_sample_phone'              => 'phone',
@@ -413,26 +433,26 @@ class CustomOption extends \Wapic_Fields\Field {
 			'_sample_editor'             => 'editor',
 		);
 
-		foreach ( $fields as $field_name => $field_type ) {
+		foreach ($fields as $field_name => $field_type) {
 			register_setting(
 				$this->id,
 				$field_name,
 				array(
-					'sanitize_callback' => function ( $value, $option = '' ) use ( $field_type, $field_name ) {
+					'sanitize_callback' => function ($value, $option = '') use ($field_type, $field_name) {
 						// Skip validation if the input is hidden
-						if ( isset( $_POST[ $field_name . '_is_hidden' ] ) && $_POST[ $field_name . '_is_hidden' ] === '1' ) {
-							return $this->sanitize_value( $field_type, $value );
+						if (isset($_POST[$field_name . '_is_hidden']) && $_POST[$field_name . '_is_hidden'] === '1') {
+							return $this->sanitize_value($field_type, $value);
 						}
 
 						// Get validated value
-						$validation = $this->validate_value( $field_type, $value );
+						$validation = $this->validate_value($field_type, $value);
 
-						if ( ! empty( $validation ) ) {
-							add_settings_error( $this->id, 'validation_error', $validation, 'error' );
+						if (! empty($validation)) {
+							add_settings_error($this->id, 'validation_error', $validation, 'error');
 							// Return the old value to prevent saving invalid data
-							return get_option( $field_name, '' );
+							return get_option($field_name, '');
 						} else {
-							return $this->sanitize_value( $field_type, $value );
+							return $this->sanitize_value($field_type, $value);
 						}
 					},
 				)

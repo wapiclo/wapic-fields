@@ -131,6 +131,13 @@ class Assets {
 		wp_enqueue_script( 'wapic-field-validation', WAPIC_FIELDS_ASSETS . 'assets/js/validation.min.js', array(), WAPIC_FIELDS_VERSION, true );
 		wp_enqueue_script( 'wapic-field-conditional', WAPIC_FIELDS_ASSETS . 'assets/js/conditional.min.js', array(), WAPIC_FIELDS_VERSION, true );
 
+		// Needed for repeater sortable feature
+		wp_enqueue_script( 'jquery-ui-sortable' );
+
+		// Repeater assets
+		wp_enqueue_style( 'wapic-field-repeater', WAPIC_FIELDS_ASSETS . 'assets/css/repeater.min.css', array( 'wapic-field' ), WAPIC_FIELDS_VERSION );
+		wp_enqueue_script( 'wapic-field-repeater', WAPIC_FIELDS_ASSETS . 'assets/js/repeater.min.js', array( 'jquery' ), WAPIC_FIELDS_VERSION, true );
+
 		// Localize script with necessary data
 		wp_localize_script(
 			'wapic-field-validation',

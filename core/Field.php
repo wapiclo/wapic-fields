@@ -14,6 +14,7 @@
 namespace Wapic_Fields;
 
 use Wapic_Fields\Assets;
+use Wapic_Fields\FieldRepeater;
 
 // Exit if accessed directly.
 if (! defined('ABSPATH')) {
@@ -749,6 +750,16 @@ class Field {
 		echo '</div>';
 	}
 
+	private function control_repeater($required) {
+		$field_data = array(
+			'id'      => $this->id,
+			'name'    => $this->name,
+			'value'   => $this->value,
+			'options' => $this->options,
+		);
+		FieldRepeater::render($field_data, $required);
+	}
+
 	public function validate_value($type, $value) {
 		if (empty($value)) {
 			return $value; // Let empty values pass, use required attribute in form if needed
@@ -842,6 +853,8 @@ class Field {
 					return sanitize_text_field($value);
 				}
 				return '';
+			case 'repeater':
+				return FieldRepeater::sanitize($value);
 			default:
 				return $value;
 		}
