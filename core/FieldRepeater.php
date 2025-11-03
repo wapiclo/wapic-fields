@@ -103,8 +103,8 @@ class FieldRepeater {
 
         echo '<div class="' . esc_attr($row_class) . '"' . $style . ' data-index="' . esc_attr($index) . '">';
 
-        echo '<div class="wcf-repeater-row-header">';
-        echo '<span class="wcf-repeater-drag-handle" title="' . esc_attr__('Drag to reorder', 'wapic-fields') . '">⋮⋮</span>';
+        echo '<div class="wcf-repeater-row-header wcf-repeater-drag-handle">';
+        echo '<span class="wcf-repeater-drag-handle-toggle" title="' . esc_attr__('Drag to reorder', 'wapic-fields') . '">⋮⋮</span>';
         echo '<span class="wcf-repeater-row-title">' . esc_html($title_value !== '' ? $title_value : __('Item', 'wapic-fields')) . '</span>';
         echo '<div class="wcf-repeater-row-controls">';
         echo '<button type="button" class="button button-secondary wcf-repeater-accordion-toggle" aria-expanded="false" aria-controls="' . esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_' . esc_attr($index) . '_body" title="' . esc_attr__('Toggle', 'wapic-fields') . '">▼</button>';
@@ -133,7 +133,8 @@ class FieldRepeater {
             $input_name = $name_base . '[' . $index . '][' . $fid . ']';
             $input_id   = esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_' . $index . '_' . $fid;
 
-            echo '<div class="wcf-repeater-field wcf-field wcf-field-type-' . esc_attr($ftype) . '" data-subfield-id="' . esc_attr($fid) . '">';
+            $wrapper_required_attr = $is_req ? ' data-wcf-required="1"' : '';
+            echo '<div class="wcf-repeater-field wcf-field wcf-field-type-' . esc_attr($ftype) . '" data-subfield-id="' . esc_attr($fid) . '"' . $wrapper_required_attr . '>';
             $has_legend = ($ftype === 'checkbox' || $ftype === 'radio');
             if ($has_legend) {
                 echo '<fieldset>';
