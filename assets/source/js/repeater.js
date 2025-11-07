@@ -389,80 +389,32 @@
       });
     }
 
-    // Initialize Color Picker
+    // init color picker untuk class .wcf-repeater-field-color
     if ($.fn.wpColorPicker) {
-      $row.find("input.wcf-repeater-field-color").each(function () {
-        var $input = $(this);
-
-        // Skip if already initialized or if it's a template field
-        if (
-          $input.hasClass("wp-color-picker") ||
-          $input.hasClass("wcf-field-color-repeat-template")
-        ) {
-          return;
-        }
-
-        // Store the current value to prevent unnecessary changes
-        var currentValue = $input.val();
-
-        try {
-          // Initialize color picker with minimal configuration
-          $input.wpColorPicker({
-            defaultColor: currentValue || "",
-            change: function (event, ui) {
-              // Only trigger change if the value actually changed
-              if (ui && ui.color && ui.color.toString() !== currentValue) {
-                currentValue = ui.color.toString();
-                $input.trigger("change");
-              }
-            },
-            clear: function () {
-              if (currentValue !== "") {
-                currentValue = "";
-                $input.trigger("change");
-              }
-            },
-          });
-        } catch (e) {
-          console.error("Error initializing Color Picker:", e);
-        }
+      $row.find(".wcf-repeater-field-color").each(function () {
+        var $select = $(this);
+        $select.wpColorPicker({
+          showAlpha: true,
+          preferredFormat: "rgba",
+        });
       });
     }
 
-    // Initialize Datepicker
+    // init datepicker untuk class .wcf-repeater-field-date
     if ($.fn.datepicker) {
-      $row.find("input.wcf-field-date").each(function () {
-        var $dateInput = $(this);
-
-        // Skip if already initialized
-        if ($dateInput.hasClass("hasDatepicker")) {
-          return;
-        }
-
-        try {
-          $dateInput.datepicker({
-            dateFormat: "yy-mm-dd",
-            changeMonth: true,
-            changeYear: true,
-            onSelect: function () {
-              $(this).trigger("change");
-            },
-          });
-        } catch (e) {
-          console.error("Error initializing Datepicker:", e);
-        }
-      });
-    }
-
-    // Initialize WP editor for editor textareas if available
-    if (window.wp && wp.editor && typeof wp.editor.initialize === "function") {
-      $row.find("textarea.wcf-repeater-field-editor").each(function () {
-        var id = $(this).attr("id");
-        if (id) {
-          try {
-            wp.editor.initialize(id, { tinymce: true, quicktags: true });
-          } catch (e) {}
-        }
+      $row.find(".wcf-repeater-field-date").each(function () {
+        var $select = $(this);
+        $select.datepicker({
+          dateFormat: "yy-mm-dd",
+          changeMonth: true,
+          changeYear: true,
+          showButtonPanel: true,
+          beforeShow: function (input, inst) {
+            setTimeout(function () {
+              jQuery(inst.dpDiv).addClass("wcf-datepicker-theme");
+            }, 0);
+          },
+        });
       });
     }
   }

@@ -161,7 +161,7 @@ class FieldRepeater {
             } elseif ($ftype === 'url') {
                 echo '<input type="url" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-url' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'date') {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field-date wcf-field__input' . $req_class . '" autocomplete="off"' . $attrs . $data_req . $disabled . ' />';
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-repeater-field-date wcf-field__input' . $req_class . '" autocomplete="off"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'select') {
                 echo '<select id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . '>';
                 foreach ($fopts as $ov => $ol) {
