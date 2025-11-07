@@ -92,23 +92,23 @@ class Assets {
 		if ( $this->required_assets['select2'] ) {
 			wp_enqueue_style( 'select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.css' );
 			wp_enqueue_script( 'select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.js', array( 'jquery' ), null, true );
-			wp_enqueue_script( 'wapic-field-select2', WAPIC_FIELDS_ASSETS . 'assets/js/select2.min.js', array(), WAPIC_FIELDS_VERSION, true );
+			// wp_enqueue_script( 'wapic-field-select2', WAPIC_FIELDS_ASSETS . 'assets/js/select2.min.js', array(), WAPIC_FIELDS_VERSION, true );
 		}
 
 		if ( $this->required_assets['colorpicker'] ) {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_script( 'wp-color-picker' );
-			wp_enqueue_script( 'wapic-field-colorpicker', WAPIC_FIELDS_ASSETS . 'assets/js/colorpicker.min.js', array(), WAPIC_FIELDS_VERSION, true );
+			// wp_enqueue_script( 'wapic-field-colorpicker', WAPIC_FIELDS_ASSETS . 'assets/js/colorpicker.min.js', array(), WAPIC_FIELDS_VERSION, true );
 		}
 
 		if ( $this->required_assets['datepicker'] ) {
 			wp_enqueue_script( 'jquery-ui-datepicker' );
-			wp_enqueue_script( 'wapic-field-datepicker', WAPIC_FIELDS_ASSETS . 'assets/js/datepicker.min.js', array(), WAPIC_FIELDS_VERSION, true );
+			// wp_enqueue_script( 'wapic-field-datepicker', WAPIC_FIELDS_ASSETS . 'assets/js/datepicker.min.js', array(), WAPIC_FIELDS_VERSION, true );
 		}
 
 		if ( $this->required_assets['media'] ) {
 			wp_enqueue_media();
-			wp_enqueue_script( 'wapic-field-media-upload', WAPIC_FIELDS_ASSETS . 'assets/js/media-upload.min.js', array(), WAPIC_FIELDS_VERSION, true );
+			// wp_enqueue_script( 'wapic-field-media-upload', WAPIC_FIELDS_ASSETS . 'assets/js/media-upload.min.js', array(), WAPIC_FIELDS_VERSION, true );
 		}
 
 		// Enqueue the main admin script as a module
