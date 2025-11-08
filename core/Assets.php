@@ -87,7 +87,7 @@ class Assets {
 	 * @return void
 	 */
 	public function enqueue_assets() {
-
+    
 		// Load JavaScript libraries
 		if ( $this->required_assets['select2'] ) {
 			wp_enqueue_style( 'select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.css' );
@@ -109,6 +109,13 @@ class Assets {
 		if ( $this->required_assets['media'] ) {
 			wp_enqueue_media();
 			wp_enqueue_script( 'wapic-field-media-upload', WAPIC_FIELDS_ASSETS . 'assets/js/media-upload.min.js', array(), WAPIC_FIELDS_VERSION, true );
+		}
+
+		if ( $this->required_assets['editor'] ) {
+			wp_enqueue_editor();
+			// Panggil stylesheet bawaan editor
+			wp_enqueue_style('wp-tinymce-skin',site_url('/wp-includes/js/tinymce/skins/lightgray/skin.min.css'),array(),null);
+			wp_enqueue_style('wp-editor-core',site_url('/wp-includes/css/editor.min.css'),array(),get_bloginfo('version'));
 		}
 
 		// Enqueue the main admin script as a module
