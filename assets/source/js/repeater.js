@@ -255,6 +255,55 @@
       });
   }
 
+  function renumberRows($wrap) {
+    $wrap
+      .find("> .wcf-repeater-row:not(.wcf-repeater-template)")
+      .each(function (i) {
+        var $row = $(this);
+        $row.attr("data-index", i);
+        // ids and controls
+        $row.find("[id]").each(function () {
+          var id = $(this).attr("id");
+          if (!id) return;
+          id = id.replace(/_(?:__INDEX__|\d+)_/, "_" + i + "_");
+          $(this).attr("id", id);
+        });
+        $row.find("[aria-controls]").each(function () {
+          var ac = $(this).attr("aria-controls");
+          if (ac)
+            $(this).attr(
+              "aria-controls",
+              ac.replace(/_(?:__INDEX__|\d+)_/, "_" + i + "_")
+            );
+        });
+        $row.find("[for]").each(function () {
+          var fr = $(this).attr("for");
+          if (fr)
+            $(this).attr(
+              "for",
+              fr.replace(/_(?:__INDEX__|\d+)_/, "_" + i + "_")
+            );
+        });
+        // names
+        $row.find("[name]").each(function () {
+          var name = $(this).attr("name");
+          if (!name) return;
+          name = name.replace(/\[[0-9]+\]/, "[" + i + "]");
+          $(this).attr("name", name);
+        });
+      });
+  }
+
+  // Initialize plugins for each row
+  function initRowPlugins($row) {
+    // Init color picker
+    wapiFieldColorPickerInit(); 
+    // Init select2
+    wapicFieldSelect2Init(); 
+    // Init datepicker
+    wapicFieldDatePickerInit();
+  }
+
   $(document).ready(function () {
     $(".wcf-repeater").each(function () {
       var $wrap = $(this);
@@ -323,6 +372,13 @@
           .first()
           .clone(true, true);
         $tpl.removeClass("wcf-repeater-template").show();
+        
+        // Hapus semua class wcf-repeater-field
+        $tpl.find('[class*="wcf-repeater-field"]').each(function() {
+          const $el = $(this);
+          const classes = $el.attr('class').split(' ').filter(cls => !cls.includes('wcf-repeater-field'));
+          $el.attr('class', classes.join(' ').trim() || '');
+        });
 
         var idx = count;
         replaceIndexAttrs($tpl, idx);
@@ -360,101 +416,4 @@
       });
     });
   });
-
-  function initRowPlugins($row) {
-    // Initialize Select2
-    if ($.fn.select2) {
-      $row.find("select.wcf-repeater-field-select2").each(function () {
-        var $select = $(this);
-
-        // Destroy any existing Select2 instance
-        if ($select.hasClass("select2-hidden-accessible")) {
-          $select.select2("destroy");
-          $select.next(".select2-container").remove();
-        }
-
-        var options = {
-          width: $select.data("width") || "100%",
-          placeholder: $select.data("placeholder") || "",
-          allowClear:
-            $select.data("allow-clear") === true ||
-            $select.data("allow-clear") === "true",
-        };
-
-        try {
-          $select.select2(options).trigger("change");
-        } catch (e) {
-          console.error("Error initializing Select2:", e);
-        }
-      });
-    }
-
-    // init color picker untuk class .wcf-repeater-field-color
-    if ($.fn.wpColorPicker) {
-      $row.find(".wcf-repeater-field-color").each(function () {
-        var $select = $(this);
-        $select.wpColorPicker({
-          showAlpha: true,
-          preferredFormat: "rgba",
-        });
-      });
-    }
-
-    // init datepicker untuk class .wcf-repeater-field-date
-    if ($.fn.datepicker) {
-      $row.find(".wcf-repeater-field-date").each(function () {
-        var $select = $(this);
-        $select.datepicker({
-          dateFormat: "yy-mm-dd",
-          changeMonth: true,
-          changeYear: true,
-          showButtonPanel: true,
-          beforeShow: function (input, inst) {
-            setTimeout(function () {
-              jQuery(inst.dpDiv).addClass("wcf-datepicker-theme");
-            }, 0);
-          },
-        });
-      });
-    }
-  }
-
-  function renumberRows($wrap) {
-    $wrap
-      .find("> .wcf-repeater-row:not(.wcf-repeater-template)")
-      .each(function (i) {
-        var $row = $(this);
-        $row.attr("data-index", i);
-        // ids and controls
-        $row.find("[id]").each(function () {
-          var id = $(this).attr("id");
-          if (!id) return;
-          id = id.replace(/_(?:__INDEX__|\d+)_/, "_" + i + "_");
-          $(this).attr("id", id);
-        });
-        $row.find("[aria-controls]").each(function () {
-          var ac = $(this).attr("aria-controls");
-          if (ac)
-            $(this).attr(
-              "aria-controls",
-              ac.replace(/_(?:__INDEX__|\d+)_/, "_" + i + "_")
-            );
-        });
-        $row.find("[for]").each(function () {
-          var fr = $(this).attr("for");
-          if (fr)
-            $(this).attr(
-              "for",
-              fr.replace(/_(?:__INDEX__|\d+)_/, "_" + i + "_")
-            );
-        });
-        // names
-        $row.find("[name]").each(function () {
-          var name = $(this).attr("name");
-          if (!name) return;
-          name = name.replace(/\[[0-9]+\]/, "[" + i + "]");
-          $(this).attr("name", name);
-        });
-      });
-  }
 })(jQuery);

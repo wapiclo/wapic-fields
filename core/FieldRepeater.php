@@ -161,7 +161,7 @@ class FieldRepeater {
             } elseif ($ftype === 'url') {
                 echo '<input type="url" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-url' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'date') {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-repeater-field-date wcf-field__input' . $req_class . '" autocomplete="off"' . $attrs . $data_req . $disabled . ' />';
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field-date wcf-field__input' . $req_class . '" autocomplete="off"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'select') {
                 echo '<select id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . '>';
                 foreach ($fopts as $ov => $ol) {
@@ -175,7 +175,7 @@ class FieldRepeater {
                 $placeholder = ! empty($fattr['placeholder']) ? $fattr['placeholder'] : __('Select an option', 'wapic-fields');
                 $allow_clear = ! empty($fattr['allow_clear']) ? 'true' : 'false';
                 $width       = ! empty($fattr['width']) ? $fattr['width'] : '100%';
-                echo '<select id="' . esc_attr($input_id) . '" name="' . esc_attr($name_attr) . '" class="wcf-repeater-field-select2 wcf-field__input' . $req_class . '" data-placeholder="' . esc_attr($placeholder) . '" data-allow-clear="' . esc_attr($allow_clear) . '" data-width="' . esc_attr($width) . '" ' . ($is_multiple ? 'multiple="multiple"' : '') . $data_req . ' ' . $disabled . '>';
+                echo '<select id="' . esc_attr($input_id) . '" name="' . esc_attr($name_attr) . '" class="wcf-field-select2 wcf-field__input' . $req_class . '" data-placeholder="' . esc_attr($placeholder) . '" data-allow-clear="' . esc_attr($allow_clear) . '" data-width="' . esc_attr($width) . '" ' . ($is_multiple ? 'multiple="multiple"' : '') . $data_req . ' ' . $disabled . '>';
                 if (! $is_multiple && $placeholder) {
                     echo '<option value="">' . esc_html($placeholder) . '</option>';
                 }
@@ -190,7 +190,7 @@ class FieldRepeater {
                 }
                 echo '</select>';
             } elseif ($ftype === 'color') {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '" class="wcf-repeater-field-color wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '" class="wcf-field-color wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'checkbox') {
                 if (!empty($fopts)) {
                     $current_values = array();
@@ -281,7 +281,7 @@ class FieldRepeater {
                     );
                     echo ob_get_clean();
                 } else {
-                    echo '<textarea id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-repeater-field-editor wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . '>' . esc_textarea((string) $fval) . '</textarea>';
+                    echo '<textarea id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field-editor wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . '>' . esc_textarea((string) $fval) . '</textarea>';
                 }
             } else {
                 echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
