@@ -21,3 +21,8 @@ if ( ! defined( 'WPINC' ) ) {
 
 // Load the bootstrap file.
 require_once __DIR__ . '/bootstrap.php';
+
+function my_enqueue_editor_assets() {
+    wp_enqueue_editor(); // penting
+}
+add_action( 'admin_enqueue_scripts', 'my_enqueue_editor_assets' );

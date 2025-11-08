@@ -1,293 +1,314 @@
-(function(window, document, wp) {
-    'use strict';
+class wapicFieldMediaUploader {
+  constructor() {
+    this.init();
+  }
 
-    class MediaUploader {
-        constructor() {
-            this.init();
-        }
+  // ----------------------------------------------------
+  // Init
+  // ----------------------------------------------------
+  init() {
+    document.addEventListener("DOMContentLoaded", () => {
+      this.initImageUploader();
+      this.initRemoveImage();
+      this.initGalleryUploader();
+      this.initRemoveGalleryThumb();
+      this.initFileUploader();
+    });
+  }
 
-        /*====================================================*/
-        /* Init All */
-        /*====================================================*/
-        init() {
-            document.addEventListener('DOMContentLoaded', () => {
-                this.initImageUploader();
-                this.initRemoveImage();
-                this.initGalleryUploader();
-                this.initRemoveGalleryThumb();
-                this.initFileUploader();
-            });
-        }
+  // ----------------------------------------------------
+  // Helper
+  // ----------------------------------------------------
+  getPreviewElement(button, targetId) {
+    let preview = document.getElementById(targetId + "_preview");
+    if (!preview) {
+      let parent = button.parentElement;
+      preview = parent.querySelector(
+        ".wcf-field .wcf-field-image-preview, .wcf-field .wcf-field-gallery-preview"
+      );
+    }
+    return preview;
+  }
 
-        /*====================================================*/
-        /* Helper */
-        /*====================================================*/
-        getPreviewElement(button, targetId) {
-            let preview = document.getElementById(targetId + '_preview');
-            if (!preview) {
-                let parent = button.parentElement;
-                preview = parent.querySelector('.wcf-field .wcf-field-image-preview, .wcf-field .wcf-field-gallery-preview');
-            }
-            return preview;
-        }
+  // ----------------------------------------------------
+  // Image Uploader
+  // ----------------------------------------------------
+  initImageUploader() {
+    document.body.addEventListener("click", (e) => {
+      if (!e.target.matches(".wcf-field .wcf-field-image-upload")) return;
+      e.preventDefault();
 
-        /*====================================================*/
-        /* Image Uploader */
-        /*====================================================*/
-        initImageUploader() {
-            document.body.addEventListener('click', (e) => {
-                if (!e.target.matches('.wcf-field .wcf-field-image-upload')) return;
-                e.preventDefault();
+      let button = e.target;
+      let targetId = button.getAttribute("data-target");
+      let targetInput = document.getElementById(targetId);
+      let preview = this.getPreviewElement(button, targetId);
+      let form = button.closest("form");
+      let isTermForm = form && form.id === "edittag";
 
-                let button = e.target;
-                let targetId = button.getAttribute('data-target');
-                let targetInput = document.getElementById(targetId);
-                let preview = this.getPreviewElement(button, targetId);
-                let form = button.closest('form');
-                let isTermForm = form && form.id === 'edittag';
+      let frame = wp.media({
+        title: "Select Image",
+        button: { text: "Use Image" },
+        multiple: false,
+      });
 
-                let frame = wp.media({
-                    title: 'Select Image',
-                    button: { text: 'Use Image' },
-                    multiple: false
-                });
+      frame.on("select", () => {
+        let attachment = frame.state().get("selection").first().toJSON();
+        let thumb =
+          attachment.sizes && attachment.sizes.thumbnail
+            ? attachment.sizes.thumbnail.url
+            : attachment.icon
+            ? attachment.icon
+            : attachment.url
+            ? attachment.url
+            : "";
 
-                frame.on('select', () => {
-                    let attachment = frame.state().get('selection').first().toJSON();
-                    let thumb = (attachment.sizes && attachment.sizes.thumbnail) ? attachment.sizes.thumbnail.url :
-                        (attachment.icon ? attachment.icon : (attachment.url ? attachment.url : ''));
+        targetInput.value = attachment.id;
+        targetInput.dispatchEvent(new Event("change", { bubbles: true }));
 
-                    targetInput.value = attachment.id;
-                    targetInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-                    preview.innerHTML =
-                        `<span class="wcf-field-image-thumb">
+        preview.innerHTML = `<span class="wcf-field-image-thumb">
                             <img src="${thumb}">
                             <a href="#" class="wcf-field-remove-image">×</a>
                         </span>`;
 
-                    if (isTermForm) {
-                        button.textContent = 'Change Thumbnail';
-                    }
-                });
-
-                frame.open();
-            });
+        if (isTermForm) {
+          button.textContent = "Change Thumbnail";
         }
+      });
 
-        /*====================================================*/
-        /* Image Removal */
-        /*====================================================*/
-        initRemoveImage() {
-            document.body.addEventListener('click', (e) => {
-                if (!e.target.matches('.wcf-field .wcf-field-remove-image')) return;
-                e.preventDefault();
+      frame.open();
+    });
+  }
 
-                let preview = e.target.closest('.wcf-field-image-preview');
-                if (!preview) return;
+  // ----------------------------------------------------
+  // Image Removal
+  // ----------------------------------------------------
+  initRemoveImage() {
+    document.body.addEventListener("click", (e) => {
+      if (!e.target.matches(".wcf-field .wcf-field-remove-image")) return;
+      e.preventDefault();
 
-                let inputId = preview.id.replace('_preview', '');
-                let input = document.getElementById(inputId);
-                let button = preview.closest('.wcf-field').querySelector('.wcf-field-image-upload');
+      let preview = e.target.closest(".wcf-field-image-preview");
+      if (!preview) return;
 
-                if (!input) {
-                    input = preview.parentElement.querySelector('input[type=hidden]');
-                }
+      let inputId = preview.id.replace("_preview", "");
+      let input = document.getElementById(inputId);
+      let button = preview
+        .closest(".wcf-field")
+        .querySelector(".wcf-field-image-upload");
 
-                if (input) {
-                    input.value = '';
-                    input.dispatchEvent(new Event('change'));
-                }
-                preview.innerHTML = '';
+      if (!input) {
+        input = preview.parentElement.querySelector("input[type=hidden]");
+      }
 
-                if (button) {
-                    button.textContent = 'Add Image';
-                }
-            });
-        }
+      if (input) {
+        input.value = "";
+        input.dispatchEvent(new Event("change"));
+      }
+      preview.innerHTML = "";
 
-        /*====================================================*/
-        /* Gallery Uploader */
-        /*====================================================*/
-        initGalleryUploader() {
-            document.body.addEventListener('click', (e) => {
-                if (!e.target.matches('.wcf-field .wcf-field-gallery-upload')) return;
-                e.preventDefault();
+      if (button) {
+        button.textContent = "Add Image";
+      }
+    });
+  }
 
-                let button = e.target;
-                let targetId = button.getAttribute('data-target');
-                let targetInput = document.getElementById(targetId);
-                let preview = this.getPreviewElement(button, targetId);
-                let container = button.closest('.wcf-gallery-actions');
-                let clearButton = container ? container.querySelector('.wcf-field-gallery-clear') : null;
+  // ----------------------------------------------------
+  // Gallery Uploader
+  // ----------------------------------------------------
+  initGalleryUploader() {
+    document.body.addEventListener("click", (e) => {
+      if (!e.target.matches(".wcf-field .wcf-field-gallery-upload")) return;
+      e.preventDefault();
 
-                let frame = wp.media({
-                    title: 'Select Images',
-                    button: { text: 'Use Images' },
-                    multiple: true
-                });
+      let button = e.target;
+      let targetId = button.getAttribute("data-target");
+      let targetInput = document.getElementById(targetId);
+      let preview = this.getPreviewElement(button, targetId);
+      let container = button.closest(".wcf-gallery-actions");
+      let clearButton = container
+        ? container.querySelector(".wcf-field-gallery-clear")
+        : null;
 
-                frame.on('select', () => {
-                    let selection = frame.state().get('selection');
-                    let existingIds = targetInput.value ? targetInput.value.split(',').filter(Boolean) : [];
-                    let newIds = [];
+      let frame = wp.media({
+        title: "Select Images",
+        button: { text: "Use Images" },
+        multiple: true,
+      });
 
-                    selection.each((attachment) => {
-                        let attachmentId = String(attachment.id);
-                        if (!existingIds.includes(attachmentId)) {
-                            newIds.push(attachmentId);
-                        } else {
-                            wp.data.dispatch('core/notices').createNotice(
-                                'warning',
-                                'Gambar dengan ID ' + attachmentId + ' sudah ada di galeri',
-                                { type: 'snackbar', isDismissible: true }
-                            );
-                        }
-                    });
+      frame.on("select", () => {
+        let selection = frame.state().get("selection");
+        let existingIds = targetInput.value
+          ? targetInput.value.split(",").filter(Boolean)
+          : [];
+        let newIds = [];
 
-                    if (newIds.length === 0) return;
+        selection.each((attachment) => {
+          let attachmentId = String(attachment.id);
+          if (!existingIds.includes(attachmentId)) {
+            newIds.push(attachmentId);
+          } else {
+            wp.data
+              .dispatch("core/notices")
+              .createNotice(
+                "warning",
+                "Gambar dengan ID " + attachmentId + " sudah ada di galeri",
+                { type: "snackbar", isDismissible: true }
+              );
+          }
+        });
 
-                    let allIds = [...existingIds, ...newIds];
-                    let ids = allIds.filter(Boolean).map(Number).filter(id => !isNaN(id));
+        if (newIds.length === 0) return;
 
-                    preview.innerHTML = '';
+        let allIds = [...existingIds, ...newIds];
+        let ids = allIds
+          .filter(Boolean)
+          .map(Number)
+          .filter((id) => !isNaN(id));
 
-                    if (ids.length > 0) {
-                        if (button) button.textContent = 'Edit Gallery';
-                        if (clearButton) clearButton.style.display = 'inline-block';
+        preview.innerHTML = "";
 
-                        ids.forEach((id) => {
-                            let attachment = wp.media.attachment(id);
-                            attachment.fetch().then(() => {
-                                let data = attachment.toJSON();
-                                let imgUrl = (data.sizes && data.sizes.thumbnail) ?
-                                    data.sizes.thumbnail.url : (data.icon || data.url || '');
+        if (ids.length > 0) {
+          if (button) button.textContent = "Edit Gallery";
+          if (clearButton) clearButton.style.display = "inline-block";
 
-                                if (imgUrl) {
-                                    preview.insertAdjacentHTML('beforeend',
-                                        `<span class="wcf-field-gallery-thumb" data-id="${id}">
+          ids.forEach((id) => {
+            let attachment = wp.media.attachment(id);
+            attachment.fetch().then(() => {
+              let data = attachment.toJSON();
+              let imgUrl =
+                data.sizes && data.sizes.thumbnail
+                  ? data.sizes.thumbnail.url
+                  : data.icon || data.url || "";
+
+              if (imgUrl) {
+                preview.insertAdjacentHTML(
+                  "beforeend",
+                  `<span class="wcf-field-gallery-thumb" data-id="${id}">
                                             <img src="${imgUrl}" style="max-width:80px;height:auto;" alt="">
                                             <a href="#" class="wcf-field-remove-gallery-thumb" title="Remove image">×</a>
                                         </span>`
-                                    );
-                                }
-                            });
-                        });
-                    }
-
-                    targetInput.value = ids.join(',');
-                    targetInput.dispatchEvent(new Event('change', { bubbles: true }));
-                });
-
-                frame.open();
+                );
+              }
             });
+          });
         }
 
-        /*====================================================*/
-        /* Gallery Removal */
-        /*====================================================*/
-        initRemoveGalleryThumb() {
-            document.body.addEventListener('click', (e) => {
-                if (e.target.matches('.wcf-field .wcf-field-remove-gallery-thumb')) {
-                    e.preventDefault();
+        targetInput.value = ids.join(",");
+        targetInput.dispatchEvent(new Event("change", { bubbles: true }));
+      });
 
-                    let thumb = e.target.closest('.wcf-field-gallery-thumb');
-                    if (!thumb) return;
+      frame.open();
+    });
+  }
 
-                    let wrapper = thumb.closest('.wcf-field-gallery-preview');
-                    if (!wrapper) return;
+  // ----------------------------------------------------
+  // Gallery Removal
+  // ----------------------------------------------------
+  initRemoveGalleryThumb() {
+    document.body.addEventListener("click", (e) => {
+      if (e.target.matches(".wcf-field .wcf-field-remove-gallery-thumb")) {
+        e.preventDefault();
 
-                    let inputId = wrapper.id.replace('_preview', '');
-                    let input = document.getElementById(inputId);
-                    if (!input) {
-                        input = wrapper.parentElement.querySelector('input[type=hidden]');
-                    }
+        let thumb = e.target.closest(".wcf-field-gallery-thumb");
+        if (!thumb) return;
 
-                    thumb.remove();
+        let wrapper = thumb.closest(".wcf-field-gallery-preview");
+        if (!wrapper) return;
 
-                    let ids = [];
-                    wrapper.querySelectorAll('.wcf-field-gallery-thumb').forEach((el) => {
-                        let id = el.getAttribute('data-id');
-                        if (id) ids.push(id);
-                    });
-
-                    if (input) {
-                        input.value = ids.join(',');
-
-                        if (ids.length === 0) {
-                            let button = wrapper.parentElement.querySelector('.wcf-field-gallery-upload');
-                            let clearButton = wrapper.parentElement.querySelector('.wcf-field-gallery-clear');
-                            if (button) button.textContent = 'Add Gallery';
-                            if (clearButton) clearButton.style.display = 'none';
-                        }
-
-                        input.dispatchEvent(new Event('change'));
-                    }
-                } else if (e.target.matches('.wcf-field-gallery-clear')) {
-                    e.preventDefault();
-
-                    let button = e.target;
-                    let targetId = button.getAttribute('data-target');
-                    let input = document.getElementById(targetId);
-                    let preview = document.getElementById(targetId + '_preview');
-
-                    if (input && preview) {
-                        preview.innerHTML = '';
-                        input.value = '';
-
-                        let uploadButton = button.closest('.wcf-gallery-actions').querySelector('.wcf-field-gallery-upload');
-                        if (uploadButton) uploadButton.textContent = 'Add Gallery';
-
-                        button.style.display = 'none';
-                        input.dispatchEvent(new Event('change'));
-                    }
-                }
-            });
+        let inputId = wrapper.id.replace("_preview", "");
+        let input = document.getElementById(inputId);
+        if (!input) {
+          input = wrapper.parentElement.querySelector("input[type=hidden]");
         }
 
-        /*====================================================*/
-        /* File Uploader */
-        /*====================================================*/
-        initFileUploader() {
-            document.body.addEventListener('click', (e) => {
-                if (!e.target.closest('.wcf-field .wcf-file-upload-button')) return;
-                e.preventDefault();
+        thumb.remove();
 
-                let button = e.target.closest('.wcf-file-upload-button');
-                let targetId = button.getAttribute('data-target');
-                let targetInput = document.getElementById(targetId);
-                if (!targetInput) return;
+        let ids = [];
+        wrapper.querySelectorAll(".wcf-field-gallery-thumb").forEach((el) => {
+          let id = el.getAttribute("data-id");
+          if (id) ids.push(id);
+        });
 
-                let frame = wp.media({
-                    title: 'Select File',
-                    button: { text: 'Use Selected' },
-                    multiple: false,
-                    library: { type: '' }
-                });
+        if (input) {
+          input.value = ids.join(",");
 
-                frame.on('select', () => {
-                    let attachment = frame.state().get('selection').first().toJSON();
-                    if (attachment && attachment.url) {
-                        let errorElement = document.getElementById(targetInput.id + '_error');
-                        if (errorElement) {
-                            errorElement.style.display = 'none';
-                            errorElement.textContent = '';
-                        }
+          if (ids.length === 0) {
+            let button = wrapper.parentElement.querySelector(
+              ".wcf-field-gallery-upload"
+            );
+            let clearButton = wrapper.parentElement.querySelector(
+              ".wcf-field-gallery-clear"
+            );
+            if (button) button.textContent = "Add Gallery";
+            if (clearButton) clearButton.style.display = "none";
+          }
 
-                        let field = targetInput.closest('.wcf-field');
-                        if (field) field.classList.remove('has-field-error');
-
-                        targetInput.value = attachment.url;
-                        targetInput.dispatchEvent(new Event('change', { bubbles: true }));
-                    }
-                });
-
-                frame.open();
-            });
+          input.dispatchEvent(new Event("change"));
         }
-    }
+      } else if (e.target.matches(".wcf-field-gallery-clear")) {
+        e.preventDefault();
 
-    // Inisialisasi langsung
-    new MediaUploader();
+        let button = e.target;
+        let targetId = button.getAttribute("data-target");
+        let input = document.getElementById(targetId);
+        let preview = document.getElementById(targetId + "_preview");
 
-})(window, document, wp);
+        if (input && preview) {
+          preview.innerHTML = "";
+          input.value = "";
+
+          let uploadButton = button
+            .closest(".wcf-gallery-actions")
+            .querySelector(".wcf-field-gallery-upload");
+          if (uploadButton) uploadButton.textContent = "Add Gallery";
+
+          button.style.display = "none";
+          input.dispatchEvent(new Event("change"));
+        }
+      }
+    });
+  }
+
+  // ----------------------------------------------------
+  // File Uploader
+  // ----------------------------------------------------
+  initFileUploader() {
+    document.body.addEventListener("click", (e) => {
+      if (!e.target.closest(".wcf-field .wcf-file-upload-button")) return;
+      e.preventDefault();
+
+      let button = e.target.closest(".wcf-file-upload-button");
+      let targetId = button.getAttribute("data-target");
+      let targetInput = document.getElementById(targetId);
+      if (!targetInput) return;
+
+      let frame = wp.media({
+        title: "Select File",
+        button: { text: "Use Selected" },
+        multiple: false,
+        library: { type: "" },
+      });
+
+      frame.on("select", () => {
+        let attachment = frame.state().get("selection").first().toJSON();
+        if (attachment && attachment.url) {
+          let errorElement = document.getElementById(targetInput.id + "_error");
+          if (errorElement) {
+            errorElement.style.display = "none";
+            errorElement.textContent = "";
+          }
+
+          let field = targetInput.closest(".wcf-field");
+          if (field) field.classList.remove("has-field-error");
+
+          targetInput.value = attachment.url;
+          targetInput.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      });
+
+      frame.open();
+    });
+  }
+}
+// Inisialisasi langsung
+new wapicFieldMediaUploader();

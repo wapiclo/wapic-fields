@@ -296,12 +296,41 @@
 
   // Initialize plugins for each row
   function initRowPlugins($row) {
-    // Init color picker
-    wapiFieldColorPickerInit(); 
-    // Init select2
-    wapicFieldSelect2Init(); 
-    // Init datepicker
-    wapicFieldDatePickerInit();
+    // Initialize media uploader
+    if (typeof wapicFieldMediaUploader === "function") {
+      new wapicFieldMediaUploader();
+    }
+
+    // Initialize other plugins if they exist
+    if (typeof wapiFieldColorPickerInit === "function") {
+      wapiFieldColorPickerInit();
+    }
+
+    if (typeof wapicFieldSelect2Init === "function") {
+      wapicFieldSelect2Init();
+    }
+
+    if (typeof wapicFieldDatePickerInit === "function") {
+      wapicFieldDatePickerInit();
+    }
+
+    if (typeof wp !== "undefined" && wp.editor) {
+      $row.find(".wcf-field-editor").each(function () {
+        var editorId = $(this).attr("id");
+        // Clear existing editor
+        try { wp.editor.remove(editorId); } catch(e) {}
+        // Initialize new editor
+        wp.editor.initialize(editorId, {
+          tinymce: {
+            wpautop: true,
+            toolbar1:
+              "bold italic underline | alignleft aligncenter alignright",
+          },
+          quicktags: true,
+        });
+      });
+    }
+
   }
 
   $(document).ready(function () {
@@ -371,13 +400,18 @@
           .find(".wcf-repeater-template")
           .first()
           .clone(true, true);
+
+        // Remove template class and show
         $tpl.removeClass("wcf-repeater-template").show();
-        
+
         // Hapus semua class wcf-repeater-field
-        $tpl.find('[class*="wcf-repeater-field"]').each(function() {
+        $tpl.find('[class*="wcf-repeater-field"]').each(function () {
           const $el = $(this);
-          const classes = $el.attr('class').split(' ').filter(cls => !cls.includes('wcf-repeater-field'));
-          $el.attr('class', classes.join(' ').trim() || '');
+          const classes = $el
+            .attr("class")
+            .split(" ")
+            .filter((cls) => !cls.includes("wcf-repeater-field"));
+          $el.attr("class", classes.join(" ").trim() || "");
         });
 
         var idx = count;
