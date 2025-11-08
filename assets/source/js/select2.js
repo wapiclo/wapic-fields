@@ -3,7 +3,7 @@
     function select2Init() {
         if (typeof jQuery === 'undefined' || typeof jQuery.fn.select2 === 'undefined') return;
 
-        jQuery('.wcf-field-select2').each(function () {
+        jQuery('.wcf-field .wcf-field-select2').each(function () {
             const $select = jQuery(this);
             const $field = $select.closest('.wcf-field');
             const $hidden = $field.find('input[type="hidden"]');

@@ -2,7 +2,7 @@
     // Function to initialize datepicker (using jQuery)
     function datePickerInit() {
         if (window.jQuery && window.jQuery.fn && window.jQuery.fn.datepicker) {
-            document.querySelectorAll('.wcf-field-date').forEach(function (el) {
+            document.querySelectorAll('.wcf-field .wcf-field-date').forEach(function (el) {
                 jQuery(el).datepicker({
                     dateFormat: 'yy-mm-dd',
                     changeMonth: true,

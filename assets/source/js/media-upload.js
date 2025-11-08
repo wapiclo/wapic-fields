@@ -26,7 +26,7 @@
             let preview = document.getElementById(targetId + '_preview');
             if (!preview) {
                 let parent = button.parentElement;
-                preview = parent.querySelector('.wcf-field-image-preview, .wcf-field-gallery-preview');
+                preview = parent.querySelector('.wcf-field .wcf-field-image-preview, .wcf-field .wcf-field-gallery-preview');
             }
             return preview;
         }
@@ -36,7 +36,7 @@
         /*====================================================*/
         initImageUploader() {
             document.body.addEventListener('click', (e) => {
-                if (!e.target.matches('.wcf-field-image-upload')) return;
+                if (!e.target.matches('.wcf-field .wcf-field-image-upload')) return;
                 e.preventDefault();
 
                 let button = e.target;
@@ -80,7 +80,7 @@
         /*====================================================*/
         initRemoveImage() {
             document.body.addEventListener('click', (e) => {
-                if (!e.target.matches('.wcf-field-remove-image')) return;
+                if (!e.target.matches('.wcf-field .wcf-field-remove-image')) return;
                 e.preventDefault();
 
                 let preview = e.target.closest('.wcf-field-image-preview');
@@ -111,7 +111,7 @@
         /*====================================================*/
         initGalleryUploader() {
             document.body.addEventListener('click', (e) => {
-                if (!e.target.matches('.wcf-field-gallery-upload')) return;
+                if (!e.target.matches('.wcf-field .wcf-field-gallery-upload')) return;
                 e.preventDefault();
 
                 let button = e.target;
@@ -188,7 +188,7 @@
         /*====================================================*/
         initRemoveGalleryThumb() {
             document.body.addEventListener('click', (e) => {
-                if (e.target.matches('.wcf-field-remove-gallery-thumb')) {
+                if (e.target.matches('.wcf-field .wcf-field-remove-gallery-thumb')) {
                     e.preventDefault();
 
                     let thumb = e.target.closest('.wcf-field-gallery-thumb');
@@ -250,7 +250,7 @@
         /*====================================================*/
         initFileUploader() {
             document.body.addEventListener('click', (e) => {
-                if (!e.target.closest('.wcf-file-upload-button')) return;
+                if (!e.target.closest('.wcf-field .wcf-file-upload-button')) return;
                 e.preventDefault();
 
                 let button = e.target.closest('.wcf-file-upload-button');
