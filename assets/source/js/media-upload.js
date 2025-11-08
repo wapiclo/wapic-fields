@@ -23,6 +23,8 @@ class wapicFieldMediaUploader {
     let preview = document.getElementById(targetId + "_preview");
     if (!preview) {
       let parent = button.parentElement;
+      // Jika parent ditemukan .wcf-repeater-field, maka hentikan
+      if (parent && parent.closest(".wcf-repeater-field")) return null;
       preview = parent.querySelector(
         ".wcf-field .wcf-field-image-preview, .wcf-field .wcf-field-gallery-preview"
       );
@@ -35,44 +37,43 @@ class wapicFieldMediaUploader {
   // ----------------------------------------------------
   initImageUploader() {
     document.body.addEventListener("click", (e) => {
-      if (!e.target.matches(".wcf-field .wcf-field-image-upload")) return;
+      const button = e.target.closest(".wcf-field .wcf-field-image-upload");
+      if (!button) return;
+      if (button.closest(".wcf-repeater-field")) return; // stop jika di repeater
+
       e.preventDefault();
 
-      let button = e.target;
-      let targetId = button.getAttribute("data-target");
-      let targetInput = document.getElementById(targetId);
-      let preview = this.getPreviewElement(button, targetId);
-      let form = button.closest("form");
-      let isTermForm = form && form.id === "edittag";
+      const targetId = button.getAttribute("data-target");
+      const targetInput = document.getElementById(targetId);
+      const preview = this.getPreviewElement(button, targetId);
+      const form = button.closest("form");
+      const isTermForm = form && form.id === "edittag";
 
-      let frame = wp.media({
+      const frame = wp.media({
         title: "Select Image",
         button: { text: "Use Image" },
         multiple: false,
       });
 
       frame.on("select", () => {
-        let attachment = frame.state().get("selection").first().toJSON();
-        let thumb =
-          attachment.sizes && attachment.sizes.thumbnail
-            ? attachment.sizes.thumbnail.url
-            : attachment.icon
-            ? attachment.icon
-            : attachment.url
-            ? attachment.url
-            : "";
+        const attachment = frame.state().get("selection").first().toJSON();
+        const thumb =
+          (attachment.sizes && attachment.sizes.thumbnail?.url) ||
+          attachment.icon ||
+          attachment.url ||
+          "";
 
         targetInput.value = attachment.id;
         targetInput.dispatchEvent(new Event("change", { bubbles: true }));
 
-        preview.innerHTML = `<span class="wcf-field-image-thumb">
-                            <img src="${thumb}">
-                            <a href="#" class="wcf-field-remove-image">×</a>
-                        </span>`;
+        preview.innerHTML = `
+          <span class="wcf-field-image-thumb">
+            <img src="${thumb}">
+            <a href="#" class="wcf-field-remove-image">×</a>
+          </span>
+        `;
 
-        if (isTermForm) {
-          button.textContent = "Change Thumbnail";
-        }
+        if (isTermForm) button.textContent = "Change Thumbnail";
       });
 
       frame.open();
@@ -84,31 +85,28 @@ class wapicFieldMediaUploader {
   // ----------------------------------------------------
   initRemoveImage() {
     document.body.addEventListener("click", (e) => {
-      if (!e.target.matches(".wcf-field .wcf-field-remove-image")) return;
+      const removeBtn = e.target.closest(".wcf-field .wcf-field-remove-image");
+      if (!removeBtn) return;
+      if (removeBtn.closest(".wcf-repeater-field")) return; // stop jika di repeater
+
       e.preventDefault();
 
-      let preview = e.target.closest(".wcf-field-image-preview");
+      const preview = removeBtn.closest(".wcf-field-image-preview");
       if (!preview) return;
 
-      let inputId = preview.id.replace("_preview", "");
-      let input = document.getElementById(inputId);
-      let button = preview
+      const inputId = preview.id.replace("_preview", "");
+      const input = document.getElementById(inputId);
+      const button = preview
         .closest(".wcf-field")
-        .querySelector(".wcf-field-image-upload");
-
-      if (!input) {
-        input = preview.parentElement.querySelector("input[type=hidden]");
-      }
+        ?.querySelector(".wcf-field-image-upload");
 
       if (input) {
         input.value = "";
         input.dispatchEvent(new Event("change"));
       }
-      preview.innerHTML = "";
 
-      if (button) {
-        button.textContent = "Add Image";
-      }
+      preview.innerHTML = "";
+      if (button) button.textContent = "Add Image";
     });
   }
 
@@ -117,76 +115,74 @@ class wapicFieldMediaUploader {
   // ----------------------------------------------------
   initGalleryUploader() {
     document.body.addEventListener("click", (e) => {
-      if (!e.target.matches(".wcf-field .wcf-field-gallery-upload")) return;
+      const button = e.target.closest(".wcf-field .wcf-field-gallery-upload");
+      if (!button) return;
+      if (button.closest(".wcf-repeater-field")) return; // stop jika di repeater
+
       e.preventDefault();
 
-      let button = e.target;
-      let targetId = button.getAttribute("data-target");
-      let targetInput = document.getElementById(targetId);
-      let preview = this.getPreviewElement(button, targetId);
-      let container = button.closest(".wcf-gallery-actions");
-      let clearButton = container
-        ? container.querySelector(".wcf-field-gallery-clear")
-        : null;
+      const targetId = button.getAttribute("data-target");
+      const targetInput = document.getElementById(targetId);
+      const preview = this.getPreviewElement(button, targetId);
+      const container = button.closest(".wcf-gallery-actions");
+      const clearButton = container?.querySelector(".wcf-field-gallery-clear");
 
-      let frame = wp.media({
+      const frame = wp.media({
         title: "Select Images",
         button: { text: "Use Images" },
         multiple: true,
       });
 
       frame.on("select", () => {
-        let selection = frame.state().get("selection");
-        let existingIds = targetInput.value
+        const selection = frame.state().get("selection");
+        const existingIds = targetInput.value
           ? targetInput.value.split(",").filter(Boolean)
           : [];
-        let newIds = [];
+        const newIds = [];
 
         selection.each((attachment) => {
-          let attachmentId = String(attachment.id);
-          if (!existingIds.includes(attachmentId)) {
-            newIds.push(attachmentId);
+          const id = String(attachment.id);
+          if (!existingIds.includes(id)) {
+            newIds.push(id);
           } else {
             wp.data
               .dispatch("core/notices")
-              .createNotice(
-                "warning",
-                "Gambar dengan ID " + attachmentId + " sudah ada di galeri",
-                { type: "snackbar", isDismissible: true }
-              );
+              .createNotice("warning", "Image ID " + id + " already exists", {
+                type: "snackbar",
+                isDismissible: true,
+              });
           }
         });
 
-        if (newIds.length === 0) return;
+        if (!newIds.length) return;
 
-        let allIds = [...existingIds, ...newIds];
-        let ids = allIds
+        const ids = [...existingIds, ...newIds]
           .filter(Boolean)
           .map(Number)
           .filter((id) => !isNaN(id));
 
         preview.innerHTML = "";
-
         if (ids.length > 0) {
-          if (button) button.textContent = "Edit Gallery";
+          button.textContent = "Edit Gallery";
           if (clearButton) clearButton.style.display = "inline-block";
 
           ids.forEach((id) => {
-            let attachment = wp.media.attachment(id);
+            const attachment = wp.media.attachment(id);
             attachment.fetch().then(() => {
-              let data = attachment.toJSON();
-              let imgUrl =
-                data.sizes && data.sizes.thumbnail
-                  ? data.sizes.thumbnail.url
-                  : data.icon || data.url || "";
+              const data = attachment.toJSON();
+              const imgUrl =
+                (data.sizes && data.sizes.thumbnail?.url) ||
+                data.icon ||
+                data.url ||
+                "";
 
               if (imgUrl) {
                 preview.insertAdjacentHTML(
                   "beforeend",
                   `<span class="wcf-field-gallery-thumb" data-id="${id}">
-                                            <img src="${imgUrl}" style="max-width:80px;height:auto;" alt="">
-                                            <a href="#" class="wcf-field-remove-gallery-thumb" title="Remove image">×</a>
-                                        </span>`
+                    <img src="${imgUrl}" style="max-width:80px;height:auto;" alt="">
+                    <a href="#" class="wcf-field-remove-gallery-thumb" title="Remove image">×</a>
+                  </span>`
                 );
               }
             });
@@ -202,67 +198,63 @@ class wapicFieldMediaUploader {
   }
 
   // ----------------------------------------------------
-  // Gallery Removal
+  // Gallery Removal & Clear
   // ----------------------------------------------------
   initRemoveGalleryThumb() {
     document.body.addEventListener("click", (e) => {
-      if (e.target.matches(".wcf-field .wcf-field-remove-gallery-thumb")) {
+      // Hapus satu gambar dari galeri
+      const removeBtn = e.target.closest(".wcf-field .wcf-field-remove-gallery-thumb");
+      if (removeBtn) {
+        if (removeBtn.closest(".wcf-repeater-field")) return; // stop jika di repeater
         e.preventDefault();
 
-        let thumb = e.target.closest(".wcf-field-gallery-thumb");
+        const thumb = removeBtn.closest(".wcf-field-gallery-thumb");
         if (!thumb) return;
 
-        let wrapper = thumb.closest(".wcf-field-gallery-preview");
+        const wrapper = thumb.closest(".wcf-field-gallery-preview");
         if (!wrapper) return;
 
-        let inputId = wrapper.id.replace("_preview", "");
-        let input = document.getElementById(inputId);
-        if (!input) {
-          input = wrapper.parentElement.querySelector("input[type=hidden]");
-        }
-
+        const inputId = wrapper.id.replace("_preview", "");
+        const input = document.getElementById(inputId);
         thumb.remove();
 
-        let ids = [];
-        wrapper.querySelectorAll(".wcf-field-gallery-thumb").forEach((el) => {
-          let id = el.getAttribute("data-id");
-          if (id) ids.push(id);
-        });
+        const ids = Array.from(wrapper.querySelectorAll(".wcf-field-gallery-thumb"))
+          .map((el) => el.getAttribute("data-id"))
+          .filter(Boolean);
 
         if (input) {
           input.value = ids.join(",");
-
-          if (ids.length === 0) {
-            let button = wrapper.parentElement.querySelector(
-              ".wcf-field-gallery-upload"
-            );
-            let clearButton = wrapper.parentElement.querySelector(
-              ".wcf-field-gallery-clear"
-            );
+          if (!ids.length) {
+            const button = wrapper.parentElement.querySelector(".wcf-field-gallery-upload");
+            const clearButton = wrapper.parentElement.querySelector(".wcf-field-gallery-clear");
             if (button) button.textContent = "Add Gallery";
             if (clearButton) clearButton.style.display = "none";
           }
-
           input.dispatchEvent(new Event("change"));
         }
-      } else if (e.target.matches(".wcf-field-gallery-clear")) {
+        return;
+      }
+
+      // Clear seluruh galeri
+      const clearBtn = e.target.closest(".wcf-field-gallery-clear");
+      if (clearBtn) {
+        if (clearBtn.closest(".wcf-repeater-field")) return; // stop jika di repeater
         e.preventDefault();
 
-        let button = e.target;
-        let targetId = button.getAttribute("data-target");
-        let input = document.getElementById(targetId);
-        let preview = document.getElementById(targetId + "_preview");
+        const targetId = clearBtn.getAttribute("data-target");
+        const input = document.getElementById(targetId);
+        const preview = document.getElementById(targetId + "_preview");
 
         if (input && preview) {
           preview.innerHTML = "";
           input.value = "";
 
-          let uploadButton = button
+          const uploadBtn = clearBtn
             .closest(".wcf-gallery-actions")
-            .querySelector(".wcf-field-gallery-upload");
-          if (uploadButton) uploadButton.textContent = "Add Gallery";
+            ?.querySelector(".wcf-field-gallery-upload");
 
-          button.style.display = "none";
+          if (uploadBtn) uploadBtn.textContent = "Add Gallery";
+          clearBtn.style.display = "none";
           input.dispatchEvent(new Event("change"));
         }
       }
@@ -274,31 +266,32 @@ class wapicFieldMediaUploader {
   // ----------------------------------------------------
   initFileUploader() {
     document.body.addEventListener("click", (e) => {
-      if (!e.target.closest(".wcf-field .wcf-file-upload-button")) return;
+      const button = e.target.closest(".wcf-field .wcf-file-upload-button");
+      if (!button) return;
+      if (button.closest(".wcf-repeater-field")) return; // stop jika di repeater
+
       e.preventDefault();
 
-      let button = e.target.closest(".wcf-file-upload-button");
-      let targetId = button.getAttribute("data-target");
-      let targetInput = document.getElementById(targetId);
+      const targetId = button.getAttribute("data-target");
+      const targetInput = document.getElementById(targetId);
       if (!targetInput) return;
 
-      let frame = wp.media({
+      const frame = wp.media({
         title: "Select File",
         button: { text: "Use Selected" },
         multiple: false,
-        library: { type: "" },
       });
 
       frame.on("select", () => {
-        let attachment = frame.state().get("selection").first().toJSON();
-        if (attachment && attachment.url) {
-          let errorElement = document.getElementById(targetInput.id + "_error");
+        const attachment = frame.state().get("selection").first().toJSON();
+        if (attachment?.url) {
+          const errorElement = document.getElementById(targetInput.id + "_error");
           if (errorElement) {
             errorElement.style.display = "none";
             errorElement.textContent = "";
           }
 
-          let field = targetInput.closest(".wcf-field");
+          const field = targetInput.closest(".wcf-field");
           if (field) field.classList.remove("has-field-error");
 
           targetInput.value = attachment.url;
@@ -310,5 +303,6 @@ class wapicFieldMediaUploader {
     });
   }
 }
+
 // Inisialisasi langsung
 new wapicFieldMediaUploader();
