@@ -100,6 +100,7 @@ class CustomOptionRepeater extends \Wapic_Fields\Field {
         // First, ensure the options exist with autoload = 'no'
         $fields = array(
             '_sample_repeater'             => 'repeater',
+            '_sample_repeater_conditional' => 'repeater',
         );
 
         foreach ($fields as $field_name => $field_type) {

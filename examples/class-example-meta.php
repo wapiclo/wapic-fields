@@ -167,6 +167,26 @@ class Example_Meta extends \Wapic_Fields\Field {
             ],
         ]);
 
+		    $this->add_control([
+            'id' => '_sample_repeater_conditional',
+            'type' => 'repeater',
+            'label' => 'Repeater Condition',
+            'value' => get_post_meta($post->ID, '_sample_repeater_conditional', true),
+            'options' => [
+                'fields' => [
+                    ['id' => '_sample_toggle_conditional', 'label' => 'Toggle', 'type' => 'toggle'],
+                    ['id' => 'title', 'label' => 'Title', 'type' => 'text', 'condition'   => array(
+                        'field' => '_sample_toggle_conditional',
+                        'value' => 'yes',
+                    ),],
+                ],
+                'title_field' => 'title',
+                'min' => 0,
+                'max' => 0,
+                'add_button_label' => 'Add New Item',
+            ],
+        ]);
+
 		$this->add_control(
 			array(
 				'id'    => '_sample_email',
@@ -469,6 +489,7 @@ class Example_Meta extends \Wapic_Fields\Field {
 			'_sample_select2'            => 'select2',
 			'_sample_editor'             => 'editor',
 			'_sample_repeater'           => 'repeater',
+			'_sample_repeater_conditional' => 'repeater',
 		);
 
 		$error_message = array();
