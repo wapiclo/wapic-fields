@@ -44,7 +44,7 @@ class CustomOptionRepeater extends \Wapic_Fields\Field {
         $this->add_control([
             'id' => '_sample_repeater',
             'type' => 'repeater',
-            'label' => 'FORM YANG DIREPEADT',
+            'label' => 'Repeater Regular',
             'value' => get_option('_sample_repeater'),
             'options' => [
                 'fields' => [
@@ -61,6 +61,26 @@ class CustomOptionRepeater extends \Wapic_Fields\Field {
                     ['id' => 'toggle', 'label' => 'Toggle', 'type' => 'toggle'],
                     ['id' => 'gallery', 'label' => 'Gallery', 'type' => 'gallery'],
                     ['id' => 'image', 'label' => 'Image', 'type' => 'image'],
+                ],
+                'title_field' => 'title',
+                'min' => 0,
+                'max' => 0,
+                'add_button_label' => 'Add New Item',
+            ],
+        ]);
+
+        $this->add_control([
+            'id' => '_sample_repeater_conditional',
+            'type' => 'repeater',
+            'label' => 'Repeater Condition',
+            'value' => get_option('_sample_repeater_conditional'),
+            'options' => [
+                'fields' => [
+                    ['id' => '_sample_toggle_conditional', 'label' => 'Toggle', 'type' => 'toggle'],
+                    ['id' => 'title', 'label' => 'Title', 'type' => 'text', 'condition'   => array(
+                        'field' => '_sample_toggle_conditional',
+                        'value' => 'yes',
+                    ),],
                 ],
                 'title_field' => 'title',
                 'min' => 0,
