@@ -2,11 +2,9 @@
 function wapicFieldDatePickerInit() {
   if (window.jQuery && window.jQuery.fn && window.jQuery.fn.datepicker) {
     document
-      .querySelectorAll(".wcf-field .wcf-field-date")
+      .querySelectorAll(".wcf-field-date")
       .forEach(function (el) {
-        var fieldWrap = el.closest(".wcf-field");
-        if (fieldWrap && fieldWrap.classList.contains("wcf-repeater-field"))
-          return;
+        if (el.closest(".wcf-repeater-template")) return;
         jQuery(el).datepicker({
           dateFormat: "yy-mm-dd",
           changeMonth: true,

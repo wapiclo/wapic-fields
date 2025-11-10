@@ -134,7 +134,7 @@ class FieldRepeater {
             $input_id   = esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_' . $index . '_' . $fid;
 
             $wrapper_required_attr = $is_req ? ' data-wcf-required="1"' : '';
-            echo '<div class="wcf-repeater-field wcf-field wcf-field-type-' . esc_attr($ftype) . '" data-subfield-id="' . esc_attr($fid) . '"' . $wrapper_required_attr . '>';
+            echo '<div class="wcf-field wcf-field-type-' . esc_attr($ftype) . '" data-subfield-id="' . esc_attr($fid) . '"' . $wrapper_required_attr . '>';
             $has_legend = ($ftype === 'checkbox' || $ftype === 'radio');
             if ($has_legend) {
                 echo '<fieldset>';
@@ -230,16 +230,16 @@ class FieldRepeater {
                 // store attachment ID, show preview like core Field::control_image
                 $img_url = $fval ? wp_get_attachment_image_url(intval($fval), 'large') : '';
                 $label   = $img_url ? __('Edit Image', 'wapic-fields') : __('Add Image', 'wapic-fields');
-                echo '<div id="' . esc_attr($input_id) . '_preview" class="wcf-repeater-field wcf-field-image-preview">';
+                echo '<div id="' . esc_attr($input_id) . '_preview" class="wcf-field-image-preview">';
                 if ($img_url) {
                     echo '<span class="wcf-field-image-thumb">';
                     echo '<img src="' . esc_url($img_url) . '">';
-                    echo '<a href="#" class="wcf-repeater-field wcf-field-remove-image" title="' . esc_attr__('Remove image', 'wapic-fields') . '">×</a>';
+                    echo '<a href="#" class="wcf-field-remove-image" title="' . esc_attr__('Remove image', 'wapic-fields') . '">×</a>';
                     echo '</span>';
                 }
                 echo '</div>';
                 echo '<input type="hidden" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '"' . $data_req . ' ' . $disabled . ' class="wcf-media-id">';
-                echo '<button type="button" class="button wcf-repeater-field wcf-field-image-upload" data-target="' . esc_attr($input_id) . '">' . esc_html($label) . '</button>';
+                echo '<button type="button" class="button wcf-field-image-upload" data-target="' . esc_attr($input_id) . '">' . esc_html($label) . '</button>';
             } elseif ($ftype === 'gallery') {
                 // value as comma-separated IDs, preview thumbs
                 $ids_str = '';

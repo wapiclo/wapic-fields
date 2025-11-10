@@ -24,7 +24,7 @@ class wapicFieldMediaUploader {
     if (!preview) {
       let parent = button.parentElement;
       // Jika parent ditemukan .wcf-repeater-field, maka hentikan
-      if (parent && parent.closest(".wcf-repeater-field")) return null;
+      if (parent && parent.closest(".wcf-repeater-template")) return null;
       preview = parent.querySelector(
         ".wcf-field .wcf-field-image-preview, .wcf-field .wcf-field-gallery-preview"
       );
@@ -40,7 +40,7 @@ class wapicFieldMediaUploader {
       const button = e.target.closest(".wcf-field .wcf-field-image-upload");
 
       if (!button) return;
-      if (button.closest(".wcf-repeater-field")) return; // stop jika di repeater
+      if (button.closest(".wcf-repeater-template")) return; // stop jika di repeater
 
       e.preventDefault();
 
@@ -91,7 +91,7 @@ class wapicFieldMediaUploader {
     document.body.addEventListener("click", (e) => {
       const removeBtn = e.target.closest(".wcf-field .wcf-field-remove-image");
       if (!removeBtn) return;
-      if (removeBtn.closest(".wcf-repeater-field")) return; // stop jika di repeater
+      if (removeBtn.closest(".wcf-repeater-template")) return; // stop jika di repeater
 
       e.preventDefault();
 
@@ -121,7 +121,7 @@ class wapicFieldMediaUploader {
     document.body.addEventListener("click", (e) => {
       const button = e.target.closest(".wcf-field .wcf-field-gallery-upload");
       if (!button) return;
-      if (button.closest(".wcf-repeater-field")) return; // stop jika di repeater
+      if (button.closest(".wcf-repeater-template")) return; // stop jika di repeater
 
       e.preventDefault();
 
@@ -209,7 +209,7 @@ class wapicFieldMediaUploader {
       // Hapus satu gambar dari galeri
       const removeBtn = e.target.closest(".wcf-field .wcf-field-remove-gallery-thumb");
       if (removeBtn) {
-        if (removeBtn.closest(".wcf-repeater-field")) return; // stop jika di repeater
+        if (removeBtn.closest(".wcf-repeater-template")) return; // stop jika di repeater
         e.preventDefault();
 
         const thumb = removeBtn.closest(".wcf-field-gallery-thumb");
@@ -242,7 +242,7 @@ class wapicFieldMediaUploader {
       // Clear seluruh galeri
       const clearBtn = e.target.closest(".wcf-field-gallery-clear");
       if (clearBtn) {
-        if (clearBtn.closest(".wcf-repeater-field")) return; // stop jika di repeater
+        if (clearBtn.closest(".wcf-repeater-template")) return; // stop jika di repeater
         e.preventDefault();
 
         const targetId = clearBtn.getAttribute("data-target");
@@ -272,7 +272,7 @@ class wapicFieldMediaUploader {
     document.body.addEventListener("click", (e) => {
       const button = e.target.closest(".wcf-field .wcf-file-upload-button");
       if (!button) return;
-      if (button.closest(".wcf-repeater-field")) return; // stop jika di repeater
+      if (button.closest(".wcf-repeater-template")) return; // stop jika di repeater
 
       e.preventDefault();
 
