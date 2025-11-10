@@ -139,6 +139,34 @@ class Example_Meta extends \Wapic_Fields\Field {
 			)
 		);
 
+		  $this->add_control([
+            'id' => '_sample_repeater',
+            'type' => 'repeater',
+            'label' => 'Repeater Regular',
+            'value' => get_post_meta($post->ID, '_sample_repeater', true),
+            'options' => [
+                'fields' => [
+                    ['id' => 'title', 'label' => 'Title', 'type' => 'text', 'required' => true],
+                    ['id' => 'qty', 'label' => 'Qty', 'type' => 'number', 'attributes' => ['min' => 0]],
+                    ['id' => 'type', 'label' => 'Type', 'type' => 'select', 'options' => ['a' => 'Type A', 'b' => 'Type B']],
+                    ['id' => 'tag', 'label' => 'Tags (Select2)', 'type' => 'select2', 'options' => ['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue'], 'attributes' => ['multiple' => true, 'placeholder' => 'Choose tags', 'allow_clear' => true]],
+                    ['id' => 'agree', 'label' => 'Agree', 'type' => 'checkbox', 'options' => ['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue']],
+                    ['id' => 'choice', 'label' => 'Choice', 'type' => 'radio', 'options' => ['x' => 'Option X', 'y' => 'Option Y']],
+                    ['id' => 'due', 'label' => 'Due Date', 'type' => 'date'],
+                    ['id' => 'fileurl', 'label' => 'File URL', 'type' => 'file'],
+                    ['id' => 'editor', 'label' => 'Editor', 'type' => 'editor'],
+                    ['id' => 'colorpicker', 'label' => 'Color', 'type' => 'color'],
+                    ['id' => 'toggle', 'label' => 'Toggle', 'type' => 'toggle'],
+                    ['id' => 'gallery', 'label' => 'Gallery', 'type' => 'gallery'],
+                    ['id' => 'image', 'label' => 'Image', 'type' => 'image'],
+                ],
+                'title_field' => 'title',
+                'min' => 0,
+                'max' => 0,
+                'add_button_label' => 'Add New Item',
+            ],
+        ]);
+
 		$this->add_control(
 			array(
 				'id'    => '_sample_email',
@@ -440,10 +468,12 @@ class Example_Meta extends \Wapic_Fields\Field {
 			'_sample_color'              => 'color',
 			'_sample_select2'            => 'select2',
 			'_sample_editor'             => 'editor',
+			'_sample_repeater'           => 'repeater',
 		);
 
 		$error_message = array();
 
+		
 		// Field validation
 		// Store sanitized value in database
 		foreach ( $fields as $key => $type ) {
@@ -470,6 +500,7 @@ class Example_Meta extends \Wapic_Fields\Field {
 		if ( ! empty( $error_message ) ) {
 			set_transient( "{$this->id}_metabox_messages", $error_message, 30 );
 		}
+
 	}
 }
 // Initialize the meta box
