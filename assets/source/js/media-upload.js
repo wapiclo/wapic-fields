@@ -38,6 +38,7 @@ class wapicFieldMediaUploader {
   initImageUploader() {
     document.body.addEventListener("click", (e) => {
       const button = e.target.closest(".wcf-field .wcf-field-image-upload");
+
       if (!button) return;
       if (button.closest(".wcf-repeater-field")) return; // stop jika di repeater
 
@@ -57,6 +58,7 @@ class wapicFieldMediaUploader {
 
       frame.on("select", () => {
         const attachment = frame.state().get("selection").first().toJSON();
+
         const thumb =
           (attachment.sizes && attachment.sizes.thumbnail?.url) ||
           attachment.icon ||
@@ -72,6 +74,8 @@ class wapicFieldMediaUploader {
             <a href="#" class="wcf-field-remove-image">×</a>
           </span>
         `;
+
+        console.log(preview);
 
         if (isTermForm) button.textContent = "Change Thumbnail";
       });

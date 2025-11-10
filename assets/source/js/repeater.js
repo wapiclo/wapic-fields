@@ -24,6 +24,10 @@
       var fr = $(this).attr("for");
       if (fr) $(this).attr("for", fr.replace("__INDEX__", String(idx)));
     });
+    $el.find("[data-target]").each(function () {
+      var target = $(this).attr("data-target");
+      if (target) $(this).attr("data-target", target.replace("__INDEX__", String(idx)));
+    });
   }
 
   function updateRowTitle($row, titleField) {
