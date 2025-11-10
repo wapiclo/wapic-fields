@@ -159,6 +159,34 @@
       });
   }
 
+  // Validate repeater form on submit
+  function validateRepeaterForm(e) {
+    document.querySelectorAll("form#post, form#option, form#addtag, form#edittag").forEach((form) => {
+        form.addEventListener("submit", (e) => {
+          let hasErrors = false;
+          let errorMessages = [];
+
+          document.querySelectorAll(".wcf-field-type-repeater").forEach((repeater) => {
+    
+            const repeaterLabel = repeater.querySelector("label").textContent.trim() || "Repeater Field";
+
+            if (repeater.querySelector(".has-error")) {
+              hasErrors = true;
+              errorMessages.push(`- ${repeaterLabel} has invalid fields`);
+            }
+          });
+
+          if (hasErrors) {
+            e.preventDefault();
+            const uniqueMessages = [...new Set(errorMessages)];
+            alert(
+              "Please fix the following errors:\n\n" + uniqueMessages.join("\n")
+            );
+          }
+        });
+      });
+  }
+
   // Initialize plugins for each row
   function initRowPlugins($row) {
     // Initialize media uploader
@@ -210,6 +238,7 @@
     if (typeof WapicFieldValidation === "function") {
       new WapicFieldValidation();
     }
+
   }
 
   $(document).ready(function () {
@@ -300,5 +329,7 @@
         initRowPlugins($tpl);
       });
     });
+
+    validateRepeaterForm();
   });
 })(jQuery);

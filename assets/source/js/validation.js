@@ -131,6 +131,8 @@ class WapicFieldValidation {
         let errorMessages = [];
 
         inputs.forEach((input) => {
+            if (input.closest('.wcf-repeater-template') || input.closest('.wcf-repeater-row')) return;
+
             if (!this.validateField(input)) {
                 allValid = false;
 
@@ -191,7 +193,9 @@ class WapicFieldValidation {
         });
 
         // Initial validation on page load
-        document.querySelectorAll('.wcf-field input, .wcf-field textarea, .wcf-field select').forEach((input) => this.validateField(input));
+        document.querySelectorAll('.wcf-field input, .wcf-field textarea, .wcf-field select').forEach((input) => {
+            this.validateField(input);
+        });
     }
 }
 

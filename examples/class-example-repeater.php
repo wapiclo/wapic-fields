@@ -44,7 +44,7 @@ class CustomOptionRepeater extends \Wapic_Fields\Field {
         $this->add_control([
             'id' => '_sample_repeater',
             'type' => 'repeater',
-            'label' => 'Items',
+            'label' => 'FORM YANG DIREPEADT',
             'value' => get_option('_sample_repeater'),
             'options' => [
                 'fields' => [
