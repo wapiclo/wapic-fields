@@ -1,4 +1,4 @@
-function wapicFieldSelect2Init() {
+function WapicFieldSelect2Init() {
   if (
     typeof jQuery === "undefined" ||
     typeof jQuery.fn.select2 === "undefined"
@@ -69,5 +69,4 @@ function wapicFieldSelect2Init() {
     return true;
   });
 }
-
-document.addEventListener("DOMContentLoaded", wapicFieldSelect2Init);
+document.addEventListener("DOMContentLoaded", WapicFieldSelect2Init);

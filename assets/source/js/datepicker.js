@@ -1,5 +1,5 @@
 // Function to initialize datepicker (using jQuery)
-function wapicFieldDatePickerInit() {
+function WapicFieldDatePickerInit() {
   if (window.jQuery && window.jQuery.fn && window.jQuery.fn.datepicker) {
     document
       .querySelectorAll(".wcf-field-date")
@@ -20,4 +20,4 @@ function wapicFieldDatePickerInit() {
   }
 }
 // Initialize the datepicker
-document.addEventListener("DOMContentLoaded", wapicFieldDatePickerInit);
+document.addEventListener("DOMContentLoaded", WapicFieldDatePickerInit);

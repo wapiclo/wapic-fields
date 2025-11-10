@@ -1,4 +1,4 @@
-class wapicFieldMediaUploader {
+class WapicFieldMediaUploader {
   constructor() {
     this.init();
   }
@@ -309,4 +309,4 @@ class wapicFieldMediaUploader {
 }
 
 // Inisialisasi langsung
-new wapicFieldMediaUploader();
+new WapicFieldMediaUploader();

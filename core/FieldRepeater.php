@@ -155,11 +155,11 @@ class FieldRepeater {
             if ($ftype === 'textarea') {
                 echo '<textarea id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . '>' . esc_textarea((string) $fval) . '</textarea>';
             } elseif ($ftype === 'number') {
-                echo '<input type="number" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-number' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-number' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'email') {
-                echo '<input type="email" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-email' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-email' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'url') {
-                echo '<input type="url" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-url' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-url' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'date') {
                 echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field-date wcf-field__input' . $req_class . '" autocomplete="off"' . $attrs . $data_req . $disabled . ' />';
             } elseif ($ftype === 'select') {

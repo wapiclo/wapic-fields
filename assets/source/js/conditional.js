@@ -1,6 +1,5 @@
-(function () {
-    // Handle conditional fields
-    function handleConditionalFields() {
+   // Handle conditional fields
+    function WapicFieldConditionalFields() {
         document.querySelectorAll('[data-condition-field], [data-cond-field]').forEach(function (wrapper) {
             var condField = wrapper.getAttribute('data-condition-field') || wrapper.getAttribute('data-cond-field');
             var condValue = wrapper.getAttribute('data-condition-value') || wrapper.getAttribute('data-cond-value');
@@ -54,13 +53,12 @@
         });
     }
 
-    function conditionalFieldsInit() {
-        handleConditionalFields();
+    function WapicFieldConditionalFieldsInit() {
+        WapicFieldConditionalFields();
 
         document.querySelectorAll('input, select, textarea').forEach(function (el) {
-            el.addEventListener('change', handleConditionalFields);
+            el.addEventListener('change', WapicFieldConditionalFields);
         });
     }
 
-    document.addEventListener('DOMContentLoaded', conditionalFieldsInit);
-})();
+    document.addEventListener('DOMContentLoaded', WapicFieldConditionalFieldsInit);

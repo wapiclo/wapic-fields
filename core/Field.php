@@ -391,7 +391,7 @@ class Field {
 	private function control_email($required) {
 		$attributes = $this->get_attributes_string();
 		printf(
-			'<input type="email" id="%s" name="%s" value="%s" class="wcf-field-email wcf-field__input" %s %s />',
+			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-email wcf-field__input" %s %s />',
 			esc_attr($this->id),
 			esc_attr($this->name),
 			esc_attr($this->value),
@@ -403,7 +403,7 @@ class Field {
 	private function control_phone($required) {
 		$attributes = $this->get_attributes_string();
 		printf(
-			'<input type="tel" id="%s" name="%s" value="%s" class="wcf-field-phone wcf-field__input" %s %s />',
+			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-phone wcf-field__input" %s %s />',
 			esc_attr($this->id),
 			esc_attr($this->name),
 			esc_attr($this->value),
@@ -415,7 +415,7 @@ class Field {
 	private function control_number($required) {
 		$attributes = $this->get_attributes_string();
 		printf(
-			'<input type="number" id="%s" name="%s" value="%s" class="wcf-field-number wcf-field__input" min="1" %s %s />',
+			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-number wcf-field__input" min="1" %s %s />',
 			esc_attr($this->id),
 			esc_attr($this->name),
 			esc_attr($this->value),
@@ -427,7 +427,7 @@ class Field {
 	private function control_url($required) {
 		$attributes = $this->get_attributes_string();
 		printf(
-			'<input type="url" id="%s" name="%s" value="%s" class="wcf-field-url wcf-field__input" %s %s />',
+			'<input type="text" id="%s" name="%s" value="%s" class="wcf-field-url wcf-field__input" %s %s />',
 			esc_attr($this->id),
 			esc_attr($this->name),
 			esc_attr($this->value),

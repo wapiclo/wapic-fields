@@ -26,7 +26,8 @@
     });
     $el.find("[data-target]").each(function () {
       var target = $(this).attr("data-target");
-      if (target) $(this).attr("data-target", target.replace("__INDEX__", String(idx)));
+      if (target)
+        $(this).attr("data-target", target.replace("__INDEX__", String(idx)));
     });
   }
 
@@ -161,28 +162,33 @@
   // Initialize plugins for each row
   function initRowPlugins($row) {
     // Initialize media uploader
-    if (typeof wapicFieldMediaUploader === "function") {
-      new wapicFieldMediaUploader();
+    if (typeof WapicFieldMediaUploader === "function") {
+      new WapicFieldMediaUploader();
     }
 
     // Initialize other plugins if they exist
-    if (typeof wapiFieldColorPickerInit === "function") {
-      wapiFieldColorPickerInit();
+    if (typeof WapicFieldColorPickerInit === "function") {
+      WapicFieldColorPickerInit();
     }
 
-    if (typeof wapicFieldSelect2Init === "function") {
-      wapicFieldSelect2Init();
+    // Initialize Select2
+    if (typeof WapicFieldSelect2Init === "function") {
+      WapicFieldSelect2Init();
     }
 
-    if (typeof wapicFieldDatePickerInit === "function") {
-      wapicFieldDatePickerInit();
+    // Initialize Datepicker
+    if (typeof WapicFieldDatePickerInit === "function") {
+      WapicFieldDatePickerInit();
     }
 
+    // Initialize TinyMCE editor
     if (typeof wp !== "undefined" && wp.editor) {
       $row.find(".wcf-field-editor").each(function () {
         var editorId = $(this).attr("id");
         // Clear existing editor
-        try { wp.editor.remove(editorId); } catch(e) {}
+        try {
+          wp.editor.remove(editorId);
+        } catch (e) {}
         // Initialize new editor
         wp.editor.initialize(editorId, {
           tinymce: {
@@ -195,40 +201,21 @@
       });
     }
 
+    // Initialize conditional fields
+    if (typeof WapicFieldConditionalFields === "function") {
+      new WapicFieldConditionalFields();
+    }
+
+    // Initialize validation
+    if (typeof WapicFieldValidation === "function") {
+      new WapicFieldValidation();
+    }
   }
 
   $(document).ready(function () {
     $(".wcf-repeater").each(function () {
       var $wrap = $(this);
-      var $form = $wrap.closest("form");
-      if ($form.length && !$form.data("wcfPopupBound")) {
-        $form.on("submit.wcfPopup", function () {
-          // If any field has error, show a generic popup as well
-          if (
-            $(this).find(".has-field-error, .wcf-field-error:visible").length
-          ) {
-            try {
-              alert("Please fix the highlighted fields.");
-            } catch (e) {}
-          }
-          // Sync row error classes after validation marks fields
-          var $f = $(this);
-          setTimeout(function () {
-            $f.find(".wcf-repeater-row").each(function () {
-              var $r = $(this);
-              if (
-                $r.find(".wcf-field.has-field-error, .wcf-field-error:visible")
-                  .length
-              ) {
-                $r.addClass("has-error");
-              } else {
-                $r.removeClass("has-error");
-              }
-            });
-          }, 0);
-        });
-        $form.data("wcfPopupBound", true);
-      }
+
       var max = parseInt($wrap.data("max"), 10) || 0;
       var titleField = ($wrap.data("title-field") || "").toString();
 
