@@ -69,11 +69,16 @@ class FieldRepeater {
                 if (is_array($rv)) {
                     foreach ($rv as $iv) {
                         $sv = is_string($iv) ? trim($iv) : (is_null($iv) ? '' : (string)$iv);
-                        if ($sv !== '') { $has_nonempty = true; break; }
+                        if ($sv !== '') {
+                            $has_nonempty = true;
+                            break;
+                        }
                     }
                 } else {
                     $sv = is_string($rv) ? trim($rv) : (is_null($rv) ? '' : (string)$rv);
-                    if ($sv !== '') { $has_nonempty = true; }
+                    if ($sv !== '') {
+                        $has_nonempty = true;
+                    }
                 }
                 if ($has_nonempty) break;
             }
@@ -225,7 +230,22 @@ class FieldRepeater {
                     echo '<label class="wcf-field-radio" for="' . esc_attr($rid) . '"><input type="radio" id="' . esc_attr($rid) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$ov) . '" class="' . $req_class . '"' . $data_req . ' ' . $disabled . ' ' . $checked . ' /> ' . esc_html((string)$ol) . '</label> ';
                 }
             } elseif ($ftype === 'file') {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '" class="wcf-field__input wcf-field-file-url' . $req_class . '" placeholder="' . esc_attr__('File URL', 'wapic-fields') . '"' . $attrs . $data_req . $disabled . ' />';
+        
+                // Main container
+                echo '<div class="wcf-file-upload-wrapper">';
+
+                // URL input - this is now the main input that stores the URL directly
+                printf(
+                    '<input type="text" id="%1$s" name="%2$s" value="%3$s" class="wcf-field-file-url wcf-field__input" placeholder="' . esc_attr__('File URL', 'wapic-fields') . '" data-validate="url" %4$s/>',
+                    esc_attr($input_id),
+                    esc_attr($input_name),
+                    esc_url($fval),
+                    $required ? 'required' : ''
+                );
+
+                // Upload button - will need to be updated in JavaScript to work with direct URLs
+                echo '<button type="button" class="button wcf-file-upload-button" data-target="' . esc_attr($input_id) . '">' . esc_html__('Select File', 'wapic-fields') . '</button>';
+                echo '</div>';
             } elseif ($ftype === 'image') {
                 // store attachment ID, show preview like core Field::control_image
                 $img_url = $fval ? wp_get_attachment_image_url(intval($fval), 'large') : '';
