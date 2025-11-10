@@ -187,6 +187,11 @@
       });
   }
 
+  // Conditional fields
+  function conditionalFields() {
+    
+  }
+
   // Initialize plugins for each row
   function initRowPlugins($row) {
     // Initialize media uploader

@@ -5,8 +5,9 @@
             var condValue = wrapper.getAttribute('data-condition-value') || wrapper.getAttribute('data-cond-value');
 
             if (!condField) return;
-
+            
             var trigger = document.getElementById(condField);
+
             if (!trigger) {
                 trigger = document.querySelector('[name="' + condField + '"]');
             }

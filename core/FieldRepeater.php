@@ -33,8 +33,8 @@ class FieldRepeater {
             unset($value['_wcf_marker']);
         }
 
-        foreach ($schema_fields as $sf) {
-            $t = isset($sf['type']) ? $sf['type'] : 'text';
+        foreach ($schema_fields as $field) {
+            $t = isset($field['type']) ? $field['type'] : 'text';
             if ($t === 'select2') {
                 Assets::get_instance()->require_asset('select2');
             } elseif ($t === 'color') {
@@ -119,103 +119,127 @@ class FieldRepeater {
 
         echo '<div class="wcf-repeater-row-body" id="' . esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_' . esc_attr($index) . '_body">';
 
-        foreach ($fields as $sf) {
-            $fid   = isset($sf['id']) ? (string) $sf['id'] : '';
-            if ($fid === '') {
+        foreach ($fields as $field) {
+            $field_id   = isset($field['id']) ? (string) $field['id'] : '';
+            if ($field_id === '') {
                 continue;
             }
-            $flabel = isset($sf['label']) ? $sf['label'] : '';
-            $ftype  = isset($sf['type']) ? $sf['type'] : 'text';
-            $fopts  = isset($sf['options']) && is_array($sf['options']) ? $sf['options'] : array();
-            $fattr  = isset($sf['attributes']) && is_array($sf['attributes']) ? $sf['attributes'] : array();
-            $fdef   = array_key_exists('default', $sf) ? $sf['default'] : '';
-            $fval   = (isset($row[$fid]) && $row[$fid] !== '') ? $row[$fid] : $fdef;
-            $is_req = ! empty($sf['required']);
+            $field_label = isset($field['label']) ? $field['label'] : '';
+            $field_type  = isset($field['type']) ? $field['type'] : 'text';
+            $field_options  = isset($field['options']) && is_array($field['options']) ? $field['options'] : array();
+            $field_attrs  = isset($field['attributes']) && is_array($field['attributes']) ? $field['attributes'] : array();
+            $field_default   = array_key_exists('default', $field) ? $field['default'] : '';
+            $field_value   = (isset($row[$field_id]) && $row[$field_id] !== '') ? $row[$field_id] : $field_default;
+            $is_req = ! empty($field['required']);
             $req_attr = '';
             $data_req = ($is_req && ! $is_template) ? ' data-required="true"' : '';
             $req_class = ($is_req && ! $is_template) ? ' wcf-required' : '';
 
-            $input_name = $name_base . '[' . $index . '][' . $fid . ']';
-            $input_id   = esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_' . $index . '_' . $fid;
+            $input_name = $name_base . '[' . $index . '][' . $field_id . ']';
+            $input_id   = esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_' . $index . '_' . $field_id;
+
+            // Handle conditional fields
+            $conditional_class = '';
+            $field_conditional = '';
+
+            if (isset($field['condition']) && is_array($field['condition'])) {
+
+                $condition_field = $field['condition']['field'];
+                $condition_value = $field['condition']['value'];
+                
+                // Get the base ID without the index
+                $base_id = isset($ctx['id']) ? $ctx['id'] : 'repeater';
+                $condition_field_id = $base_id . '_' . $index . '_' . $condition_field;
+                
+                // Set the conditional attributes
+                $field_conditional_field = ' data-condition-field="' . esc_attr($condition_field_id) . '"';
+                $field_conditional_operator = !empty($field['condition']['operator']) ? 
+                    ' data-condition-operator="' . esc_attr($field['condition']['operator']) . '"' : 
+                    ' data-condition-operator="=="';
+                $field_conditional_value = ' data-condition-value="' . esc_attr($condition_value) . '"';
+                
+                $field_conditional = $field_conditional_field . $field_conditional_value . $field_conditional_operator;
+                $conditional_class = ' wcf-field-conditional';
+            }
 
             $wrapper_required_attr = $is_req ? ' data-wcf-required="1"' : '';
-            echo '<div class="wcf-field wcf-field-type-' . esc_attr($ftype) . '" data-subfield-id="' . esc_attr($fid) . '"' . $wrapper_required_attr . '>';
-            $has_legend = ($ftype === 'checkbox' || $ftype === 'radio');
+            echo '<div class="wcf-field wcf-field-type-' . esc_attr($field_type) . $conditional_class . '" data-subfield-id="' . esc_attr($field_id) . '"' . $wrapper_required_attr . $field_conditional . '>';
+            $has_legend = ($field_type === 'checkbox' || $field_type === 'radio');
             if ($has_legend) {
                 echo '<fieldset>';
-                if ($flabel !== '') {
-                    echo '<legend class="wcf-field__label"><strong>' . esc_html($flabel) . '</strong></legend>';
+                if ($field_label !== '') {
+                    echo '<legend class="wcf-field__label"><strong>' . esc_html($field_label) . '</strong></legend>';
                 }
             } else {
-                if ($flabel !== '') {
-                    echo '<label class="wcf-field__label" for="' . esc_attr($input_id) . '"><strong>' . esc_html($flabel) . '</strong></label>';
+                if ($field_label !== '') {
+                    echo '<label class="wcf-field__label" for="' . esc_attr($input_id) . '"><strong>' . esc_html($field_label) . '</strong></label>';
                 }
             }
 
             $attrs = '';
-            foreach ($fattr as $ak => $av) {
-                $attrs .= ' ' . esc_attr($ak) . '="' . esc_attr($av) . '"';
+            foreach ($field_attrs as $key => $attr) {
+                $attrs .= ' ' . esc_attr($key) . '="' . esc_attr($attr) . '"';
             }
 
-            if ($ftype === 'textarea') {
-                echo '<textarea id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . '>' . esc_textarea((string) $fval) . '</textarea>';
-            } elseif ($ftype === 'number') {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-number' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
-            } elseif ($ftype === 'email') {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-email' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
-            } elseif ($ftype === 'url') {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input wcf-field-url' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
-            } elseif ($ftype === 'date') {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field-date wcf-field__input' . $req_class . '" autocomplete="off"' . $attrs . $data_req . $disabled . ' />';
-            } elseif ($ftype === 'select') {
+            if ($field_type === 'textarea') {
+                echo '<textarea id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . '>' . esc_textarea((string) $field_value) . '</textarea>';
+            } elseif ($field_type === 'number') {
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $field_value) . '" class="wcf-field__input wcf-field-number' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
+            } elseif ($field_type === 'email') {
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $field_value) . '" class="wcf-field__input wcf-field-email' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
+            } elseif ($field_type === 'url') {
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $field_value) . '" class="wcf-field__input wcf-field-url' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
+            } elseif ($field_type === 'date') {
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $field_value) . '" class="wcf-field-date wcf-field__input' . $req_class . '" autocomplete="off"' . $attrs . $data_req . $disabled . ' />';
+            } elseif ($field_type === 'select') {
                 echo '<select id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . '>';
-                foreach ($fopts as $ov => $ol) {
-                    $sel = selected((string) $fval, (string) $ov, false);
+                foreach ($field_options as $ov => $ol) {
+                    $sel = selected((string) $field_value, (string) $ov, false);
                     echo '<option value="' . esc_attr((string) $ov) . '" ' . $sel . '>' . esc_html((string) $ol) . '</option>';
                 }
                 echo '</select>';
-            } elseif ($ftype === 'select2') {
-                $is_multiple = ! empty($fattr['multiple']);
+            } elseif ($field_type === 'select2') {
+                $is_multiple = ! empty($field_attrs['multiple']);
                 $name_attr   = $is_multiple ? $input_name . '[]' : $input_name;
-                $placeholder = ! empty($fattr['placeholder']) ? $fattr['placeholder'] : __('Select an option', 'wapic-fields');
-                $allow_clear = ! empty($fattr['allow_clear']) ? 'true' : 'false';
-                $width       = ! empty($fattr['width']) ? $fattr['width'] : '100%';
+                $placeholder = ! empty($field_attrs['placeholder']) ?$field_attrs['placeholder'] : __('Select an option', 'wapic-fields');
+                $allow_clear = ! empty($field_attrs['allow_clear']) ? 'true' : 'false';
+                $width       = ! empty($field_attrs['width']) ?$field_attrs['width'] : '100%';
                 echo '<select id="' . esc_attr($input_id) . '" name="' . esc_attr($name_attr) . '" class="wcf-field-select2 wcf-field__input' . $req_class . '" data-placeholder="' . esc_attr($placeholder) . '" data-allow-clear="' . esc_attr($allow_clear) . '" data-width="' . esc_attr($width) . '" ' . ($is_multiple ? 'multiple="multiple"' : '') . $data_req . ' ' . $disabled . '>';
                 if (! $is_multiple && $placeholder) {
                     echo '<option value="">' . esc_html($placeholder) . '</option>';
                 }
-                foreach ($fopts as $ov => $ol) {
+                foreach ($field_options as $ov => $ol) {
                     $selected = '';
-                    if ($is_multiple && is_array($fval)) {
-                        $selected = in_array((string)$ov, array_map('strval', $fval), true) ? 'selected' : '';
+                    if ($is_multiple && is_array($field_value)) {
+                        $selected = in_array((string)$ov, array_map('strval', $field_value), true) ? 'selected' : '';
                     } else {
-                        $selected = selected((string)$fval, (string)$ov, false);
+                        $selected = selected((string)$field_value, (string)$ov, false);
                     }
                     echo '<option value="' . esc_attr((string) $ov) . '" ' . $selected . '>' . esc_html((string) $ol) . '</option>';
                 }
                 echo '</select>';
-            } elseif ($ftype === 'color') {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '" class="wcf-field-color wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
-            } elseif ($ftype === 'checkbox') {
-                if (!empty($fopts)) {
+            } elseif ($field_type === 'color') {
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$field_value) . '" class="wcf-field-color wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
+            } elseif ($field_type === 'checkbox') {
+                if (!empty($field_options)) {
                     $current_values = array();
-                    if (is_array($fval)) {
-                        $current_values = array_map('strval', $fval);
-                    } elseif ($fval !== '' && $fval !== null) {
-                        $current_values = array((string)$fval);
+                    if (is_array($field_value)) {
+                        $current_values = array_map('strval', $field_value);
+                    } elseif ($field_value !== '' && $field_value !== null) {
+                        $current_values = array((string)$field_value);
                     }
-                    foreach ($fopts as $ov => $ol) {
+                    foreach ($field_options as $ov => $ol) {
                         $ov_str = (string)$ov;
                         $cid = $input_id . '_' . sanitize_key($ov_str);
                         $checked = in_array($ov_str, $current_values, true) ? 'checked' : '';
                         echo '<label class="wcf-field-checkbox" for="' . esc_attr($cid) . '"><input id="' . esc_attr($cid) . '" type="checkbox" name="' . esc_attr($input_name) . '[]" value="' . esc_attr($ov_str) . '" class="' . $req_class . '"' . $data_req . ' ' . $disabled . ' ' . $checked . ' /> ' . esc_html((string)$ol) . '</label>';
                     }
                 } else {
-                    $checked = !empty($fval) && ($fval === 'yes' || $fval === '1' || $fval === 1 || $fval === true) ? 'checked' : '';
+                    $checked = !empty($field_value) && ($field_value === 'yes' || $field_value === '1' || $field_value === 1 || $field_value === true) ? 'checked' : '';
                     echo '<label class="wcf-field-checkbox" for="' . esc_attr($input_id) . '"><input type="checkbox" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="yes" class="' . $req_class . '"' . $data_req . ' ' . $disabled . ' ' . $checked . ' /> ' . esc_html__('Yes', 'wapic-fields') . '</label>';
                 }
-            } elseif ($ftype === 'toggle') {
-                $checked = ($fval === 'yes' || $fval === true || $fval === '1' || $fval === 1) ? 'checked' : '';
+            } elseif ($field_type === 'toggle') {
+                $checked = ($field_value === 'yes' || $field_value === true || $field_value === '1' || $field_value === 1) ? 'checked' : '';
                 echo '<div class="wcf-field-toggle">';
                 echo '<label class="wcf-field-toggle-switch" for="' . esc_attr($input_id) . '">';
                 // Only checkbox; no hidden "no" to prevent phantom non-empty rows
@@ -223,13 +247,13 @@ class FieldRepeater {
                 echo '<span class="slider"></span>';
                 echo '</label>';
                 echo '</div>';
-            } elseif ($ftype === 'radio') {
-                foreach ($fopts as $ov => $ol) {
-                    $checked = checked((string)$fval, (string)$ov, false);
+            } elseif ($field_type === 'radio') {
+                foreach ($field_options as $ov => $ol) {
+                    $checked = checked((string)$field_value, (string)$ov, false);
                     $rid = $input_id . '_' . sanitize_key((string)$ov);
                     echo '<label class="wcf-field-radio" for="' . esc_attr($rid) . '"><input type="radio" id="' . esc_attr($rid) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$ov) . '" class="' . $req_class . '"' . $data_req . ' ' . $disabled . ' ' . $checked . ' /> ' . esc_html((string)$ol) . '</label> ';
                 }
-            } elseif ($ftype === 'file') {
+            } elseif ($field_type === 'file') {
         
                 // Main container
                 echo '<div class="wcf-file-upload-wrapper">';
@@ -239,16 +263,16 @@ class FieldRepeater {
                     '<input type="text" id="%1$s" name="%2$s" value="%3$s" class="wcf-field-file-url wcf-field__input" placeholder="' . esc_attr__('File URL', 'wapic-fields') . '" data-validate="url" %4$s/>',
                     esc_attr($input_id),
                     esc_attr($input_name),
-                    esc_url($fval),
+                    esc_url($field_value),
                     $required ? 'required' : ''
                 );
 
                 // Upload button - will need to be updated in JavaScript to work with direct URLs
                 echo '<button type="button" class="button wcf-file-upload-button" data-target="' . esc_attr($input_id) . '">' . esc_html__('Select File', 'wapic-fields') . '</button>';
                 echo '</div>';
-            } elseif ($ftype === 'image') {
+            } elseif ($field_type === 'image') {
                 // store attachment ID, show preview like core Field::control_image
-                $img_url = $fval ? wp_get_attachment_image_url(intval($fval), 'large') : '';
+                $img_url = $field_value ? wp_get_attachment_image_url(intval($field_value), 'large') : '';
                 $label   = $img_url ? __('Edit Image', 'wapic-fields') : __('Add Image', 'wapic-fields');
                 echo '<div id="' . esc_attr($input_id) . '_preview" class="wcf-field-image-preview">';
                 if ($img_url) {
@@ -258,15 +282,15 @@ class FieldRepeater {
                     echo '</span>';
                 }
                 echo '</div>';
-                echo '<input type="hidden" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$fval) . '"' . $data_req . ' ' . $disabled . ' class="wcf-media-id">';
+                echo '<input type="hidden" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$field_value) . '"' . $data_req . ' ' . $disabled . ' class="wcf-media-id">';
                 echo '<button type="button" class="button wcf-field-image-upload" data-target="' . esc_attr($input_id) . '">' . esc_html($label) . '</button>';
-            } elseif ($ftype === 'gallery') {
+            } elseif ($field_type === 'gallery') {
                 // value as comma-separated IDs, preview thumbs
                 $ids_str = '';
-                if (is_array($fval)) {
-                    $ids_str = implode(',', array_filter(array_map('intval', $fval)));
-                } elseif (!empty($fval)) {
-                    $ids_str = implode(',', array_filter(array_map('intval', explode(',', (string)$fval))));
+                if (is_array($field_value)) {
+                    $ids_str = implode(',', array_filter(array_map('intval', $field_value)));
+                } elseif (!empty($field_value)) {
+                    $ids_str = implode(',', array_filter(array_map('intval', explode(',', (string)$field_value))));
                 }
                 $ids = $ids_str ? array_map('intval', explode(',', $ids_str)) : array();
                 $label = $ids_str ? __('Edit Gallery', 'wapic-fields') : __('Add Gallery', 'wapic-fields');
@@ -287,11 +311,11 @@ class FieldRepeater {
                 echo '<div class="wcf-gallery-actions">';
                 echo '<button type="button" class="button wcf-field-gallery-upload" data-target="' . esc_attr($input_id) . '">' . esc_html($label) . '</button>';
                 echo '</div>';
-            } elseif ($ftype === 'editor') {
+            } elseif ($field_type === 'editor') {
                 if (function_exists('wp_editor') && ! $is_template) {
                     ob_start();
                     wp_editor(
-                        (string) $fval,
+                        (string) $field_value,
                         $input_id,
                         array(
                             'textarea_name' => $input_name,
@@ -301,10 +325,10 @@ class FieldRepeater {
                     );
                     echo ob_get_clean();
                 } else {
-                    echo '<textarea id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field-editor wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . '>' . esc_textarea((string) $fval) . '</textarea>';
+                    echo '<textarea id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" class="wcf-field-editor wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . '>' . esc_textarea((string) $field_value) . '</textarea>';
                 }
             } else {
-                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $fval) . '" class="wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
+                echo '<input type="text" id="' . esc_attr($input_id) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string) $field_value) . '" class="wcf-field__input' . $req_class . '"' . $attrs . $data_req . $disabled . ' />';
             }
 
             if ($has_legend) {
