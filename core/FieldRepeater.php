@@ -137,6 +137,9 @@ class FieldRepeater {
 
             $input_name = $name_base . '[' . $index . '][' . $field_id . ']';
             $input_id   = esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_' . $index . '_' . $field_id;
+            
+            // Add data-subfield-id for title field detection
+            $data_subfield = $field_id === $title_field ? ' data-subfield-id="' . esc_attr($field_id) . '"' : '';
 
             // Handle conditional fields
             $conditional_class = '';
@@ -163,7 +166,7 @@ class FieldRepeater {
             }
 
             $wrapper_required_attr = $is_req ? ' data-wcf-required="1"' : '';
-            echo '<div class="wcf-field wcf-field-type-' . esc_attr($field_type) . $conditional_class . '" data-subfield-id="' . esc_attr($field_id) . '"' . $wrapper_required_attr . $field_conditional . '>';
+            echo '<div class="wcf-field wcf-field-type-' . esc_attr($field_type) . $conditional_class . '" data-field-id="' . esc_attr($field_id) . '" data-subfield-id="' . esc_attr($field_id) . '"' . $wrapper_required_attr . $field_conditional . '>';
             $has_legend = ($field_type === 'checkbox' || $field_type === 'radio');
             if ($has_legend) {
                 echo '<fieldset>';

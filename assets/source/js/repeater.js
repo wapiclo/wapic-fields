@@ -33,12 +33,29 @@
 
   function updateRowTitle($row, titleField) {
     if (!titleField) return;
-    var $input = $row
-      .find('.wcf-repeater-field[data-subfield-id="' + titleField + '"]')
-      .find("input, select, textarea")
-      .first();
-    var val = ($input.val() || "").toString().trim();
-    $row.find(".wcf-repeater-row-title").text(val !== "" ? val : "Item");
+    
+    // Try multiple ways to find the title input field
+    var $input = $row.find('[data-subfield-id="' + titleField + '"]').find('input, select, textarea').first();
+    
+    // If not found, try finding by name attribute
+    if ($input.length === 0) {
+      var rowIndex = $row.data('index');
+      if (rowIndex !== undefined) {
+        $input = $row.find('[name$="[' + titleField + ']"]').first();
+      }
+    }
+    
+    // If still not found, try to find any input that might be the title
+    if ($input.length === 0) {
+      // Look for any input with a name that ends with [title]
+      $input = $row.find('[name$="[title]"], [name$="[title][]"]').first();
+    }
+    
+    // If we found an input, update the title
+    if ($input.length > 0) {
+      var val = ($input.val() || "").toString().trim();
+      $row.find(".wcf-repeater-row-title").text(val !== "" ? val : "Item");
+    }
   }
 
   function setOpen($row, open) {
@@ -61,19 +78,24 @@
 
   function bindRowEvents($wrap, $row, titleField) {
     if (titleField) {
-      $row.on(
-        "input change",
-        '.wcf-repeater-field[data-subfield-id="' +
-          titleField +
-          '"] input, .wcf-repeater-field[data-subfield-id="' +
-          titleField +
-          '"] select, .wcf-repeater-field[data-subfield-id="' +
-          titleField +
-          '"] textarea',
-        function () {
-          updateRowTitle($row, titleField);
-        }
-      );
+      // More flexible selector to catch changes in the title field
+      var titleSelectors = [
+        '[data-subfield-id="' + titleField + '"] input',
+        '[data-subfield-id="' + titleField + '"] select',
+        '[data-subfield-id="' + titleField + '"] textarea',
+        '[name$="[' + titleField + ']"], [name$="[' + titleField + '][]"]',
+        '[name$="[title]"], [name$="[title][]"]' // Fallback for common field name
+      ];
+      
+      // Join all selectors with comma
+      var combinedSelector = titleSelectors.join(', ');
+      
+      // Use event delegation on the row to handle dynamic content
+      $row.on('input change', combinedSelector, function() {
+        updateRowTitle($row, titleField);
+      });
+      
+      // Initial update
       updateRowTitle($row, titleField);
     }
     $row.on("click", ".wcf-repeater-accordion-toggle", function (e) {
@@ -185,11 +207,6 @@
           }
         });
       });
-  }
-
-  // Conditional fields
-  function conditionalFields() {
-    
   }
 
   // Initialize plugins for each row
