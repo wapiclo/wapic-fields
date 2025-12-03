@@ -129,6 +129,11 @@ class Field {
 	private $attributes;
 
 	/**
+	 * Style field
+	 */
+	private $style;
+
+	/**
 	 * Adds a form control with the specified arguments.
 	 *
 	 * This is the main method for rendering form fields. It handles the rendering
@@ -168,6 +173,7 @@ class Field {
 			'required'    => false,
 			'condition'   => array(),
 			'attributes'  => array(),
+			'style' => '',
 		);
 
 		$args = wp_parse_args($args, $defaults);
@@ -184,6 +190,7 @@ class Field {
 		$this->required    = $args['required'];
 		$this->condition   = $args['condition'];
 		$this->attributes  = $args['attributes'];
+		$this->style  = $args['style'];
 
 		// Handle default value
 		// If it's an edit action, use the default value if the value is null or false
@@ -198,6 +205,7 @@ class Field {
 
 		// Add wrapper class
 		$wrapper_class = 'wcf-field wcf-field-type-' . esc_attr($this->type);
+
 		if (! empty($this->class)) {
 			$wrapper_class .= ' ' . esc_attr($this->class);
 		}
@@ -222,20 +230,21 @@ class Field {
 		}
 
 		// jika ini add taxonomy
-		if (isset($_GET['taxonomy'])) {
-			if (isset($_GET['tag_ID'])) {
-				$required = ! empty($this->required) ? '<span class="required">*</span>' : '';
-				echo '<tr class="form-field term-group-wrap">';
-				echo '<th scope="row"><label for="' . esc_attr($this->id) . '">' . esc_html($this->label) . $required . '</label></th>';
-				echo '<td>';
-			} else {
-				echo '<div class="form-field term-group">';
-			}
+		$is_term = isset($_GET['taxonomy']) && isset($_GET['tag_ID']);
+		$is_table = $this->style === 'table';
+
+		if ($is_table || $is_term) {
+			$required = ! empty($this->required) ? '<span class="required">*</span>' : '';
+			echo '<tr class="form-field term-group-wrap">';
+			echo '<th scope="row"><label for="' . esc_attr($this->id) . '">' . esc_html($this->label) . $required . '</label></th>';
+			echo '<td>';
+		} else {
+			echo '<div class="form-field term-group">';
 		}
 
 		echo '<div class="' . $wrapper_class . '" ' . $data_cond . '>';
-
-		if ($this->label && $this->type !== 'toggle' && $this->type !== 'checkbox' && $this->type !== 'radio' && ! isset($_GET['tag_ID'])) {
+		echo '';
+		if ($this->label && $this->type !== 'toggle' && $this->type !== 'checkbox' && $this->type !== 'radio' && ! $is_term && ! $is_table) {
 			$required = ! empty($this->required) ? '<span class="required">*</span>' : '';
 			echo '<label class="wcf-field__label" for="' . esc_attr($this->id) . '"><strong>' . esc_html($this->label) . $required . '</strong></label>';
 		}
@@ -261,14 +270,11 @@ class Field {
 		echo '</div>';
 
 		// jika ini add taxonomy
-		if (isset($_GET['taxonomy'])) {
-
-			if (isset($_GET['tag_ID'])) {
-				echo '</td>';
-				echo '</tr>';
-			} else {
-				echo '</div>';
-			}
+		if ($is_term || $is_table) {
+			echo '</td>';
+			echo '</tr>';
+		} else {
+			echo '</div>';
 		}
 	}
 
