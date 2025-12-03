@@ -72,9 +72,9 @@ You can use various field types provided by Wapic Fields:
 
 We provide examples for Meta, Options, and Term Meta. The example files are included in the Examples/ folder.
 
-To load the examples in the WordPress admin, add the following code to your main theme or plugin file:
+To load the examples in the WordPress admin, add the following code to your main theme, plugin file or wp-config.php:
 
-```add_filter('wapic_fields_load_examples', '__return_true');```
+```define('WAPIC_FIELDS_LOAD_EXAMPLES', true);```
 
 ## Changelog
 [Changelog](https://github.com/wapiclo/wapic-fields/wiki/Changelog)

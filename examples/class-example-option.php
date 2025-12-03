@@ -1,12 +1,20 @@
 <?php
+/**
+ * Example Option Page using Wapic Fields
+ *
+ * @version 1.1.0
+ * @package Wapic_Fields
+ */
 
-namespace Wapic_Fields;
+namespace Wapic_Fields\Example;
 
 if (! defined('ABSPATH')) {
 	exit;
 }
 
-class CustomOption extends \Wapic_Fields\Field {
+use Wapic_Fields\Field;
+
+class Example_Option {
 
 	private $id = 'wapic-field-option';
 
@@ -15,154 +23,116 @@ class CustomOption extends \Wapic_Fields\Field {
 		add_action('admin_init', array($this, 'save'));
 	}
 
+	/**
+	 * Register Admin Menu Page
+	 * 
+	 * Creates a settings page under WP Admin with Wapic Fields UI.
+	 */
 	public function register() {
 		add_menu_page(
-			'Wapic Fields Example',                // Page title
-			'Wapic Fields',                // Menu title
-			'manage_options',                // Capability
-			$this->id,                 // Menu slug
-			array($this, 'render'),  // Callback
-			'dashicons-admin-generic',       // Icon
-			9999                             // Position
+			esc_html__('Wapic Fields Options Example', 'wapic-field'),
+			esc_html__('Wapic Fields', 'wapic-field'),
+			'manage_options',
+			$this->id,
+			array($this, 'render'),
+			'dashicons-admin-generic',
+			9999
 		);
 	}
 
 	/**
-	 * Render the fields
+	 * Render the Settings Page with Tabs & Field Groups
 	 */
 	public function render() {
 
-		$this->start_controls_panel(
+		Field::start_controls_panel(
 			array(
-				'title' => 'Wapic Fields Example',
+				'title' => esc_html__('Wapic Fields Options Example', 'wapic-field'),
 				'id'    => $this->id,
 				'type'  => 'setting',
 			)
 		);
 
 		// Start Tabs
-		$this->start_controls_section(
+		Field::start_controls_section(
 			array(
-				'general'     => 'General',
-				'conditional' => 'Conditional',
-				'advanced'    => 'Advanced',
+				'general'     => esc_html__('General', 'wapic-field'),
+				'conditional' => esc_html__('Conditional', 'wapic-field'),
+				'advanced'    => esc_html__('Advanced', 'wapic-field'),
 			)
 		);
 
-		// General Tab
-		$this->start_controls_group(
-			array(
-				'id' => 'general',
-			)
-		);
-
+		/* -------------------------
+		 * General Tab
+		 * ------------------------- */
+		Field::start_controls_group(array('id' => 'general'));
 		$this->group_controls_general();
+		Field::end_controls_group();
 
-		$this->end_controls_group();
-
-		// Conditional Tab
-		$this->start_controls_group(
-			array(
-				'id' => 'conditional',
-			)
-		);
-
+		/* -------------------------
+		 * Conditional Tab
+		 * ------------------------- */
+		Field::start_controls_group(array('id' => 'conditional'));
 		$this->group_controls_conditional();
+		Field::end_controls_group();
 
-		$this->end_controls_group();
-
-		// Advanced Tab
-		$this->start_controls_group(
-			array(
-				'id' => 'advanced',
-			)
-		);
-
+		/* -------------------------
+		 * Advanced Tab
+		 * ------------------------- */
+		Field::start_controls_group(array('id' => 'advanced'));
 		$this->group_controls_advanced();
-
-		$this->end_controls_group();
+		Field::end_controls_group();
 
 		// End Tabs
-		$this->end_controls_section();
+		Field::end_controls_section();
 
-		$this->end_controls_panel(
-			array(
-				'type' => 'setting',
-			)
-		);
+		Field::end_controls_panel(array('type' => 'setting'));
 	}
 
 	/**
-	 * Render General Tab Fields
+	 * General Tab Fields
 	 */
 	private function group_controls_general() {
-		$this->add_control(
+
+		Field::add_control(
 			array(
 				'type'  => 'html',
-				'value' => '<p>Change the background color of address bar in mobile browser</p>',
+				'value' => '<p>' . esc_html__('Change the mobile browser address bar color using these settings.', 'wapic-field') . '</p>',
 			)
 		);
 
-		$this->add_control([
-			'id' => '_my_repeater',
-			'type' => 'repeater',
-			'label' => 'Items',
-			'value' => get_option('_my_repeater'),
-			'options' => [
-				'fields' => [
-					['id' => 'title', 'label' => 'Title', 'type' => 'text', 'required' => true],
-					['id' => 'qty', 'label' => 'Qty', 'type' => 'number', 'attributes' => ['min' => 0]],
-					['id' => 'type', 'label' => 'Type', 'type' => 'select', 'options' => ['a' => 'Type A', 'b' => 'Type B']],
-					['id' => 'tag', 'label' => 'Tags (Select2)', 'type' => 'select2', 'options' => ['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue'], 'attributes' => ['multiple' => true, 'placeholder' => 'Choose tags', 'allow_clear' => true]],
-					['id' => 'agree', 'label' => 'Agree', 'type' => 'checkbox', 'options' => ['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue']],
-					['id' => 'choice', 'label' => 'Choice', 'type' => 'radio', 'options' => ['x' => 'Option X', 'y' => 'Option Y']],
-					['id' => 'due', 'label' => 'Due Date', 'type' => 'date'],
-					['id' => 'fileurl', 'label' => 'File URL', 'type' => 'file'],
-					['id' => 'editor', 'label' => 'Editor', 'type' => 'editor'],
-					['id' => 'colorpicker', 'label' => 'Color', 'type' => 'color'],
-					['id' => 'toggle', 'label' => 'Toggle', 'type' => 'toggle'],
-					['id' => 'gallery', 'label' => 'Gallery', 'type' => 'gallery'],
-					['id' => 'image', 'label' => 'Image', 'type' => 'image'],
-				],
-				'title_field' => 'title',
-				'min' => 0,
-				'max' => 0,
-				'add_button_label' => 'Add New Item',
-			],
-		]);
-
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_text',
 				'type'  => 'text',
-				'label' => 'Regular Text',
+				'label' => esc_html__('Text Field', 'wapic-field'),
 				'value' => get_option('_sample_text'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_email',
 				'type'  => 'email',
-				'label' => 'Email',
+				'label' => esc_html__('Email Address', 'wapic-field'),
 				'value' => get_option('_sample_email'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_phone',
 				'type'  => 'phone',
-				'label' => 'Phone',
+				'label' => esc_html__('Phone Number', 'wapic-field'),
 				'value' => get_option('_sample_phone'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'         => '_sample_number',
 				'type'       => 'number',
-				'label'      => 'Number',
+				'label'      => esc_html__('Number Field', 'wapic-field'),
 				'value'      => get_option('_sample_number'),
 				'attributes' => array(
 					'min' => 0,
@@ -171,119 +141,119 @@ class CustomOption extends \Wapic_Fields\Field {
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_url',
 				'type'  => 'url',
-				'label' => 'URL',
+				'label' => esc_html__('Website URL', 'wapic-field'),
 				'value' => get_option('_sample_url'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_textarea',
 				'type'  => 'textarea',
-				'label' => 'Textarea',
+				'label' => esc_html__('Textarea', 'wapic-field'),
 				'value' => get_option('_sample_textarea'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'      => '_sample_select',
 				'type'    => 'select',
-				'label'   => 'Select',
+				'label'   => esc_html__('Dropdown Select', 'wapic-field'),
 				'options' => array(
-					'option_1' => 'Option 1',
-					'option_2' => 'Option 2',
-					'option_3' => 'Option 3',
+					'option_1' => esc_html__('Option 1', 'wapic-field'),
+					'option_2' => esc_html__('Option 2', 'wapic-field'),
+					'option_3' => esc_html__('Option 3', 'wapic-field'),
 				),
 				'value'   => get_option('_sample_select'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'      => '_sample_checkbox',
 				'type'    => 'checkbox',
-				'label'   => 'Checkbox',
+				'label'   => esc_html__('Checkbox Options', 'wapic-field'),
 				'options' => array(
-					'option_1' => 'Option 1',
-					'option_2' => 'Option 2',
-					'option_3' => 'Option 3',
+					'option_1' => esc_html__('Option 1', 'wapic-field'),
+					'option_2' => esc_html__('Option 2', 'wapic-field'),
+					'option_3' => esc_html__('Option 3', 'wapic-field'),
 				),
-				'value'   => get_option('_sample_checkbox'),
+				'value' => get_option('_sample_checkbox'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'      => '_sample_radio',
 				'type'    => 'radio',
-				'label'   => 'Radio',
+				'label'   => esc_html__('Radio Options', 'wapic-field'),
 				'options' => array(
-					'option_1' => 'Option 1',
-					'option_2' => 'Option 2',
-					'option_3' => 'Option 3',
+					'option_1' => esc_html__('Option 1', 'wapic-field'),
+					'option_2' => esc_html__('Option 2', 'wapic-field'),
+					'option_3' => esc_html__('Option 3', 'wapic-field'),
 				),
-				'value'   => get_option('_sample_radio'),
+				'value' => get_option('_sample_radio'),
 			)
 		);
 	}
 
 	/**
-	 * Render Conditional Tab Fields
+	 * Conditional Tab Fields
 	 */
 	private function group_controls_conditional() {
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_text_required',
 				'type'        => 'text',
-				'label'       => 'Regular Text Required',
-				'description' => 'Regular text field.',
+				'label'       => esc_html__('Required Text Field', 'wapic-field'),
+				'description' => esc_html__('This field must not be empty.', 'wapic-field'),
 				'value'       => get_option('_sample_text_required'),
 				'required'    => true,
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_price',
 				'type'  => 'number',
-				'label' => 'Price',
+				'label' => esc_html__('Regular Price', 'wapic-field'),
 				'class' => 'regular-price',
 				'value' => get_option('_sample_price'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_sale_price',
 				'type'        => 'number',
-				'label'       => 'Sale Price',
+				'label'       => esc_html__('Sale Price', 'wapic-field'),
 				'class'       => 'sale-price',
-				'description' => 'Sale price must be less than regular price',
+				'description' => esc_html__('Sale price must be lower than the regular price.', 'wapic-field'),
 				'value'       => get_option('_sample_sale_price'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_toggle_conditional',
 				'type'  => 'toggle',
-				'label' => 'Toggle Conditional',
+				'label' => esc_html__('Enable Conditional Fields', 'wapic-field'),
 				'value' => get_option('_sample_toggle_conditional'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_url_conditional',
 				'type'        => 'url',
-				'label'       => 'URL Conditional',
-				'description' => 'URL field required when toggle conditional is on or value is "yes"',
+				'label'       => esc_html__('Conditional URL', 'wapic-field'),
+				'description' => esc_html__('This field is required when the toggle is enabled.', 'wapic-field'),
 				'value'       => get_option('_sample_url_conditional'),
 				'condition'   => array(
 					'field' => '_sample_toggle_conditional',
@@ -292,19 +262,19 @@ class CustomOption extends \Wapic_Fields\Field {
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_select_conditional',
 				'type'        => 'select',
-				'label'       => 'Select Conditional',
-				'description' => 'Select Conditional required when toggle conditional is on or value is "yes"',
+				'label'       => esc_html__('Conditional Select', 'wapic-field'),
+				'description' => esc_html__('Visible only when the conditional toggle is enabled.', 'wapic-field'),
 				'options'     => array(
-					'option_1' => 'Option 1',
-					'option_2' => 'Option 2',
-					'option_3' => 'Option 3',
+					'option_1' => esc_html__('Option 1', 'wapic-field'),
+					'option_2' => esc_html__('Option 2', 'wapic-field'),
+					'option_3' => esc_html__('Option 3', 'wapic-field'),
 				),
-				'value'       => get_option('_sample_select_conditional'),
-				'condition'   => array(
+				'value'     => get_option('_sample_select_conditional'),
+				'condition' => array(
 					'field' => '_sample_toggle_conditional',
 					'value' => 'yes',
 				),
@@ -313,111 +283,114 @@ class CustomOption extends \Wapic_Fields\Field {
 	}
 
 	/**
-	 * Render Advanced Tab Fields
+	 * Advanced Tab Fields
 	 */
 	private function group_controls_advanced() {
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_image',
 				'type'        => 'image',
-				'label'       => 'Image',
-				'description' => 'Image field.',
+				'label'       => esc_html__('Image Upload', 'wapic-field'),
+				'description' => esc_html__('Upload a single image.', 'wapic-field'),
 				'value'       => get_option('_sample_image'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_gallery',
 				'type'        => 'gallery',
-				'label'       => 'Gallery',
-				'description' => 'Gallery field.',
+				'label'       => esc_html__('Image Gallery', 'wapic-field'),
+				'description' => esc_html__('Upload multiple images.', 'wapic-field'),
 				'value'       => get_option('_sample_gallery'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_file',
 				'type'        => 'file',
-				'label'       => 'File',
-				'description' => 'File field.',
+				'label'       => esc_html__('File Upload', 'wapic-field'),
+				'description' => esc_html__('Upload any file type.', 'wapic-field'),
 				'value'       => get_option('_sample_file'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_toggle',
 				'type'        => 'toggle',
-				'label'       => 'Toggle',
-				'description' => 'Toggle field.',
+				'label'       => esc_html__('Toggle Switch', 'wapic-field'),
+				'description' => esc_html__('Simple on/off switch.', 'wapic-field'),
 				'value'       => get_option('_sample_toggle'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_color',
 				'type'        => 'color',
-				'label'       => 'Color Picker',
-				'description' => 'Color Picker field.',
+				'label'       => esc_html__('Color Picker', 'wapic-field'),
+				'description' => esc_html__('Pick a color.', 'wapic-field'),
 				'value'       => get_option('_sample_color'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_date',
 				'type'        => 'date',
-				'label'       => 'Date Picker',
-				'description' => 'Date Picker field.',
+				'label'       => esc_html__('Date Picker', 'wapic-field'),
+				'description' => esc_html__('Select a date.', 'wapic-field'),
 				'value'       => get_option('_sample_date'),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'         => '_sample_select2',
 				'type'       => 'select2',
-				'label'      => 'Select Options',
+				'label'      => esc_html__('Multi Select', 'wapic-field'),
 				'value'      => get_option('_sample_select2'),
 				'options'    => array(
-					'option1'  => 'Option 1',
-					'option2'  => 'Option 2',
-					'option3'  => 'Option 3',
-					'option4'  => 'Option 4',
-					'option5'  => 'Option 5',
-					'option6'  => 'Option 6',
-					'option7'  => 'Option 7',
-					'option8'  => 'Option 8',
-					'option9'  => 'Option 9',
-					'option10' => 'Option 10',
+					'option1'  => esc_html__('Option 1', 'wapic-field'),
+					'option2'  => esc_html__('Option 2', 'wapic-field'),
+					'option3'  => esc_html__('Option 3', 'wapic-field'),
+					'option4'  => esc_html__('Option 4', 'wapic-field'),
+					'option5'  => esc_html__('Option 5', 'wapic-field'),
+					'option6'  => esc_html__('Option 6', 'wapic-field'),
+					'option7'  => esc_html__('Option 7', 'wapic-field'),
+					'option8'  => esc_html__('Option 8', 'wapic-field'),
+					'option9'  => esc_html__('Option 9', 'wapic-field'),
+					'option10' => esc_html__('Option 10', 'wapic-field'),
 				),
 				'attributes' => array(
 					'multiple'    => true,
-					'placeholder' => 'Select options...',
+					'placeholder' => esc_html__('Select one or more options...', 'wapic-field'),
 					'allow_clear' => true,
 				),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_editor',
 				'type'        => 'editor',
-				'label'       => 'WP Editor',
-				'description' => 'WP Editor field.',
+				'label'       => esc_html__('Content Editor', 'wapic-field'),
+				'description' => esc_html__('Rich text editor with full WP editor tools.', 'wapic-field'),
 				'value'       => get_option('_sample_editor'),
 			)
 		);
 	}
 
+	/**
+	 * Sanitize and Save Options
+	 */
 	public function save() {
-		// First, ensure the options exist with autoload = 'no'
+
 		$fields = array(
-			'_my_repeater'             => 'repeater',
+			'_my_repeater'               => 'repeater',
 			'_sample_text'               => 'text',
 			'_sample_email'              => 'email',
 			'_sample_phone'              => 'phone',
@@ -448,26 +421,23 @@ class CustomOption extends \Wapic_Fields\Field {
 				$field_name,
 				array(
 					'sanitize_callback' => function ($value, $option = '') use ($field_type, $field_name) {
-						// Skip validation if the input is hidden
+
 						if (isset($_POST[$field_name . '_is_hidden']) && $_POST[$field_name . '_is_hidden'] === '1') {
-							return $this->sanitize_value($field_type, $value);
+							return Field::sanitize_value($field_type, $value);
 						}
 
-						// Get validated value
-						$validation = $this->validate_value($field_type, $value);
+						$validation = Field::validate_value($field_type, $value);
 
 						if (! empty($validation)) {
 							add_settings_error($this->id, 'validation_error', $validation, 'error');
-							// Return the old value to prevent saving invalid data
 							return get_option($field_name, '');
-						} else {
-							return $this->sanitize_value($field_type, $value);
 						}
+
+						return Field::sanitize_value($field_type, $value);
 					},
 				)
 			);
 		}
 	}
 }
-// Init
-new CustomOption();
+new Example_Option();

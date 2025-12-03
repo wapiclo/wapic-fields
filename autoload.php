@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Autoloader for Codewapic Field plugin
  */

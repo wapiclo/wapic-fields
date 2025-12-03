@@ -3,8 +3,8 @@
  * Plugin Name:       Wapic Fields
  * Plugin URI:        https://wapiclo.com/wapic-fields
  * Description:       A custom field for WordPress options page and meta box
- * Version:           1.2.2
- * Requires at least: 5.8
+ * Version:           2.0.0
+ * Requires at least: 6.0
  * Requires PHP:      8.2
  * Author:            Wapiclo
  * Author URI:        https://wapiclo.com/
@@ -21,8 +21,3 @@ if ( ! defined( 'WPINC' ) ) {
 
 // Load the bootstrap file.
 require_once __DIR__ . '/bootstrap.php';
-
-// function my_enqueue_editor_assets() {
-//     wp_enqueue_editor(); // penting
-// }
-// add_action( 'admin_enqueue_scripts', 'my_enqueue_editor_assets' );

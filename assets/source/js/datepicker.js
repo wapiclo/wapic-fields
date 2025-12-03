@@ -1,10 +1,12 @@
-// Function to initialize datepicker (using jQuery)
-function WapicFieldDatePickerInit() {
-  if (window.jQuery && window.jQuery.fn && window.jQuery.fn.datepicker) {
-    document
-      .querySelectorAll(".wcf-field-date")
-      .forEach(function (el) {
-        if (el.closest(".wcf-repeater-template")) return;
+/**
+ * Initialize jQuery UI Datepicker for date fields.
+ *
+ * @since 1.3.0
+ */
+(function () {
+  function WapicFieldDatePickerInit() {
+    if (window.jQuery && window.jQuery.fn && window.jQuery.fn.datepicker) {
+      document.querySelectorAll(".wcf-field-date").forEach(function (el) {
         jQuery(el).datepicker({
           dateFormat: "yy-mm-dd",
           changeMonth: true,
@@ -17,7 +19,7 @@ function WapicFieldDatePickerInit() {
           },
         });
       });
+    }
   }
-}
-// Initialize the datepicker
-document.addEventListener("DOMContentLoaded", WapicFieldDatePickerInit);
+  document.addEventListener("DOMContentLoaded", WapicFieldDatePickerInit);
+})();

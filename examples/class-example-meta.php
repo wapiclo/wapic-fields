@@ -1,470 +1,410 @@
 <?php
+/**
+ * Example Meta Box using Wapic Fields
+ *
+ * This file demonstrates how to create a custom meta box
+ * with various field types using the Wapic Fields library.
+ *
+ * @package Wapic_Fields
+ */
+namespace Wapic_Fields\Example;
 
-namespace Wapic_Fields;
-
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
-class Example_Meta extends \Wapic_Fields\Field {
+use Wapic_Fields\Field;
+
+class Example_Meta {
 
 	private $id = 'wapic-fields-metabox';
 
 	public function __construct() {
-		add_action( 'add_meta_boxes', array( $this, 'register' ) );
-		add_action( 'save_post', array( $this, 'save' ) );
-		add_action( 'admin_notices', array( $this, 'notices' ) );
+		add_action('add_meta_boxes', array($this, 'register'));
+		add_action('save_post', array($this, 'save'));
+		add_action('admin_notices', array($this, 'notices'));
 	}
 
 	/**
-	 * Display admin notices for meta box
+	 * Display admin notices for the metabox.
+	 *
+	 * Shows validation messages when saving fails.
 	 */
 	public function notices() {
-		// Only show on post edit screen
-		if ( get_current_screen()->base !== 'post' && get_current_screen()->base !== 'edit' ) {
+
+		$current_screen = get_current_screen();
+
+		if ($current_screen->base !== 'post' && $current_screen->base !== 'edit') {
 			return;
 		}
 
-		// Get any stored messages
-		$messages = get_transient( "{$this->id}_metabox_messages" );
+		$messages = get_transient("{$this->id}_metabox_messages");
 
-		if ( $messages && is_array( $messages ) ) {
+		if ($messages && is_array($messages)) {
 			echo '<div class="notice notice-error is-dismissible">';
-			foreach ( $messages as $message ) {
-				echo '<p>' . esc_html( $message ) . '</p>';
+			foreach ($messages as $message) {
+				echo '<p>' . esc_html($message) . '</p>';
 			}
 			echo '</div>';
-			// Clear the transient
-			delete_transient( "{$this->id}_metabox_messages" );
+			delete_transient("{$this->id}_metabox_messages");
 		}
 	}
 
 	/**
-	 * Register the metabox
+	 * Register the metabox for Posts.
 	 */
 	public function register() {
 		add_meta_box(
-			$this->id, // ID Metabox
-			'Wapic Fields Example', // Title Metabox
-			array( $this, 'render' ), // Render the metabox field
-			'post', // Post type
-			'normal', // Position
-			'default' // Priority
+			$this->id,
+			esc_html__('Wapic Fields Example', 'wapic-fields'),
+			array($this, 'render'),
+			'post',
+			'normal',
+			'default'
 		);
 	}
 
 	/**
-	 * Render the fields
+	 * Render the metabox content and fields.
 	 */
-	public function render( $post ) {
-		wp_nonce_field( "{$this->id}_metabox_save", "{$this->id}_metabox_nonce" );
+	public function render($post) {
 
-		$this->start_controls_panel(
+		wp_nonce_field("{$this->id}_metabox_save", "{$this->id}_metabox_nonce");
+
+		Field::start_controls_panel(
 			array(
-				'title' => 'Wapic Fields Example',
+				'title' => esc_html__('Wapic Fields Example', 'wapic-fields'),
 				'id'    => $this->id,
 				'type'  => 'metabox',
 			)
 		);
 
-		// Start Tabs
-		$this->start_controls_section(
+		// Tabs
+		Field::start_controls_section(
 			array(
-				'general'     => 'General',
-				'conditional' => 'Conditional',
-				'advanced'    => 'Advanced',
+				'general'     => esc_html__('General', 'wapic-fields'),
+				'conditional' => esc_html__('Conditional', 'wapic-fields'),
+				'advanced'    => esc_html__('Advanced', 'wapic-fields'),
 			)
 		);
 
 		// General Tab
-		$this->start_controls_group(
-			array(
-				'id' => 'general',
-			)
-		);
-
-		$this->group_controls_general( $post );
-
-		$this->end_controls_group();
+		Field::start_controls_group(array('id' => 'general'));
+		$this->group_controls_general($post);
+		Field::end_controls_group();
 
 		// Conditional Tab
-		$this->start_controls_group(
-			array(
-				'id' => 'conditional',
-			)
-		);
-
-		$this->group_controls_conditional( $post );
-
-		$this->end_controls_group();
+		Field::start_controls_group(array('id' => 'conditional'));
+		$this->group_controls_conditional($post);
+		Field::end_controls_group();
 
 		// Advanced Tab
-		$this->start_controls_group(
-			array(
-				'id' => 'advanced',
-			)
-		);
-
-		$this->group_controls_advanced( $post );
-
-		$this->end_controls_group();
+		Field::start_controls_group(array('id' => 'advanced'));
+		$this->group_controls_advanced($post);
+		Field::end_controls_group();
 
 		// End Tabs
-		$this->end_controls_section();
+		Field::end_controls_section();
 
-		$this->end_controls_panel(
-			array(
-				'type' => 'metabox',
-			)
-		);
+		Field::end_controls_panel(array('type' => 'metabox'));
 	}
 
 	/**
-	 * Render General Tab Fields
+	 * General Fields
 	 */
-	private function group_controls_general( $post ) {
-		$this->add_control(
+	private function group_controls_general($post) {
+
+		Field::add_control(
 			array(
 				'type'  => 'html',
-				'value' => '<p>Change the background color of address bar in mobile browser</p>',
+				'value' => '<p>' . esc_html__('This section contains basic example fields.', 'wapic-fields') . '</p>',
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_text',
 				'type'  => 'text',
-				'label' => 'Regular Text',
-				'value' => get_post_meta( $post->ID, '_sample_text', true ),
+				'label' => esc_html__('Text Field', 'wapic-fields'),
+				'value' => get_post_meta($post->ID, '_sample_text', true),
 			)
 		);
 
-		  $this->add_control([
-            'id' => '_sample_repeater',
-            'type' => 'repeater',
-            'label' => 'Repeater Regular',
-            'value' => get_post_meta($post->ID, '_sample_repeater', true),
-            'options' => [
-                'fields' => [
-                    ['id' => 'title', 'label' => 'Title', 'type' => 'text', 'required' => true],
-                    ['id' => 'qty', 'label' => 'Qty', 'type' => 'number', 'attributes' => ['min' => 0]],
-                    ['id' => 'type', 'label' => 'Type', 'type' => 'select', 'options' => ['a' => 'Type A', 'b' => 'Type B']],
-                    ['id' => 'tag', 'label' => 'Tags (Select2)', 'type' => 'select2', 'options' => ['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue'], 'attributes' => ['multiple' => true, 'placeholder' => 'Choose tags', 'allow_clear' => true]],
-                    ['id' => 'agree', 'label' => 'Agree', 'type' => 'checkbox', 'options' => ['red' => 'Red', 'green' => 'Green', 'blue' => 'Blue']],
-                    ['id' => 'choice', 'label' => 'Choice', 'type' => 'radio', 'options' => ['x' => 'Option X', 'y' => 'Option Y']],
-                    ['id' => 'due', 'label' => 'Due Date', 'type' => 'date'],
-                    ['id' => 'fileurl', 'label' => 'File URL', 'type' => 'file'],
-                    ['id' => 'editor', 'label' => 'Editor', 'type' => 'editor'],
-                    ['id' => 'colorpicker', 'label' => 'Color', 'type' => 'color'],
-                    ['id' => 'toggle', 'label' => 'Toggle', 'type' => 'toggle'],
-                    ['id' => 'gallery', 'label' => 'Gallery', 'type' => 'gallery'],
-                    ['id' => 'image', 'label' => 'Image', 'type' => 'image'],
-                ],
-                'title_field' => 'title',
-                'min' => 0,
-                'max' => 0,
-                'add_button_label' => 'Add New Item',
-            ],
-        ]);
-
-		    $this->add_control([
-            'id' => '_sample_repeater_conditional',
-            'type' => 'repeater',
-            'label' => 'Repeater Condition',
-            'value' => get_post_meta($post->ID, '_sample_repeater_conditional', true),
-            'options' => [
-                'fields' => [
-                    ['id' => '_sample_toggle_conditional', 'label' => 'Toggle', 'type' => 'toggle'],
-                    ['id' => 'title', 'label' => 'Title', 'type' => 'text', 'condition'   => array(
-                        'field' => '_sample_toggle_conditional',
-                        'value' => 'yes',
-                    ),],
-                ],
-                'title_field' => 'title',
-                'min' => 0,
-                'max' => 0,
-                'add_button_label' => 'Add New Item',
-            ],
-        ]);
-
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_email',
 				'type'  => 'email',
-				'label' => 'Email',
-				'value' => get_post_meta( $post->ID, '_sample_email', true ),
+				'label' => esc_html__('Email Address', 'wapic-fields'),
+				'value' => get_post_meta($post->ID, '_sample_email', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_phone',
 				'type'  => 'phone',
-				'label' => 'Phone',
-				'value' => get_post_meta( $post->ID, '_sample_phone', true ),
+				'label' => esc_html__('Phone Number', 'wapic-fields'),
+				'value' => get_post_meta($post->ID, '_sample_phone', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_number',
 				'type'  => 'number',
-				'label' => 'Number',
-				'value' => get_post_meta( $post->ID, '_sample_number', true ),
+				'label' => esc_html__('Number', 'wapic-fields'),
+				'value' => get_post_meta($post->ID, '_sample_number', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_url',
 				'type'  => 'url',
-				'label' => 'URL',
-				'value' => get_post_meta( $post->ID, '_sample_url', true ),
+				'label' => esc_html__('URL', 'wapic-fields'),
+				'value' => get_post_meta($post->ID, '_sample_url', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_textarea',
 				'type'  => 'textarea',
-				'label' => 'Textarea',
-				'value' => get_post_meta( $post->ID, '_sample_textarea', true ),
+				'label' => esc_html__('Textarea', 'wapic-fields'),
+				'value' => get_post_meta($post->ID, '_sample_textarea', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'      => '_sample_select',
 				'type'    => 'select',
-				'label'   => 'Select',
+				'label'   => esc_html__('Select Field', 'wapic-fields'),
 				'options' => array(
-					'option_1' => 'Option 1',
-					'option_2' => 'Option 2',
-					'option_3' => 'Option 3',
+					'option_1' => esc_html__('Option 1', 'wapic-fields'),
+					'option_2' => esc_html__('Option 2', 'wapic-fields'),
+					'option_3' => esc_html__('Option 3', 'wapic-fields'),
 				),
-				'value'   => get_post_meta( $post->ID, '_sample_select', true ),
+				'value'   => get_post_meta($post->ID, '_sample_select', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'      => '_sample_checkbox',
 				'type'    => 'checkbox',
-				'label'   => 'Checkbox',
+				'label'   => esc_html__('Checkbox Options', 'wapic-fields'),
 				'options' => array(
-					'option_1' => 'Option 1',
-					'option_2' => 'Option 2',
-					'option_3' => 'Option 3',
+					'option_1' => esc_html__('Option 1', 'wapic-fields'),
+					'option_2' => esc_html__('Option 2', 'wapic-fields'),
+					'option_3' => esc_html__('Option 3', 'wapic-fields'),
 				),
-				'value'   => get_post_meta( $post->ID, '_sample_checkbox', true ),
+				'value'   => get_post_meta($post->ID, '_sample_checkbox', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'      => '_sample_radio',
 				'type'    => 'radio',
-				'label'   => 'Radio',
+				'label'   => esc_html__('Radio Options', 'wapic-fields'),
 				'options' => array(
-					'option_1' => 'Option 1',
-					'option_2' => 'Option 2',
-					'option_3' => 'Option 3',
+					'option_1' => esc_html__('Option 1', 'wapic-fields'),
+					'option_2' => esc_html__('Option 2', 'wapic-fields'),
+					'option_3' => esc_html__('Option 3', 'wapic-fields'),
 				),
-				'value'   => get_post_meta( $post->ID, '_sample_radio', true ),
+				'value'   => get_post_meta($post->ID, '_sample_radio', true),
 			)
 		);
 	}
 
 	/**
-	 * Render Conditional Tab Fields
+	 * Conditional Fields
 	 */
-	private function group_controls_conditional( $post ) {
+	private function group_controls_conditional($post) {
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_text_required',
 				'type'        => 'text',
-				'label'       => 'Regular Text Required',
-				'description' => 'Regular text field.',
-				'value'       => get_post_meta( $post->ID, '_sample_text_required', true ),
+				'label'       => esc_html__('Required Text Field', 'wapic-fields'),
+				'description' => esc_html__('This field is required.', 'wapic-fields'),
+				'value'       => get_post_meta($post->ID, '_sample_text_required', true),
 				'required'    => true,
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_price',
 				'type'  => 'number',
-				'label' => 'Price',
+				'label' => esc_html__('Regular Price', 'wapic-fields'),
 				'class' => 'regular-price',
-				'value' => get_post_meta( $post->ID, '_sample_price', true ),
+				'value' => get_post_meta($post->ID, '_sample_price', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_sale_price',
 				'type'        => 'number',
-				'label'       => 'Sale Price',
+				'label'       => esc_html__('Sale Price', 'wapic-fields'),
 				'class'       => 'sale-price',
-				'description' => 'Sale price must be less than regular price',
-				'value'       => get_post_meta( $post->ID, '_sample_sale_price', true ),
+				'description' => esc_html__('Sale price must be lower than regular price.', 'wapic-fields'),
+				'value'       => get_post_meta($post->ID, '_sample_sale_price', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'    => '_sample_toggle_conditional',
 				'type'  => 'toggle',
-				'label' => 'Toggle Conditional',
-				'value' => get_post_meta( $post->ID, '_sample_toggle_conditional', true ),
+				'label' => esc_html__('Enable Conditional Field', 'wapic-fields'),
+				'value' => get_post_meta($post->ID, '_sample_toggle_conditional', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_select_conditional',
 				'type'        => 'select',
-				'label'       => 'Select Conditional',
-				'description' => 'Select Conditional required when toggle conditional is on or value is "yes"',
+				'label'       => esc_html__('Conditional Select', 'wapic-fields'),
+				'description' => esc_html__('This field is required when the toggle is enabled.', 'wapic-fields'),
 				'options'     => array(
-					'option_1' => 'Option 1',
-					'option_2' => 'Option 2',
-					'option_3' => 'Option 3',
+					'option_1' => esc_html__('Option 1', 'wapic-fields'),
+					'option_2' => esc_html__('Option 2', 'wapic-fields'),
+					'option_3' => esc_html__('Option 3', 'wapic-fields'),
 				),
-				'value'       => get_post_meta( $post->ID, '_sample_select_conditional', true ),
+				'value'       => get_post_meta($post->ID, '_sample_select_conditional', true),
 				'condition'   => array(
 					'field' => '_sample_toggle_conditional',
 					'value' => 'yes',
 				),
-
 			)
 		);
 	}
 
 	/**
-	 * Render Advanced Tab Fields
+	 * Advanced Fields
 	 */
-	private function group_controls_advanced( $post ) {
+	private function group_controls_advanced($post) {
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_image',
 				'type'        => 'image',
-				'label'       => 'Image',
-				'description' => 'Image field.',
-				'value'       => get_post_meta( $post->ID, '_sample_image', true ),
+				'label'       => esc_html__('Image Field', 'wapic-fields'),
+				'description' => esc_html__('Upload or select an image.', 'wapic-fields'),
+				'value'       => get_post_meta($post->ID, '_sample_image', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_gallery',
 				'type'        => 'gallery',
-				'label'       => 'Gallery',
-				'description' => 'Gallery field.',
-				'value'       => get_post_meta( $post->ID, '_sample_gallery', true ),
+				'label'       => esc_html__('Gallery Field', 'wapic-fields'),
+				'description' => esc_html__('Select multiple images for the gallery.', 'wapic-fields'),
+				'value'       => get_post_meta($post->ID, '_sample_gallery', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_file',
 				'type'        => 'file',
-				'label'       => 'File',
-				'description' => 'File field.',
-				'value'       => get_post_meta( $post->ID, '_sample_file', true ),
+				'label'       => esc_html__('File Upload', 'wapic-fields'),
+				'description' => esc_html__('Upload a file.', 'wapic-fields'),
+				'value'       => get_post_meta($post->ID, '_sample_file', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_toggle',
 				'type'        => 'toggle',
-				'label'       => 'Toggle',
-				'description' => 'Toggle field.',
-				'value'       => get_post_meta( $post->ID, '_sample_toggle', true ),
+				'label'       => esc_html__('Toggle Field', 'wapic-fields'),
+				'description' => esc_html__('Enable or disable the toggle.', 'wapic-fields'),
+				'value'       => get_post_meta($post->ID, '_sample_toggle', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_date',
 				'type'        => 'date',
-				'label'       => 'Date Picker',
-				'description' => 'Date Picker field.',
-				'value'       => get_post_meta( $post->ID, '_sample_date', true ),
+				'label'       => esc_html__('Date Picker', 'wapic-fields'),
+				'description' => esc_html__('Select a date.', 'wapic-fields'),
+				'value'       => get_post_meta($post->ID, '_sample_date', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_color',
 				'type'        => 'color',
-				'label'       => 'Color Picker',
-				'description' => 'Color Picker field.',
-				'value'       => get_post_meta( $post->ID, '_sample_color', true ),
+				'label'       => esc_html__('Color Picker', 'wapic-fields'),
+				'description' => esc_html__('Select a color.', 'wapic-fields'),
+				'value'       => get_post_meta($post->ID, '_sample_color', true),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'         => '_sample_select2',
 				'type'       => 'select2',
-				'label'      => 'Select Options',
-				'value'      => get_post_meta( $post->ID, '_sample_select2', true ),
+				'label'      => esc_html__('Select2 Field', 'wapic-fields'),
+				'value'      => get_post_meta($post->ID, '_sample_select2', true),
 				'options'    => array(
-					'option1'  => 'Option 1',
-					'option2'  => 'Option 2',
-					'option3'  => 'Option 3',
-					'option4'  => 'Option 4',
-					'option5'  => 'Option 5',
-					'option6'  => 'Option 6',
-					'option7'  => 'Option 7',
-					'option8'  => 'Option 8',
-					'option9'  => 'Option 9',
-					'option10' => 'Option 10',
+					'option1'  => esc_html__('Option 1', 'wapic-fields'),
+					'option2'  => esc_html__('Option 2', 'wapic-fields'),
+					'option3'  => esc_html__('Option 3', 'wapic-fields'),
+					'option4'  => esc_html__('Option 4', 'wapic-fields'),
+					'option5'  => esc_html__('Option 5', 'wapic-fields'),
+					'option6'  => esc_html__('Option 6', 'wapic-fields'),
+					'option7'  => esc_html__('Option 7', 'wapic-fields'),
+					'option8'  => esc_html__('Option 8', 'wapic-fields'),
+					'option9'  => esc_html__('Option 9', 'wapic-fields'),
+					'option10' => esc_html__('Option 10', 'wapic-fields'),
 				),
 				'attributes' => array(
 					'multiple'    => true,
-					'placeholder' => 'Select options...',
+					'placeholder' => esc_html__('Select options...', 'wapic-fields'),
 					'allow_clear' => true,
 				),
 			)
 		);
 
-		$this->add_control(
+		Field::add_control(
 			array(
 				'id'          => '_sample_editor',
 				'type'        => 'editor',
-				'label'       => 'WP Editor',
-				'description' => 'WP Editor field.',
-				'value'       => get_post_meta( $post->ID, '_sample_editor', true ),
+				'label'       => esc_html__('Content Editor', 'wapic-fields'),
+				'description' => esc_html__('WordPress rich text editor field.', 'wapic-fields'),
+				'value'       => get_post_meta($post->ID, '_sample_editor', true),
 			)
 		);
 	}
 
 	/**
-	 * Save metabox data with validation
+	 * Save meta box fields with sanitization and validation
 	 */
-	public function save( $post_id ) {
+	public function save($post_id) {
 
-		// Autosave check
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
 			return;
 		}
 
-		// Permission check
-		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		if (! current_user_can('edit_post', $post_id)) {
 			return;
 		}
 
-		// Nonce check
-		if ( ! isset( $_POST[ "{$this->id}_metabox_nonce" ] ) || ! wp_verify_nonce( $_POST[ "{$this->id}_metabox_nonce" ], "{$this->id}_metabox_save" ) ) {
+		if (! isset($_POST["{$this->id}_metabox_nonce"]) ||
+			! wp_verify_nonce($_POST["{$this->id}_metabox_nonce"], "{$this->id}_metabox_save")
+		) {
 			return;
 		}
 
-		// Get fields id
 		$fields = array(
 			'_sample_text'               => 'text',
 			'_sample_email'              => 'email',
@@ -488,41 +428,40 @@ class Example_Meta extends \Wapic_Fields\Field {
 			'_sample_color'              => 'color',
 			'_sample_select2'            => 'select2',
 			'_sample_editor'             => 'editor',
-			'_sample_repeater'           => 'repeater',
-			'_sample_repeater_conditional' => 'repeater',
 		);
 
 		$error_message = array();
 
-		
-		// Field validation
-		// Store sanitized value in database
-		foreach ( $fields as $key => $type ) {
-			if ( isset( $_POST[ $key ] ) ) {
-				$value      = $_POST[ $key ];
-				$validation = $this->validate_value( $type, $value );
+		foreach ($fields as $key => $type) {
 
-				if ( ! empty( $validation ) ) {
+			if (isset($_POST[$key])) {
+
+				$value      = $_POST[$key];
+				$validation = Field::validate_value($type, $value);
+
+				if (! empty($validation)) {
 					$error_message[] = $validation;
 				} else {
-					$sanitized = $this->sanitize_value( $type, $value );
-					update_post_meta( $post_id, $key, $sanitized );
+					$sanitized = Field::sanitize_value($type, $value);
+					update_post_meta($post_id, $key, $sanitized);
 				}
-			} elseif ( $type === 'toggle' ) {
-					update_post_meta( $post_id, $key, 'no' );
-			} elseif ( $type === 'checkbox' ) {
-				update_post_meta( $post_id, $key, array() );
+
+			} elseif ($type === 'toggle') {
+				update_post_meta($post_id, $key, 'no');
+
+			} elseif ($type === 'checkbox') {
+				update_post_meta($post_id, $key, array());
+
 			} else {
-				delete_post_meta( $post_id, $key );
+				delete_post_meta($post_id, $key);
 			}
 		}
 
-		// Set error message
-		if ( ! empty( $error_message ) ) {
-			set_transient( "{$this->id}_metabox_messages", $error_message, 30 );
+		if (! empty($error_message)) {
+			set_transient("{$this->id}_metabox_messages", $error_message, 30);
 		}
-
 	}
 }
+
 // Initialize the meta box
 new Example_Meta();

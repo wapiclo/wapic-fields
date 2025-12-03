@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Wapic_Fields\\": "core/"
+            "Wapic_Fields\\": "src/"
         },
         "files": [
             "bootstrap.php"
