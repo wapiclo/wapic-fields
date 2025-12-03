@@ -76,9 +76,9 @@ class CustomOptionRepeater extends \Wapic_Fields\Field {
             'value' => get_option('_sample_repeater_conditional'),
             'options' => [
                 'fields' => [
-                    ['id' => '_sample_toggle_conditional', 'label' => 'Toggle', 'type' => 'toggle'],
+                    ['id' => 'toggle', 'label' => 'Toggle', 'type' => 'toggle'],
                     ['id' => 'title', 'label' => 'Title', 'type' => 'text', 'condition'   => array(
-                        'field' => '_sample_toggle_conditional',
+                        'field' => 'toggle',
                         'value' => 'yes',
                     ),],
                 ],

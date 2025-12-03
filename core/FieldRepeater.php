@@ -48,7 +48,16 @@ class FieldRepeater {
             }
         }
 
-        $wrapper_id = esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_repeater';
+        static $instance_count = 0;
+        $instance_count++;
+
+        $wrapper_id = isset($ctx['id']) ? esc_attr($ctx['id']) : 'repeater_' . $instance_count;
+        // Ensure ID is unique if multiple repeaters use default or same ID
+        if (!isset($ctx['id'])) {
+            $wrapper_id = 'repeater_' . $instance_count;
+        } else {
+            $wrapper_id = esc_attr($ctx['id']) . '_repeater';
+        }
         $name_base  = esc_attr(isset($ctx['name']) ? $ctx['name'] : 'repeater');
 
         echo '<div class="wcf-repeater" id="' . $wrapper_id . '" data-max="' . esc_attr($max) . '" data-title-field="' . esc_attr($title_field) . '">';
@@ -83,11 +92,12 @@ class FieldRepeater {
                 if ($has_nonempty) break;
             }
             if (! $has_nonempty) continue;
-            self::render_row($ctx, $schema_fields, $name_base, $index, $row, $required, false, $title_field);
+            if (! $has_nonempty) continue;
+            self::render_row($ctx, $schema_fields, $name_base, $index, $row, $required, false, $title_field, $wrapper_id);
             $index++;
         }
 
-        self::render_row($ctx, $schema_fields, $name_base, '__INDEX__', array(), $required, true, $title_field);
+        self::render_row($ctx, $schema_fields, $name_base, '__INDEX__', array(), $required, true, $title_field, $wrapper_id);
 
         echo '<div class="wcf-repeater-actions">';
         echo '<button type="button" class="button wcf-repeater-add">' . esc_html($add_label) . '</button>';
@@ -96,7 +106,14 @@ class FieldRepeater {
         echo '</div>';
     }
 
-    private static function render_row($ctx, $fields, $name_base, $index, $row, $required, $is_template = false, $title_field = '') {
+    private static function render_row($ctx, $fields, $name_base, $index, $row, $required, $is_template = false, $title_field = '', $wrapper_id = '') {
+        // Fallback if wrapper_id is not passed (for backward compatibility or direct calls)
+        if (empty($wrapper_id)) {
+            $wrapper_id = isset($ctx['id']) ? $ctx['id'] . '_repeater' : 'repeater_repeater';
+        }
+        // Remove _repeater suffix if present to get the base ID for inputs
+        $base_id = preg_replace('/_repeater$/', '', $wrapper_id);
+
         $row_class = 'wcf-repeater-row' . ($is_template ? ' wcf-repeater-template' : '');
         $style     = $is_template ? ' style="display:none;"' : '';
         $disabled  = $is_template ? ' disabled="disabled"' : '';
@@ -112,12 +129,12 @@ class FieldRepeater {
         echo '<span class="wcf-repeater-drag-handle-toggle" title="' . esc_attr__('Drag to reorder', 'wapic-fields') . '">⋮⋮</span>';
         echo '<span class="wcf-repeater-row-title">' . esc_html($title_value !== '' ? $title_value : __('Item', 'wapic-fields')) . '</span>';
         echo '<div class="wcf-repeater-row-controls">';
-        echo '<button type="button" class="button button-secondary wcf-repeater-accordion-toggle" aria-expanded="false" aria-controls="' . esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_' . esc_attr($index) . '_body" title="' . esc_attr__('Toggle', 'wapic-fields') . '">▼</button>';
+        echo '<button type="button" class="button button-secondary wcf-repeater-accordion-toggle" aria-expanded="false" aria-controls="' . esc_attr($base_id) . '_' . esc_attr($index) . '_body" title="' . esc_attr__('Toggle', 'wapic-fields') . '">▼</button>';
         echo '<button type="button" class="button wcf-repeater-remove" title="' . esc_attr__('Remove item', 'wapic-fields') . '"><span class="dashicons dashicons-trash"></span><span class="screen-reader-text">' . esc_html__('Remove', 'wapic-fields') . '</span></button>';
         echo '</div>';
         echo '</div>';
 
-        echo '<div class="wcf-repeater-row-body" id="' . esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_' . esc_attr($index) . '_body">';
+        echo '<div class="wcf-repeater-row-body" id="' . esc_attr($base_id) . '_' . esc_attr($index) . '_body">';
 
         foreach ($fields as $field) {
             $field_id   = isset($field['id']) ? (string) $field['id'] : '';
@@ -136,8 +153,8 @@ class FieldRepeater {
             $req_class = ($is_req && ! $is_template) ? ' wcf-required' : '';
 
             $input_name = $name_base . '[' . $index . '][' . $field_id . ']';
-            $input_id   = esc_attr(isset($ctx['id']) ? $ctx['id'] : 'repeater') . '_' . $index . '_' . $field_id;
-            
+            $input_id   = esc_attr($base_id) . '_' . $index . '_' . $field_id;
+
             // Add data-subfield-id for title field detection
             $data_subfield = $field_id === $title_field ? ' data-subfield-id="' . esc_attr($field_id) . '"' : '';
 
@@ -149,18 +166,17 @@ class FieldRepeater {
 
                 $condition_field = $field['condition']['field'];
                 $condition_value = $field['condition']['value'];
-                
+
                 // Get the base ID without the index
-                $base_id = isset($ctx['id']) ? $ctx['id'] : 'repeater';
                 $condition_field_id = $base_id . '_' . $index . '_' . $condition_field;
-                
+
                 // Set the conditional attributes
                 $field_conditional_field = ' data-condition-field="' . esc_attr($condition_field_id) . '"';
-                $field_conditional_operator = !empty($field['condition']['operator']) ? 
-                    ' data-condition-operator="' . esc_attr($field['condition']['operator']) . '"' : 
+                $field_conditional_operator = !empty($field['condition']['operator']) ?
+                    ' data-condition-operator="' . esc_attr($field['condition']['operator']) . '"' :
                     ' data-condition-operator="=="';
                 $field_conditional_value = ' data-condition-value="' . esc_attr($condition_value) . '"';
-                
+
                 $field_conditional = $field_conditional_field . $field_conditional_value . $field_conditional_operator;
                 $conditional_class = ' wcf-field-conditional';
             }
@@ -204,9 +220,9 @@ class FieldRepeater {
             } elseif ($field_type === 'select2') {
                 $is_multiple = ! empty($field_attrs['multiple']);
                 $name_attr   = $is_multiple ? $input_name . '[]' : $input_name;
-                $placeholder = ! empty($field_attrs['placeholder']) ?$field_attrs['placeholder'] : __('Select an option', 'wapic-fields');
+                $placeholder = ! empty($field_attrs['placeholder']) ? $field_attrs['placeholder'] : __('Select an option', 'wapic-fields');
                 $allow_clear = ! empty($field_attrs['allow_clear']) ? 'true' : 'false';
-                $width       = ! empty($field_attrs['width']) ?$field_attrs['width'] : '100%';
+                $width       = ! empty($field_attrs['width']) ? $field_attrs['width'] : '100%';
                 echo '<select id="' . esc_attr($input_id) . '" name="' . esc_attr($name_attr) . '" class="wcf-field-select2 wcf-field__input' . $req_class . '" data-placeholder="' . esc_attr($placeholder) . '" data-allow-clear="' . esc_attr($allow_clear) . '" data-width="' . esc_attr($width) . '" ' . ($is_multiple ? 'multiple="multiple"' : '') . $data_req . ' ' . $disabled . '>';
                 if (! $is_multiple && $placeholder) {
                     echo '<option value="">' . esc_html($placeholder) . '</option>';
@@ -257,7 +273,7 @@ class FieldRepeater {
                     echo '<label class="wcf-field-radio" for="' . esc_attr($rid) . '"><input type="radio" id="' . esc_attr($rid) . '" name="' . esc_attr($input_name) . '" value="' . esc_attr((string)$ov) . '" class="' . $req_class . '"' . $data_req . ' ' . $disabled . ' ' . $checked . ' /> ' . esc_html((string)$ol) . '</label> ';
                 }
             } elseif ($field_type === 'file') {
-        
+
                 // Main container
                 echo '<div class="wcf-file-upload-wrapper">';
 
