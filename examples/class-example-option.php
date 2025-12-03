@@ -238,7 +238,7 @@ class Example_Option {
 				'value'       => get_option('_sample_sale_price'),
 			)
 		);
-
+// 1. Toggle field
 		Field::add_control(
 			array(
 				'id'    => '_sample_toggle_conditional',
@@ -247,7 +247,7 @@ class Example_Option {
 				'value' => get_option('_sample_toggle_conditional'),
 			)
 		);
-
+// 2. URL field that appears conditionally
 		Field::add_control(
 			array(
 				'id'          => '_sample_url_conditional',
@@ -256,8 +256,8 @@ class Example_Option {
 				'description' => esc_html__('This field is required when the toggle is enabled.', 'wapic-field'),
 				'value'       => get_option('_sample_url_conditional'),
 				'condition'   => array(
-					'field' => '_sample_toggle_conditional',
-					'value' => 'yes',
+					'field' => '_sample_toggle_conditional', // the controlling field
+					'value' => 'yes', 				 // show this field only if toggle = "yes"
 				),
 			)
 		);
@@ -390,7 +390,6 @@ class Example_Option {
 	public function save() {
 
 		$fields = array(
-			'_my_repeater'               => 'repeater',
 			'_sample_text'               => 'text',
 			'_sample_email'              => 'email',
 			'_sample_phone'              => 'phone',
