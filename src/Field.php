@@ -221,7 +221,7 @@ abstract class Field {
         }
 
         if ($this->description) {
-            echo '<p class="wcf-field__description">' . esc_html($this->description) . '</p>';
+            echo '<p class="wcf-field__description">' . wp_kses_post($this->description) . '</p>';
         }
         echo '</div>';
 
