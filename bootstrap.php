@@ -4,7 +4,7 @@
  *
  * @package    Wapic_Fields
  * @subpackage Core
- * @since      2.0.2
+ * @since      2.0.3
  * @author     Wapiclo Team
  * @license    GPL-2.0+
  * @link       https://wapiclo.com/
