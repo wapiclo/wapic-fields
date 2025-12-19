@@ -2,6 +2,7 @@
 .gitignore
 .gitattributes
 .DS_Store
+docs/
 node_modules/
 .vscode/
 .idea/
