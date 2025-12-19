@@ -42,15 +42,13 @@ abstract class Field {
      *
      * @var mixed
      */
-    protected mixed $value;
-
+    protected $value;
     /**
      * Default field value.
      *
      * @var mixed
      */
-    protected mixed $default;
-
+    protected $default;
     /**
      * Field label text.
      *
@@ -383,7 +381,7 @@ abstract class Field {
      * @param mixed  $value
      * @return string Error message or empty string.
      */
-    public static function validate_value(string $type, mixed $value): string {
+    public static function validate_value(string $type, $value): string {
         if (empty($value)) {
             return ''; // Let empty values pass, use required attribute in form if needed
         }
@@ -427,7 +425,7 @@ abstract class Field {
      * @param mixed  $value
      * @return mixed
      */
-    public static function sanitize_value(string $type, mixed $value): mixed {
+    public static function sanitize_value(string $type, $value) {
         switch ($type) {
             case 'select2':
                 if (empty($value)) {
@@ -498,7 +496,7 @@ abstract class Field {
      * @param mixed $value
      * @return mixed
      */
-    public function sanitize(mixed $value): mixed {
+    public function sanitize($value) {
         return sanitize_text_field((string) $value);
     }
 }
