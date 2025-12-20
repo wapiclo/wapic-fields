@@ -103,18 +103,25 @@
         const regularInput = document.querySelector(".regular-price input");
         const saleInput = document.querySelector(".sale-price input");
 
-        this.showError(regularInput, wapic_field.validation.compareRegularPrice);
-        this.showError(saleInput, wapic_field.validation.compareSalePrice);
+        // Only validate if sale price has a value
+        if (saleInput && saleInput.value.trim() !== '') {
+          this.showError(regularInput, wapic_field.validation.compareRegularPrice);
+          this.showError(saleInput, wapic_field.validation.compareSalePrice);
 
-        if (regularInput && saleInput && this.isNumber(regularInput.value) && this.isNumber(saleInput.value)) {
-          if (parseFloat(saleInput.value) > parseFloat(regularInput.value)) {
-            this.showError(regularInput, wapic_field.validation.compareRegularPrice);
-            this.showError(saleInput, wapic_field.validation.compareSalePrice);
-            return false;
-          } else {
-            this.clearError(regularInput);
-            this.clearError(saleInput);
+          if (regularInput && this.isNumber(regularInput.value) && this.isNumber(saleInput.value)) {
+            if (parseFloat(saleInput.value) > parseFloat(regularInput.value)) {
+              this.showError(regularInput, wapic_field.validation.compareRegularPrice);
+              this.showError(saleInput, wapic_field.validation.compareSalePrice);
+              return false;
+            } else {
+              this.clearError(regularInput);
+              this.clearError(saleInput);
+            }
           }
+        } else {
+          // Clear any existing errors if sale price is empty
+          if (regularInput) this.clearError(regularInput);
+          if (saleInput) this.clearError(saleInput);
         }
       }
 
