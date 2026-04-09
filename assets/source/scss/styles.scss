@@ -45,12 +45,12 @@
   }
 
   // Layout
-  & > * {
+  &>* {
     margin-block-start: var(--wcf-component-spacing);
     margin-block-end: 0;
   }
 
-  & > *:first-child {
+  &>*:first-child {
     margin-block-start: 0;
   }
 }
@@ -77,12 +77,12 @@
 // Layout Flow
 // ----------------------------------------------------
 .wcf-is-layout-flow {
-  & > * {
+  &>* {
     margin-block-start: var(--wcf-component-spacing);
     margin-block-end: 0;
   }
 
-  & > *:first-child {
+  &>*:first-child {
     margin-block-start: 0;
   }
 }
@@ -101,12 +101,12 @@
 }
 
 .wcf-page-body {
-  & > * {
+  &>* {
     margin-block-start: var(--wcf-component-spacing);
     margin-block-end: 0;
   }
 
-  & > *:first-child {
+  &>*:first-child {
     margin-block-start: 0;
   }
 }
@@ -241,6 +241,7 @@
   }
 
   .handle-actions {
+
     .handle-order-higher,
     .handle-order-lower {
       display: none !important;
@@ -311,6 +312,7 @@
 
   li.is-active a {
     background-color: #fff;
+
     @media only screen and (min-width: 768px) {
       border-bottom: 1px solid #fff;
     }
@@ -391,12 +393,12 @@
 // Control - HTML
 // ----------------------------------------------------
 .wcf-field-type-html {
-  & > * {
+  &>* {
     margin-top: var(--wcf-component-spacing);
     margin-bottom: 0;
   }
 
-  & > *:first-child {
+  &>*:first-child {
     margin-top: 0;
   }
 }
@@ -459,7 +461,7 @@
       }
     }
 
-    input[type="checkbox"]:checked + .slider {
+    input[type="checkbox"]:checked+.slider {
       background-color: var(--wcf-color-primary);
 
       &:before {
@@ -574,6 +576,7 @@
     margin-top: -3px;
   }
 }
+
 .wcf-field-type-checkbox,
 .wcf-field-type-radio {
   legend {
@@ -877,6 +880,7 @@
         }
 
         &.ui-datepicker-other-month {
+
           a,
           span {
             color: var(--wcf-datepicker-disabled-text);
@@ -954,40 +958,76 @@
   .iris-picker .iris-square {
     margin-right: 15px !important;
   }
+
   .iris-picker .iris-strip {
     height: 100% !important;
   }
 }
+
 /**
  * Heading & Divider Fields
  */
 .wcf-field-type-heading {
-    margin: 40px 0 15px;
-    padding: 0;
-    
-    .wcf-field-heading {
-        width: 100%;
-        border-bottom: 2px solid #dcdcde;
-        padding-bottom: 8px;
-        margin-bottom: 15px;
-        
-        &__title {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 700;
-            color: #1d2327;
-            letter-spacing: -0.01em;
-        }
+  margin: 40px 0 15px;
+  padding: 0;
+
+  .wcf-field-heading {
+    width: 100%;
+    border-bottom: 2px solid #dcdcde;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+
+    &__title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1d2327;
+      letter-spacing: -0.01em;
     }
+  }
 }
 
 .wcf-field-type-divider {
-    margin: 25px 0;
-    padding: 0;
-    
-    .wcf-field-divider {
-        border: 0;
-        border-top: 1px solid #dcdcde;
-        margin: 0;
+  margin: 25px 0;
+  padding: 0;
+
+  .wcf-field-divider {
+    border: 0;
+    border-top: 1px solid #dcdcde;
+    margin: 0;
+  }
+}
+
+/**
+ * Heading & Separator Fields
+ */
+.wcf-field-type-heading {
+  margin: 40px 0 15px;
+  padding: 0;
+
+  .wcf-field-heading {
+    width: 100%;
+    border-bottom: 2px solid var(--wcf-border-color-soft);
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+
+    &__title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1d2327;
+      letter-spacing: -0.01em;
     }
+  }
+}
+
+.wcf-field-type-separator {
+  margin: 25px 0;
+  padding: 0;
+
+  .wcf-field-separator {
+    border: 0;
+    border-top: 1px solid var(--wcf-border-color-soft);
+    margin: 0;
+  }
 }

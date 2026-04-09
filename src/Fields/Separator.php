@@ -11,11 +11,11 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Divider field.
+ * Separator field.
  *
  * @package Wapic_Fields
  */
-class Divider extends Field {
+class Separator extends Field {
 
     /**
      * Render the divider element.
@@ -23,6 +23,6 @@ class Divider extends Field {
      * @param string $required_attr
      */
     protected function render_input(string $required_attr): void {
-        echo '<hr class="wcf-field-divider" />';
+        echo '<hr class="wcf-field-separator" />';
     }
 }

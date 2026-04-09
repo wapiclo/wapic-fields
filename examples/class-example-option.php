@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Example Option Page using Wapic Fields
  *
@@ -279,7 +280,7 @@ class Example_Option {
 		);
 
 		Field::add_control(array(
-			'type' => 'divider',
+			'type' => 'separator',
 		));
 
 		Field::add_control(array(
