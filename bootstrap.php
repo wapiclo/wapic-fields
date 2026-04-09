@@ -5,7 +5,7 @@
  *
  * @package    Wapic_Fields
  * @subpackage Core
- * @since      2.0.4
+ * @since      2.1.0
  * @author     Wapiclo Team
  * @license    GPL-2.0+
  * @link       https://wapiclo.com/
@@ -34,7 +34,6 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 if (defined('WAPIC_FIELDS_LOAD_EXAMPLES') && WAPIC_FIELDS_LOAD_EXAMPLES === true) {
 	require_once __DIR__ . '/examples/example.php';
 }
-require_once __DIR__ . '/examples/example.php';
 // Load text domain
 add_action(
 	'plugins_loaded',

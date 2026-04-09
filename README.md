@@ -35,6 +35,7 @@ Wapic Fields provides the following field types for WordPress. This list is for 
 15. **Color** – Color picker  
 16. **Date** – Date picker  
 17. **WP Editor** – WordPress rich text editor
+18. **HTML** – HTML content
 
 ---
 
