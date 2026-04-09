@@ -238,45 +238,112 @@ class Example_Option {
 				'value'       => get_option('_sample_sale_price'),
 			)
 		);
-// 1. Toggle field
+
+		echo '<div class="wcf-section-divider"></div>';
+		echo '<h3>' . esc_html__('Cascading Logic Example (A -> B -> C)', 'wapic-field') . '</h3>';
+
 		Field::add_control(
 			array(
-				'id'    => '_sample_toggle_conditional',
+				'id'    => '_sample_input_a',
 				'type'  => 'toggle',
-				'label' => esc_html__('Enable Conditional Fields', 'wapic-field'),
-				'value' => get_option('_sample_toggle_conditional'),
+				'label' => esc_html__('Input A (Active B)', 'wapic-field'),
+				'value' => get_option('_sample_input_a', 'no'),
 			)
 		);
-// 2. URL field that appears conditionally
+
 		Field::add_control(
 			array(
-				'id'          => '_sample_url_conditional',
-				'type'        => 'url',
-				'label'       => esc_html__('Conditional URL', 'wapic-field'),
-				'description' => esc_html__('This field is required when the toggle is enabled.', 'wapic-field'),
-				'value'       => get_option('_sample_url_conditional'),
-				'condition'   => array(
-					'field' => '_sample_toggle_conditional', // the controlling field
-					'value' => 'yes', 				 // show this field only if toggle = "yes"
+				'id'    => '_sample_input_b',
+				'type'  => 'toggle',
+				'label' => esc_html__('Input B (Visible if A is ON, Active C)', 'wapic-field'),
+				'value' => get_option('_sample_input_b', 'no'),
+				'condition' => array(
+					'field' => '_sample_input_a',
+					'value' => 'yes',
 				),
 			)
 		);
 
 		Field::add_control(
 			array(
-				'id'          => '_sample_select_conditional',
-				'type'        => 'select',
-				'label'       => esc_html__('Conditional Select', 'wapic-field'),
-				'description' => esc_html__('Visible only when the conditional toggle is enabled.', 'wapic-field'),
-				'options'     => array(
-					'option_1' => esc_html__('Option 1', 'wapic-field'),
-					'option_2' => esc_html__('Option 2', 'wapic-field'),
-					'option_3' => esc_html__('Option 3', 'wapic-field'),
-				),
-				'value'     => get_option('_sample_select_conditional'),
+				'id'    => '_sample_input_c',
+				'type'  => 'text',
+				'label' => esc_html__('Input C (Visible if B is ON)', 'wapic-field'),
+				'value' => get_option('_sample_input_c'),
+				'description' => esc_html__('If you turn off Input A, both B and C will hide.', 'wapic-field'),
 				'condition' => array(
-					'field' => '_sample_toggle_conditional',
+					'field' => '_sample_input_b',
 					'value' => 'yes',
+				),
+			)
+		);
+
+		echo '<div class="wcf-section-divider"></div>';
+		echo '<h3>' . esc_html__('Multi-Condition Logic (AND / OR)', 'wapic-field') . '</h3>';
+
+		Field::add_control(
+			array(
+				'id'      => '_sample_mc_type',
+				'type'    => 'select',
+				'label'   => esc_html__('Select Type', 'wapic-field'),
+				'options' => array(
+					'text'  => 'Text',
+					'image' => 'Image',
+					'both'  => 'Both',
+				),
+				'value'   => get_option('_sample_mc_type', 'text'),
+			)
+		);
+
+		Field::add_control(
+			array(
+				'id'    => '_sample_mc_advanced',
+				'type'  => 'toggle',
+				'label' => esc_html__('Show Advanced', 'wapic-field'),
+				'value' => get_option('_sample_mc_advanced', 'no'),
+			)
+		);
+
+		// AND Example
+		Field::add_control(
+			array(
+				'id'    => '_sample_mc_and_field',
+				'type'  => 'text',
+				'label' => esc_html__('Field AND Relation', 'wapic-field'),
+				'description' => esc_html__('Visible only if Type is "Both" AND Advanced is "ON"', 'wapic-field'),
+				'value' => get_option('_sample_mc_and_field'),
+				'condition' => array(
+					'relation' => 'AND',
+					array(
+						'field' => '_sample_mc_type',
+						'value' => 'both',
+					),
+					array(
+						'field' => '_sample_mc_advanced',
+						'value' => 'yes',
+					),
+				),
+			)
+		);
+
+		// OR Example
+		Field::add_control(
+			array(
+				'id'    => '_sample_mc_or_field',
+				'type'  => 'text',
+				'label' => esc_html__('Field OR Relation', 'wapic-field'),
+				'description' => esc_html__('Visible if Type is "Image" OR Type is "Both"', 'wapic-field'),
+				'value' => get_option('_sample_mc_or_field'),
+				'condition' => array(
+					'relation' => 'OR',
+					array(
+						'field' => '_sample_mc_type',
+						'value' => 'image',
+					),
+					array(
+						'field' => '_sample_mc_type',
+						'value' => 'both',
+					),
 				),
 			)
 		);
@@ -402,8 +469,13 @@ class Example_Option {
 			'_sample_text_required'      => 'text',
 			'_sample_price'              => 'number',
 			'_sample_sale_price'         => 'number',
-			'_sample_toggle_conditional' => 'toggle',
-			'_sample_select_conditional' => 'select',
+			'_sample_input_a'            => 'toggle',
+			'_sample_input_b'            => 'toggle',
+			'_sample_input_c'            => 'text',
+			'_sample_mc_type'            => 'select',
+			'_sample_mc_advanced'        => 'toggle',
+			'_sample_mc_and_field'       => 'text',
+			'_sample_mc_or_field'        => 'text',
 			'_sample_image'              => 'image',
 			'_sample_gallery'            => 'gallery',
 			'_sample_file'               => 'file',

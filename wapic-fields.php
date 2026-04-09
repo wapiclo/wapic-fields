@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name:       Wapic Fields
  * Plugin URI:        https://wapiclo.com/wapic-fields
@@ -15,7 +16,7 @@
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
+if (! defined('WPINC')) {
 	die;
 }
 
