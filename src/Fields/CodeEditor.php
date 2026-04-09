@@ -27,10 +27,13 @@ class CodeEditor extends Field {
     protected function render_input(string $required_attr): void {
         Assets::get_instance()->require_asset('code_editor');
 
+        $language = $this->attributes['language'] ?? 'text/html';
+
         printf(
-            '<div class="wcf-code-editor-outer"><textarea id="%s" name="%s" class="wcf-code-editor wcf-field__input" %s %s>%s</textarea></div>',
+            '<div class="wcf-code-editor-outer"><textarea id="%s" name="%s" class="wcf-code-editor wcf-field__input" data-language="%s" %s %s>%s</textarea></div>',
             esc_attr($this->id),
             esc_attr($this->name),
+            esc_attr($language),
             $required_attr, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             $this->get_attributes_string(), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             esc_textarea((string) $this->value)

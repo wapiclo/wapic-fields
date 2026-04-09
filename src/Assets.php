@@ -136,7 +136,23 @@ class Assets {
 		if ($this->required_assets['code_editor']) {
 			$settings = wp_enqueue_code_editor(array('type' => 'text/html'));
 			if (false !== $settings) {
-				wp_add_inline_script('code-editor', sprintf('jQuery( function() { jQuery(".wcf-code-editor").each(function() { wp.codeEditor.initialize( jQuery(this), %s ); }); } );', wp_json_encode($settings)));
+				wp_add_inline_script('code-editor', sprintf(
+					'jQuery( function() { 
+						var baseSettings = %s;
+						jQuery(".wcf-code-editor").each(function() { 
+							var $el = jQuery(this);
+							var lang = $el.data("language") || "text/html";
+							var settings = jQuery.extend(true, {}, baseSettings);
+							settings.codemirror.mode = lang;
+							if (lang === "text/css") settings.codemirror.lint = true;
+							var editor = wp.codeEditor.initialize($el, settings); 
+							setTimeout(function() {
+								editor.codemirror.refresh();
+							}, 200);
+						}); 
+					});', 
+					wp_json_encode($settings)
+				));
 			}
 		}
 

@@ -1212,11 +1212,41 @@
   border: 1px solid var(--wcf-border-color);
   border-radius: var(--wcf-border-radius);
   overflow: hidden;
+  max-width: 600px;
+  width: 100%;
 
   .CodeMirror {
-    height: auto;
-    min-height: 150px;
+    height: 300px;
     font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
     font-size: 13px;
+    line-height: 1.6;
+    background: #fff;
+    border: 0;
+    
+    .CodeMirror-lines {
+      padding: 10px 0;
+    }
+
+    pre.CodeMirror-line {
+      padding: 0 12px;
+      border: 0;
+    }
+  }
+
+  .CodeMirror-gutters {
+    border-right: 1px solid var(--wcf-border-color-soft);
+    background-color: #f7f7f7;
+    white-space: nowrap;
+    min-height: 100%;
+    z-index: 3;
+  }
+
+  .CodeMirror-linenumber {
+    color: #999;
+    padding: 0 8px;
+    min-width: 25px;
+    text-align: right;
+    white-space: nowrap;
+    display: inline-block;
   }
 }

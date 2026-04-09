@@ -503,9 +503,25 @@ class Example_Option {
 			array(
 				'id'          => '_sample_code',
 				'type'        => 'code_editor',
-				'label'       => esc_html__('Code Editor', 'wapic-field'),
-				'description' => esc_html__('Edit code with syntax highlighting.', 'wapic-field'),
-				'value'       => get_option('_sample_code', '/* Add your custom CSS here */'),
+				'label'       => esc_html__('Code Editor (HTML)', 'wapic-field'),
+				'description' => esc_html__('Edit HTML with syntax highlighting.', 'wapic-field'),
+				'value'       => get_option('_sample_code', '<p>Hello World</p>'),
+				'attributes'  => array(
+					'language' => 'text/html',
+				),
+			)
+		);
+
+		Field::add_control(
+			array(
+				'id'          => '_sample_code_css',
+				'type'        => 'code_editor',
+				'label'       => esc_html__('Code Editor (CSS)', 'wapic-field'),
+				'description' => esc_html__('Edit CSS with syntax highlighting.', 'wapic-field'),
+				'value'       => get_option('_sample_code_css', 'body { background: #fff; }'),
+				'attributes'  => array(
+					'language' => 'text/css',
+				),
 			)
 		);
 	}
@@ -546,6 +562,7 @@ class Example_Option {
 			'_sample_slider'             => 'slider',
 			'_sample_image_select_row'   => 'image_select',
 			'_sample_code'               => 'code_editor',
+			'_sample_code_css'           => 'code_editor',
 		);
 
 		foreach ($fields as $field_name => $field_type) {
