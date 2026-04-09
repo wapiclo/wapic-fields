@@ -152,9 +152,16 @@
         }, 10);
       }
       // Restore original input types
-      wrapper.querySelectorAll("input[data-original-type]").forEach(function (input) {
-        input.type = input.getAttribute("data-original-type");
+      wrapper.querySelectorAll("[data-original-type]").forEach(function (input) {
+        if (input.tagName === 'INPUT') {
+            input.type = input.getAttribute("data-original-type");
+        } else {
+            input.style.display = '';
+        }
         input.removeAttribute("data-original-type");
+        input.removeAttribute("data-is-hidden");
+        input.disabled = false;
+
         const hiddenFlag = wrapper.querySelector('input[name="' + input.name + '_is_hidden"]');
         if (hiddenFlag) {
           hiddenFlag.remove();
@@ -169,10 +176,19 @@
         }, 10);
       }
       // Store original input type and change to hidden
-      wrapper.querySelectorAll('input:not([type="hidden"])').forEach(function (input) {
+      wrapper.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(function (input) {
         if (!input.hasAttribute("data-original-type")) {
-          input.setAttribute("data-original-type", input.type);
-          input.type = "hidden";
+          input.setAttribute("data-original-type", input.type || input.tagName.toLowerCase());
+          
+          if (input.tagName === 'INPUT') {
+            input.type = "hidden";
+          } else {
+            input.style.display = 'none';
+          }
+
+          input.setAttribute("data-is-hidden", "true");
+          input.disabled = true;
+
           const hiddenFlag = document.createElement("input");
           hiddenFlag.type = "hidden";
           hiddenFlag.name = input.name + "_is_hidden";
