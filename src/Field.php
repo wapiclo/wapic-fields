@@ -216,7 +216,7 @@ abstract class Field {
 
         echo '<div class="' . $wrapper_class . '" ' . $data_cond . '>';
 
-        if ($this->label && ! in_array($this->type, ['toggle', 'checkbox', 'radio'], true) && ! $is_term && ! $is_table) {
+        if ($this->label && ! in_array($this->type, ['toggle', 'checkbox', 'radio', 'heading', 'divider'], true) && ! $is_term && ! $is_table) {
             $required_mark = ! empty($this->required) ? '<span class="required">*</span>' : '';
             echo '<label class="wcf-field__label" for="' . esc_attr($this->id) . '"><strong>' . esc_html($this->label) . $required_mark . '</strong></label>';
         }
@@ -293,6 +293,8 @@ abstract class Field {
             'phone' => 'Phone',
             'number' => 'Number',
             'url' => 'Url',
+            'heading' => 'Heading',
+            'divider' => 'Divider',
         ];
 
         if (isset($map[$type])) {

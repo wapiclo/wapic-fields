@@ -958,3 +958,36 @@
     height: 100% !important;
   }
 }
+/**
+ * Heading & Divider Fields
+ */
+.wcf-field-type-heading {
+    margin: 40px 0 15px;
+    padding: 0;
+    
+    .wcf-field-heading {
+        width: 100%;
+        border-bottom: 2px solid #dcdcde;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+        
+        &__title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1d2327;
+            letter-spacing: -0.01em;
+        }
+    }
+}
+
+.wcf-field-type-divider {
+    margin: 25px 0;
+    padding: 0;
+    
+    .wcf-field-divider {
+        border: 0;
+        border-top: 1px solid #dcdcde;
+        margin: 0;
+    }
+}

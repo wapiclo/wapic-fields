@@ -239,17 +239,17 @@ class Example_Option {
 			)
 		);
 
-		echo '<div class="wcf-section-divider"></div>';
-		echo '<h3>' . esc_html__('Cascading Logic Example (A -> B -> C)', 'wapic-field') . '</h3>';
+		Field::add_control(array(
+			'type'  => 'heading',
+			'label' => esc_html__('Cascading Logic Example (A -> B -> C)', 'wapic-field'),
+		));
 
-		Field::add_control(
-			array(
-				'id'    => '_sample_input_a',
-				'type'  => 'toggle',
-				'label' => esc_html__('Input A (Active B)', 'wapic-field'),
-				'value' => get_option('_sample_input_a', 'no'),
-			)
-		);
+		Field::add_control(array(
+			'id'    => '_sample_input_a',
+			'type'  => 'toggle',
+			'label' => esc_html__('Input A (Active B)', 'wapic-field'),
+			'value' => get_option('_sample_input_a', 'no'),
+		));
 
 		Field::add_control(
 			array(
@@ -278,8 +278,14 @@ class Example_Option {
 			)
 		);
 
-		echo '<div class="wcf-section-divider"></div>';
-		echo '<h3>' . esc_html__('Multi-Condition Logic (AND / OR)', 'wapic-field') . '</h3>';
+		Field::add_control(array(
+			'type' => 'divider',
+		));
+
+		Field::add_control(array(
+			'type'  => 'heading',
+			'label' => esc_html__('Multi-Condition Logic (AND / OR)', 'wapic-field'),
+		));
 
 		Field::add_control(
 			array(

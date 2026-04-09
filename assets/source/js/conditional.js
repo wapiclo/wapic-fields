@@ -31,6 +31,12 @@
 
     if (!trigger) return null;
 
+    // IF the trigger's wrapper is hidden, treat the value as empty (for cascading)
+    const wrapper = trigger.closest(".wcf-field-conditional");
+    if (wrapper && wrapper.hidden) {
+      return "";
+    }
+
     if (trigger.type === "checkbox") {
       return trigger.checked ? trigger.value : "";
     } else if (trigger.type === "radio") {
@@ -140,8 +146,10 @@
     if (isMatch) {
       if (wrapper.hidden) {
         wrapper.hidden = false;
-        // Trigger re-check for other fields that might depend on fields inside this wrapper
-        WapicFieldConditionalFields();
+        // Small delay to ensure children inputs are visible before re-running
+        setTimeout(function() {
+          WapicFieldConditionalFields();
+        }, 10);
       }
       // Restore original input types
       wrapper.querySelectorAll("input[data-original-type]").forEach(function (input) {
@@ -155,8 +163,10 @@
     } else {
       if (!wrapper.hidden) {
         wrapper.hidden = true;
-        // Trigger re-check for other fields that might depend on fields inside this wrapper
-        WapicFieldConditionalFields();
+        // Small delay to ensure children inputs are hidden before re-running
+        setTimeout(function() {
+          WapicFieldConditionalFields();
+        }, 10);
       }
       // Store original input type and change to hidden
       wrapper.querySelectorAll('input:not([type="hidden"])').forEach(function (input) {
@@ -190,3 +200,23 @@
 
   document.addEventListener("DOMContentLoaded", WapicFieldConditionalFieldsInit);
 })();
+
+/**
+ * Handle recursive display for headings and dividers inside conditional wrappers.
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'hidden') {
+                const wrapper = mutation.target;
+                const isHidden = wrapper.hidden;
+                // Find headings and dividers inside and sync their visibility if needed
+                // (Though they are inside the wrapper, so they should hide anyway)
+            }
+        });
+    });
+
+    document.querySelectorAll('.wcf-field-conditional').forEach(function(el) {
+        observer.observe(el, { attributes: true });
+    });
+});
