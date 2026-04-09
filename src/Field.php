@@ -369,17 +369,27 @@ abstract class Field {
         }
     }
 
-    public static function start_controls_section($tabs) {
-        echo '<div class="wcf-tabs">';
+    public static function start_controls_section($tabs, $args = array()) {
+        $args = wp_parse_args($args, array(
+            'orientation' => 'horizontal', // horizontal, vertical
+        ));
+
+        $wrapper_class = 'wcf-tabs-wrapper wcf-tabs-orientation-' . esc_attr($args['orientation']);
+        
+        echo '<div class="' . $wrapper_class . '">';
+        echo '<div class="wcf-tabs">'; // Flex container
         echo '<ul class="wcf-tabs-nav">';
         foreach ($tabs as $tab => $label) {
             echo '<li><a href="#tab-' . esc_attr($tab) . '"><strong>' . esc_html($label) . '</strong></a></li>';
         }
         echo '</ul>';
+        echo '<div class="wcf-tabs-content-wrapper">'; // New wrapper for all tab contents
     }
 
     public static function end_controls_section() {
-        echo '</div>';
+        echo '</div>'; // .wcf-tabs-content-wrapper
+        echo '</div>'; // .wcf-tabs
+        echo '</div>'; // .wcf-tabs-wrapper
     }
 
     public static function start_controls_group($args) {

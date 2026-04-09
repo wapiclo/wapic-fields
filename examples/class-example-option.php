@@ -60,6 +60,9 @@ class Example_Option {
 				'general'     => esc_html__('General', 'wapic-field'),
 				'conditional' => esc_html__('Conditional', 'wapic-field'),
 				'advanced'    => esc_html__('Advanced', 'wapic-field'),
+			),
+			array(
+				'orientation' => 'horizontal',
 			)
 		);
 

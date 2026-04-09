@@ -70,7 +70,14 @@
 
   .wcf-panel {
     flex: 1;
+    margin-bottom: 30px;
   }
+
+  @media only screen and (max-width: 958px) {
+    display: block;
+  }
+
+
 }
 
 // ----------------------------------------------------
@@ -315,6 +322,82 @@
 
     @media only screen and (min-width: 768px) {
       border-bottom: 1px solid #fff;
+    }
+  }
+}
+
+// Vertical Orientation (Sidebar Tabs)
+.wcf-tabs-orientation-vertical {
+  background: #fff;
+
+  @media only screen and (min-width: 768px) {
+    .wcf-tabs {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .wcf-tabs-nav {
+      flex: 0 0 160px;
+      background-color: #f7f7f7;
+      border-right: 1px solid var(--wcf-border-color-soft);
+      border-bottom: none;
+      padding: 0 !important; // Zero padding to remove the box gap
+      gap: 0 !important;
+      min-height: 400px;
+      margin: 0 !important;
+      display: flex;
+      flex-direction: column;
+
+      li {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      li a {
+        border: none;
+        border-bottom: 1px solid var(--wcf-border-color-soft);
+        margin-bottom: 0;
+        padding: 12px 15px; // Balanced vertical padding
+        background-color: #f7f7f7;
+        font-size: 13px;
+        transition: none;
+        color: #555;
+        border-left: 3px solid transparent; // WooCommerce style indicator
+
+        &:hover {
+          background-color: #eeeff0;
+          color: #2271b1;
+        }
+      }
+
+      li.is-active a {
+        background-color: #fff;
+        color: var(--wcf-color-primary);
+        font-weight: 600;
+        border-right: 1px solid #fff;
+        border-left: 3px solid var(--wcf-color-primary); // Indicators
+        margin-right: -1px;
+        position: relative;
+        z-index: 2;
+      }
+
+      li:last-child a {
+        border-bottom: none;
+      }
+    }
+
+    .wcf-tabs-content-wrapper {
+      flex: 1;
+      padding: 20px 30px; // Compact yet spacious
+      background: #fff;
+    }
+  }
+
+  @media only screen and (max-width: 767px) {
+    .wcf-tabs-content-wrapper {
+      padding: 15px;
     }
   }
 }
@@ -1222,7 +1305,7 @@
     line-height: 1.6;
     background: #fff;
     border: 0;
-    
+
     .CodeMirror-lines {
       padding: 10px 0;
     }
