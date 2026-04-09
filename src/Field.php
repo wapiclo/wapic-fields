@@ -179,10 +179,21 @@ abstract class Field {
 
         $data_cond = '';
         if (! empty($this->condition)) {
-            if (isset($this->condition['field'], $this->condition['value'])) {
-                $wrapper_class .= ' wcf-field-conditional';
-                $operator       = $this->condition['operator'] ?? '==';
-                $data_cond      = sprintf(
+            $wrapper_class .= ' wcf-field-conditional';
+            
+            $is_multi = isset($this->condition['relation']) || (isset($this->condition[0]) && is_array($this->condition[0]));
+            
+            if ($is_multi) {
+                // Handle multi-conditions (Carbon Fields style)
+                $conditions = $this->condition;
+                if (! isset($conditions['relation'])) {
+                    $conditions['relation'] = 'AND';
+                }
+                $data_cond = 'data-conditions="' . esc_attr(wp_json_encode($conditions)) . '"';
+            } elseif (isset($this->condition['field'], $this->condition['value'])) {
+                // Legacy single condition
+                $operator  = $this->condition['operator'] ?? '==';
+                $data_cond = sprintf(
                     'data-condition-field="%s" data-condition-operator="%s" data-condition-value="%s"',
                     esc_attr($this->condition['field']),
                     esc_attr($operator),
