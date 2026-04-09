@@ -295,6 +295,9 @@ abstract class Field {
             'url' => 'Url',
             'heading' => 'Heading',
             'separator' => 'Separator',
+            'image_select' => 'ImageSelect',
+            'code_editor' => 'CodeEditor',
+            'slider' => 'Slider',
         ];
 
         if (isset($map[$type])) {
@@ -471,6 +474,9 @@ abstract class Field {
             case 'image':
                 return (int) $value;
 
+            case 'image_select':
+                return sanitize_text_field((string) $value);
+
             case 'gallery':
                 if (is_array($value)) {
                     $filtered = array_filter(array_map('intval', $value));
@@ -484,6 +490,7 @@ abstract class Field {
                 return ($value === 'yes' || $value === true || $value === '1' || $value === 1) ? 'yes' : 'no';
 
             case 'number':
+            case 'slider':
                 return is_numeric($value) ? $value + 0 : null;
 
             case 'email':
@@ -497,6 +504,9 @@ abstract class Field {
                     return sanitize_text_field((string) $value);
                 }
                 return '';
+
+            case 'code_editor':
+                return (string) $value; // Do not sanitize code as it might contain valid code
 
             default:
                 return sanitize_text_field((string) $value);

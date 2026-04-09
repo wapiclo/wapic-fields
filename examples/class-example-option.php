@@ -456,6 +456,58 @@ class Example_Option {
 				'value'       => get_option('_sample_editor'),
 			)
 		);
+
+		Field::add_control(
+			array(
+				'id'    => '_sample_slider',
+				'type'  => 'slider',
+				'label' => esc_html__('Slider Number', 'wapic-field'),
+				'description' => esc_html__('Drag to select a numeric value.', 'wapic-field'),
+				'value' => get_option('_sample_slider', 50),
+				'attributes' => array(
+					'min'  => 0,
+					'max'  => 100,
+					'step' => 5,
+				),
+			)
+		);
+
+		Field::add_control(
+			array(
+				'id'      => '_sample_image_select_row',
+				'type'    => 'image_select',
+				'label'   => esc_html__('Image Select', 'wapic-field'),
+				'description' => esc_html__('Horizontal layout for visual options.', 'wapic-field'),
+				'options' => array(
+					'option_1' => array(
+						'label' => 'Standard',
+						'image' => 'https://placehold.co/300x300',
+					),
+					'option_2' => array(
+						'label' => 'Compact',
+						'image' => 'https://placehold.co/300x300',
+					),
+					'option_3' => array(
+						'label' => 'List',
+						'image' => 'https://placehold.co/300x300',
+					),
+				),
+				'value' => get_option('_sample_image_select_row'),
+				'attributes' => array(
+					'layout' => 'row',
+				),
+			)
+		);
+
+		Field::add_control(
+			array(
+				'id'          => '_sample_code',
+				'type'        => 'code_editor',
+				'label'       => esc_html__('Code Editor', 'wapic-field'),
+				'description' => esc_html__('Edit code with syntax highlighting.', 'wapic-field'),
+				'value'       => get_option('_sample_code', '/* Add your custom CSS here */'),
+			)
+		);
 	}
 
 	/**
@@ -491,6 +543,9 @@ class Example_Option {
 			'_sample_color'              => 'color',
 			'_sample_select2'            => 'select2',
 			'_sample_editor'             => 'editor',
+			'_sample_slider'             => 'slider',
+			'_sample_image_select_row'   => 'image_select',
+			'_sample_code'               => 'code_editor',
 		);
 
 		foreach ($fields as $field_name => $field_type) {

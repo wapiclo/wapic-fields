@@ -46,11 +46,14 @@ class Assets {
 	 * @var array<string, bool>
 	 */
 	private $required_assets = array(
-		'select2'     => false,
-		'colorpicker' => false,
-		'datepicker'  => false,
-		'media'       => false,
-		'editor'      => false,
+		'select2'      => false,
+		'colorpicker'  => false,
+		'datepicker'   => false,
+		'media'        => false,
+		'editor'       => false,
+		'code_editor'  => false,
+		'slider'       => false,
+		'image_select' => false,
 	);
 
 	/**
@@ -128,6 +131,21 @@ class Assets {
 			// Panggil stylesheet bawaan editor
 			wp_enqueue_style('wp-tinymce-skin', site_url('/wp-includes/js/tinymce/skins/lightgray/skin.min.css'), array(), null);
 			wp_enqueue_style('wp-editor-core', site_url('/wp-includes/css/editor.min.css'), array(), get_bloginfo('version'));
+		}
+
+		if ($this->required_assets['code_editor']) {
+			$settings = wp_enqueue_code_editor(array('type' => 'text/html'));
+			if (false !== $settings) {
+				wp_add_inline_script('code-editor', sprintf('jQuery( function() { jQuery(".wcf-code-editor").each(function() { wp.codeEditor.initialize( jQuery(this), %s ); }); } );', wp_json_encode($settings)));
+			}
+		}
+
+		if ($this->required_assets['slider']) {
+			wp_enqueue_script('wapic-field-slider', WAPIC_FIELDS_ASSETS . 'assets/js/slider.min.js', array('jquery'), WAPIC_FIELDS_VERSION, true);
+		}
+
+		if ($this->required_assets['image_select']) {
+			wp_enqueue_script('wapic-field-image-select', WAPIC_FIELDS_ASSETS . 'assets/js/image-select.min.js', array('jquery'), WAPIC_FIELDS_VERSION, true);
 		}
 
 		// Enqueue the main admin script as a module

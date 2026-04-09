@@ -1031,3 +1031,192 @@
     margin: 0;
   }
 }
+
+// ----------------------------------------------------
+// Control - Image Select
+// ----------------------------------------------------
+.wcf-image-select {
+  gap: 15px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  width: 100%;
+
+  &__item {
+    position: relative;
+    border: 1px solid var(--wcf-border-color-soft);
+    border-radius: var(--wcf-border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+    width: 100px;
+
+    &:hover {
+      border-color: #aaa;
+    }
+
+    &.is-selected {
+      border-color: var(--wcf-color-primary) !important;
+      box-shadow: 0 0 0 1px var(--wcf-color-primary) !important;
+      background-color: rgba(var(--wcf-color-primary-rgb, 34, 113, 177), 0.02);
+      z-index: 1;
+    }
+
+    // Modern browser support for non-JS fallback
+    &:has(.wcf-image-select__input:checked) {
+      border-color: var(--wcf-color-primary);
+      box-shadow: 0 0 0 1px var(--wcf-color-primary);
+    }
+  }
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  &__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    cursor: pointer;
+    margin-bottom: 0 !important;
+    width: 100%;
+  }
+
+  &__image-wrapper {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f8f8;
+    margin-bottom: 0;
+    border-radius: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  &__check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    background: var(--wcf-color-primary);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &__image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  &__item.is-selected &__check,
+  &__item:has(.wcf-image-select__input:checked) &__check {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  &__text {
+    width: 100%;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    padding: 8px 5px;
+    line-height: 1.2;
+    display: block;
+  }
+}
+
+// ----------------------------------------------------
+// Control - Slider
+// ----------------------------------------------------
+.wcf-slider-container {
+  padding: 10px 0;
+}
+
+.wcf-slider-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.wcf-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: var(--wcf-border-color-soft);
+  border-radius: 5px;
+  outline: none;
+  margin: 0;
+  padding: 0;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--wcf-color-primary);
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+  }
+
+  &::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--wcf-color-primary);
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+  }
+}
+
+.wcf-slider-value {
+  min-width: 35px;
+  padding: 4px 8px;
+  background: var(--wcf-color-foreground);
+  border: 1px solid var(--wcf-border-color-soft);
+  border-radius: 3px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+// ----------------------------------------------------
+// Control - Code Editor
+// ----------------------------------------------------
+.wcf-code-editor-outer {
+  border: 1px solid var(--wcf-border-color);
+  border-radius: var(--wcf-border-radius);
+  overflow: hidden;
+
+  .CodeMirror {
+    height: auto;
+    min-height: 150px;
+    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+    font-size: 13px;
+  }
+}
