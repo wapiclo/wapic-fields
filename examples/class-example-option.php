@@ -62,7 +62,7 @@ class Example_Option {
 				'advanced'    => esc_html__('Advanced', 'wapic-field'),
 			),
 			array(
-				'orientation' => 'horizontal',
+				'layout' => 'top',
 			)
 		);
 

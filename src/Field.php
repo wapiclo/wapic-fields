@@ -180,9 +180,9 @@ abstract class Field {
         $data_cond = '';
         if (! empty($this->condition)) {
             $wrapper_class .= ' wcf-field-conditional';
-            
+
             $is_multi = isset($this->condition['relation']) || (isset($this->condition[0]) && is_array($this->condition[0]));
-            
+
             if ($is_multi) {
                 // Handle multi-conditions (Carbon Fields style)
                 $conditions = $this->condition;
@@ -371,11 +371,11 @@ abstract class Field {
 
     public static function start_controls_section($tabs, $args = array()) {
         $args = wp_parse_args($args, array(
-            'orientation' => 'horizontal', // horizontal, vertical
+            'layout' => 'top', // top, left
         ));
 
-        $wrapper_class = 'wcf-tabs-wrapper wcf-tabs-orientation-' . esc_attr($args['orientation']);
-        
+        $wrapper_class = 'wcf-tabs-wrapper wcf-tabs-layout-' . esc_attr($args['layout']);
+
         echo '<div class="' . $wrapper_class . '">';
         echo '<div class="wcf-tabs">'; // Flex container
         echo '<ul class="wcf-tabs-nav">';

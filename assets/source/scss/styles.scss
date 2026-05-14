@@ -326,8 +326,8 @@
   }
 }
 
-// Vertical Orientation (Sidebar Tabs)
-.wcf-tabs-orientation-vertical {
+// Left Layout (Sidebar Tabs)
+.wcf-tabs-layout-left {
   background: #fff;
 
   @media only screen and (min-width: 768px) {
@@ -339,6 +339,7 @@
 
     .wcf-tabs-nav {
       flex: 0 0 160px;
+      flex-basis: 270px;
       background-color: #f7f7f7;
       border-right: 1px solid var(--wcf-border-color-soft);
       border-bottom: none;
