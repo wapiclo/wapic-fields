@@ -150,7 +150,7 @@ abstract class Field {
      * Handle default value logic.
      */
     protected function handle_default_value(): void {
-        $is_edit = isset($_GET['action']) || isset($_GET['tag_ID']) || isset($_GET['page']) || isset($_GET['user_id']) || isset($_GET['wp_http_referer']);
+        $is_edit = filter_input(INPUT_GET, 'action') || filter_input(INPUT_GET, 'tag_ID') || filter_input(INPUT_GET, 'page') || filter_input(INPUT_GET, 'user_id') || filter_input(INPUT_GET, 'wp_http_referer');
         $allow_empty = ! $is_edit;
 
         $invalid = $this->value === null || $this->value === false || ($allow_empty && $this->value === '');
@@ -171,7 +171,7 @@ abstract class Field {
         }
 
         if (
-            isset($_GET['settings-updated']) && $_GET['settings-updated'] === 'true' &&
+            filter_input(INPUT_GET, 'settings-updated') === 'true' &&
             ! empty($this->required) && empty($this->value) && $this->value !== '0'
         ) {
             $wrapper_class .= ' has-field-error';
@@ -202,13 +202,13 @@ abstract class Field {
             }
         }
 
-        $is_term  = isset($_GET['taxonomy']) && isset($_GET['tag_ID']);
+        $is_term  = filter_input(INPUT_GET, 'taxonomy') && filter_input(INPUT_GET, 'tag_ID');
         $is_table = $this->style === 'table';
 
         if ($is_table || $is_term) {
             $required_mark = ! empty($this->required) ? '<span class="required">*</span>' : '';
             echo '<tr class="form-field term-group-wrap">';
-            echo '<th scope="row"><label for="' . esc_attr($this->id) . '">' . esc_html($this->label) . $required_mark . '</label></th>';
+            echo '<th scope="row"><label for="' . esc_attr($this->id) . '">' . esc_html($this->label) . wp_kses_post($required_mark) . '</label></th>';
             echo '<td>';
         } else {
             echo '<div class="form-field term-group">';
@@ -218,7 +218,7 @@ abstract class Field {
 
         if ($this->label && ! in_array($this->type, ['toggle', 'checkbox', 'radio', 'heading', 'separator'], true) && ! $is_term && ! $is_table) {
             $required_mark = ! empty($this->required) ? '<span class="required">*</span>' : '';
-            echo '<label class="wcf-field__label" for="' . esc_attr($this->id) . '"><strong>' . esc_html($this->label) . $required_mark . '</strong></label>';
+            echo '<label class="wcf-field__label" for="' . esc_attr($this->id) . '"><strong>' . esc_html($this->label) . wp_kses_post($required_mark) . '</strong></label>';
         }
 
         $required_attr = ! empty($this->required) ? 'data-required="true"' : '';

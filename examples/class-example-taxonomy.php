@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CustomTaxonomy
  *
@@ -42,7 +43,7 @@ class Example_Taxonomy {
     public function notices() {
 
         // Tampilkan hanya di halaman taxonomy ini
-        if (! isset($_GET['taxonomy']) || $_GET['taxonomy'] !== $this->id) {
+        if (filter_input(INPUT_GET, 'taxonomy') !== $this->id) {
             return;
         }
 
@@ -80,6 +81,7 @@ class Example_Taxonomy {
      * Reusable for Add + Edit screens
      */
     private function render_fields($term_id = 0) {
+        wp_nonce_field("{$this->id}_taxonomy_save", "{$this->id}_taxonomy_nonce");
 
         Field::add_control(array(
             'id'    => '_sample_text',
@@ -130,6 +132,13 @@ class Example_Taxonomy {
      */
     public function save_field($term_id, $tt_id) {
 
+        if (
+            ! isset($_POST["{$this->id}_taxonomy_nonce"]) ||
+            ! wp_verify_nonce($_POST["{$this->id}_taxonomy_nonce"], "{$this->id}_taxonomy_save")
+        ) {
+            return;
+        }
+
         // Field definitions
         $fields = array(
             '_sample_text'     => 'text',
@@ -156,7 +165,6 @@ class Example_Taxonomy {
                     $sanitized = Field::sanitize_value($type, $value);
                     update_term_meta($term_id, $key, $sanitized);
                 }
-
             } else {
                 // Field removed → delete meta
                 delete_term_meta($term_id, $key);

@@ -71,7 +71,7 @@ add_action(
 		}
 
 		// For taxonomy add/edit term pages
-		if (isset($_GET['taxonomy'])) {
+		if (filter_input(INPUT_GET, 'taxonomy')) {
 			$assets->require_asset('media');
 			$assets->enqueue_assets();
 		}

@@ -1,4 +1,7 @@
 <?php
+if (! defined('ABSPATH')) {
+    exit;
+}
 
 /**
  * Autoloader for Codewapic Field plugin
