@@ -1072,32 +1072,36 @@
   }
 }
 
-/**
- * Heading & Separator Fields
- */
+// ----------------------------------------------------
+// Control - Heading
+// ----------------------------------------------------
 .wcf-field-type-heading {
-  margin: 40px 0 15px;
-  padding: 0;
+  width: 100%;
+  border-top: 1px solid var(--wcf-border-color-soft) !important;
+  border-bottom: 1px solid var(--wcf-border-color-soft) !important;
+  background-color: var(--wcf-color-foreground);
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  margin-bottom: 5px;
 
   .wcf-field-heading {
-    width: 100%;
-    border-bottom: 2px solid var(--wcf-border-color-soft);
-    padding-bottom: 8px;
-    margin-bottom: 15px;
-
     &__title {
       margin: 0;
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 600;
       color: #1d2327;
       letter-spacing: -0.01em;
     }
   }
 }
 
+// ----------------------------------------------------
+// Control - Separator
+// ----------------------------------------------------
 .wcf-field-type-separator {
   margin: 25px 0;
-  padding: 0;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 
   .wcf-field-separator {
     border: 0;
