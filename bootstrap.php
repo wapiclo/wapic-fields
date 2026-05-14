@@ -5,7 +5,7 @@
  *
  * @package    Wapic_Fields
  * @subpackage Core
- * @since      2.1.0
+ * @since      2.2.0
  * @author     Wapiclo Team
  * @license    GPL-2.0+
  * @link       https://wapiclo.com/
@@ -20,7 +20,7 @@ if (defined('WAPIC_FIELDS_INIT')) {
 }
 
 define('WAPIC_FIELDS_INIT', true);
-define('WAPIC_FIELDS_VERSION', '2.1.0');
+define('WAPIC_FIELDS_VERSION', '2.2.0');
 define('WAPIC_FIELDS_DIR', __DIR__);
 define('WAPIC_FIELDS_PATH', plugin_dir_path(__FILE__));
 define('WAPIC_FIELDS_ASSETS', plugin_dir_url(__FILE__));
@@ -50,30 +50,26 @@ add_action(
 	}
 );
 
-// Enqueue assets di admin_footer
-add_action(
-	'admin_footer',
-	function () {
-		\Wapic_Fields\Assets::get_instance()->enqueue_assets();
-	}
-);
-
-// Enqueue assets for metabox and taxonomy pages
+// Enqueue assets
 add_action(
 	'admin_enqueue_scripts',
 	function ($hook) {
 		$assets = \Wapic_Fields\Assets::get_instance();
 
-		// For metabox pages (post.php, post-new.php)
-		if (in_array($hook, array('post.php', 'post-new.php'))) {
+		// Proaktif load media asset untuk halaman metabox dan taxonomy
+		if (in_array($hook, array('post.php', 'post-new.php')) || filter_input(INPUT_GET, 'taxonomy')) {
 			$assets->require_asset('media');
-			$assets->enqueue_assets();
 		}
 
-		// For taxonomy add/edit term pages
-		if (filter_input(INPUT_GET, 'taxonomy')) {
-			$assets->require_asset('media');
-			$assets->enqueue_assets();
-		}
+		// Load assets di head untuk menghindari FOUC (Flash of Unstyled Content)
+		$assets->enqueue_assets();
+	}
+);
+
+// Fallback untuk asset yang baru di-require saat proses render komponen (on-the-fly)
+add_action(
+	'admin_footer',
+	function () {
+		\Wapic_Fields\Assets::get_instance()->enqueue_assets();
 	}
 );
