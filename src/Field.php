@@ -468,15 +468,22 @@ abstract class Field {
                 return $sanitized !== '' ? [$sanitized] : [];
 
             case 'url':
+            case 'file':
                 return esc_url_raw((string) $value);
 
             case 'textarea':
                 return sanitize_textarea_field((string) $value);
 
+            case 'editor':
+                return wp_kses_post((string) $value);
+
             case 'select':
             case 'radio':
             case 'text':
                 return sanitize_text_field((string) $value);
+
+            case 'color':
+                return sanitize_hex_color((string) $value);
 
             case 'checkbox':
                 return array_map('sanitize_text_field', (array) $value);
