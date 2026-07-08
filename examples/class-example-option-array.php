@@ -27,8 +27,8 @@ class Example_Option_Array {
 	 */
 	public function register() {
 		add_menu_page(
-			esc_html__('Wapic Fields — Array Storage', 'wapic-field'),
-			esc_html__('Wapic Array', 'wapic-field'),
+			esc_html__('Wapic Fields — Array Storage', 'wapic-fields'),
+			esc_html__('Wapic Array', 'wapic-fields'),
 			'manage_options',
 			$this->id,
 			array($this, 'render'),
@@ -51,35 +51,35 @@ class Example_Option_Array {
 	public function render() {
 
 		Field::start_controls_panel(array(
-			'title' => esc_html__('Wapic Fields — Array Storage Example', 'wapic-field'),
+			'title' => esc_html__('Wapic Fields — Array Storage Example', 'wapic-fields'),
 			'id'    => $this->id,
 			'type'  => 'setting',
 		));
 
 		Field::add_control(array(
 			'type'  => 'html',
-			'value' => '<p><strong>' . esc_html__('All fields below are stored in a single database row.', 'wapic-field') . '</strong></p>',
+			'value' => '<p><strong>' . esc_html__('All fields below are stored in a single database row.', 'wapic-fields') . '</strong></p>',
 		));
 
 		/* Text Fields */
 		Field::add_control(array(
 			'id'    => 'site_title',
 			'type'  => 'text',
-			'label' => esc_html__('Site Title', 'wapic-field'),
+			'label' => esc_html__('Site Title', 'wapic-fields'),
 			'value' => $this->get_option('site_title', ''),
 		));
 
 		Field::add_control(array(
 			'id'    => 'site_email',
 			'type'  => 'email',
-			'label' => esc_html__('Site Email', 'wapic-field'),
+			'label' => esc_html__('Site Email', 'wapic-fields'),
 			'value' => $this->get_option('site_email', ''),
 		));
 
 		Field::add_control(array(
 			'id'    => 'site_phone',
 			'type'  => 'phone',
-			'label' => esc_html__('Site Phone', 'wapic-field'),
+			'label' => esc_html__('Site Phone', 'wapic-fields'),
 			'value' => $this->get_option('site_phone', ''),
 		));
 
@@ -87,11 +87,11 @@ class Example_Option_Array {
 		Field::add_control(array(
 			'id'      => 'site_status',
 			'type'    => 'select',
-			'label'   => esc_html__('Site Status', 'wapic-field'),
+			'label'   => esc_html__('Site Status', 'wapic-fields'),
 			'options' => array(
-				'active'      => esc_html__('Active', 'wapic-field'),
-				'maintenance' => esc_html__('Maintenance', 'wapic-field'),
-				'offline'     => esc_html__('Offline', 'wapic-field'),
+				'active'      => esc_html__('Active', 'wapic-fields'),
+				'maintenance' => esc_html__('Maintenance', 'wapic-fields'),
+				'offline'     => esc_html__('Offline', 'wapic-fields'),
 			),
 			'value' => $this->get_option('site_status', 'active'),
 		));
@@ -100,7 +100,7 @@ class Example_Option_Array {
 		 Field::add_control(array(
 			'id'    => 'enable_comments',
 			'type'  => 'toggle',
-			'label' => esc_html__('Enable Comments', 'wapic-field'),
+			'label' => esc_html__('Enable Comments', 'wapic-fields'),
 			'value' => $this->get_option('enable_comments', 'no'),
 		));
 
@@ -108,12 +108,12 @@ class Example_Option_Array {
 		Field::add_control(array(
 			'id'      => 'allowed_features',
 			'type'    => 'checkbox',
-			'label'   => esc_html__('Allowed Features', 'wapic-field'),
+			'label'   => esc_html__('Allowed Features', 'wapic-fields'),
 			'options' => array(
-				'api'       => esc_html__('API Access', 'wapic-field'),
-				'analytics' => esc_html__('Analytics', 'wapic-field'),
-				'cache'     => esc_html__('Cache', 'wapic-field'),
-				'cdn'       => esc_html__('CDN', 'wapic-field'),
+				'api'       => esc_html__('API Access', 'wapic-fields'),
+				'analytics' => esc_html__('Analytics', 'wapic-fields'),
+				'cache'     => esc_html__('Cache', 'wapic-fields'),
+				'cdn'       => esc_html__('CDN', 'wapic-fields'),
 			),
 			'value' => $this->get_option('allowed_features', array()),
 		));
@@ -122,8 +122,8 @@ class Example_Option_Array {
 		Field::add_control(array(
 			'id'          => 'site_logo',
 			'type'        => 'image',
-			'label'       => esc_html__('Site Logo', 'wapic-field'),
-			'description' => esc_html__('Upload or select a site logo.', 'wapic-field'),
+			'label'       => esc_html__('Site Logo', 'wapic-fields'),
+			'description' => esc_html__('Upload or select a site logo.', 'wapic-fields'),
 			'value'       => $this->get_option('site_logo', ''),
 		));
 
@@ -131,8 +131,8 @@ class Example_Option_Array {
 		Field::add_control(array(
 			'id'          => 'brand_color',
 			'type'        => 'color',
-			'label'       => esc_html__('Brand Color', 'wapic-field'),
-			'description' => esc_html__('Primary brand color.', 'wapic-field'),
+			'label'       => esc_html__('Brand Color', 'wapic-fields'),
+			'description' => esc_html__('Primary brand color.', 'wapic-fields'),
 			'value'       => $this->get_option('brand_color', '#0073aa'),
 		));
 
@@ -140,18 +140,18 @@ class Example_Option_Array {
 		Field::add_control(array(
 			'id'       => 'social_networks',
 			'type'     => 'select2',
-			'label'    => esc_html__('Social Networks', 'wapic-field'),
+			'label'    => esc_html__('Social Networks', 'wapic-fields'),
 			'options'  => array(
-				'facebook'  => esc_html__('Facebook', 'wapic-field'),
-				'twitter'   => esc_html__('Twitter', 'wapic-field'),
-				'instagram' => esc_html__('Instagram', 'wapic-field'),
-				'linkedin'  => esc_html__('LinkedIn', 'wapic-field'),
-				'youtube'   => esc_html__('YouTube', 'wapic-field'),
-				'tiktok'    => esc_html__('TikTok', 'wapic-field'),
+				'facebook'  => esc_html__('Facebook', 'wapic-fields'),
+				'twitter'   => esc_html__('Twitter', 'wapic-fields'),
+				'instagram' => esc_html__('Instagram', 'wapic-fields'),
+				'linkedin'  => esc_html__('LinkedIn', 'wapic-fields'),
+				'youtube'   => esc_html__('YouTube', 'wapic-fields'),
+				'tiktok'    => esc_html__('TikTok', 'wapic-fields'),
 			),
 			'attributes' => array(
 				'multiple'    => true,
-				'placeholder' => esc_html__('Select social networks...', 'wapic-field'),
+				'placeholder' => esc_html__('Select social networks...', 'wapic-fields'),
 				'allow_clear' => true,
 			),
 			'value' => $this->get_option('social_networks', array()),
@@ -161,8 +161,8 @@ class Example_Option_Array {
 		Field::add_control(array(
 			'id'          => 'custom_css',
 			'type'        => 'textarea',
-			'label'       => esc_html__('Custom CSS', 'wapic-field'),
-			'description' => esc_html__('Add custom CSS.', 'wapic-field'),
+			'label'       => esc_html__('Custom CSS', 'wapic-fields'),
+			'description' => esc_html__('Add custom CSS.', 'wapic-fields'),
 			'value'       => $this->get_option('custom_css', ''),
 		));
 
@@ -208,20 +208,22 @@ class Example_Option_Array {
 
 			// Toggle
 			if ($type === 'toggle') {
-				$output[$field] = (isset($_POST[$field]) && $_POST[$field] === 'yes') ? 'yes' : 'no';
+				$toggle = isset($_POST[$field]) ? sanitize_text_field(wp_unslash($_POST[$field])) : '';
+				$output[$field] = ($toggle === 'yes') ? 'yes' : 'no';
 				continue;
 			}
 
 			// Checkbox (array)
 			if ($type === 'checkbox') {
-				$output[$field] = isset($_POST[$field]) ? (array) $_POST[$field] : array();
+				$raw = isset($_POST[$field]) ? (array) wp_unslash($_POST[$field]) : array();
+				$output[$field] = array_map('sanitize_text_field', $raw);
 				continue;
 			}
 
 			// Other fields
 			if (isset($_POST[$field])) {
 
-				$value = $_POST[$field];
+				$value = wp_unslash($_POST[$field]); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized by Field::sanitize_value() below.
 
 				// Skip validation if hidden
 				if (isset($_POST[$field . '_is_hidden']) && $_POST[$field . '_is_hidden'] === '1') {

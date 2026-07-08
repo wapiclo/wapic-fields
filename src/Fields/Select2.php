@@ -68,20 +68,8 @@ class Select2 extends Field {
 
         echo '</select>';
 
-        // JavaScript initialization
-        echo '<script>
-    jQuery(document).ready(function($) {
-        var $select = $("#' . esc_js($this->id) . '");
-        
-        $select.select2({
-            width: "' . esc_js($width) . '",
-            placeholder: "' . esc_js($placeholder) . '",
-            allowClear: ' . $allow_clear . ',
-            ' . ($is_multiple ? 'closeOnSelect: false,' : '') . '
-        });
-
-        $select.trigger("change");
-    });
-    </script>';
+        // Initialization is handled by the enqueued select2 script (assets/js/select2.min.js),
+        // which reads the data-placeholder / data-allow-clear / data-width attributes above.
+        // Avoid emitting a per-field inline <script> so the field works under a strict CSP.
     }
 }

@@ -31,8 +31,8 @@ class Example_Option {
 	 */
 	public function register() {
 		add_menu_page(
-			esc_html__('Wapic Fields Options Example', 'wapic-field'),
-			esc_html__('Wapic Fields', 'wapic-field'),
+			esc_html__('Wapic Fields Options Example', 'wapic-fields'),
+			esc_html__('Wapic Fields', 'wapic-fields'),
 			'manage_options',
 			$this->id,
 			array($this, 'render'),
@@ -48,7 +48,7 @@ class Example_Option {
 
 		Field::start_controls_panel(
 			array(
-				'title' => esc_html__('Wapic Fields Options Example', 'wapic-field'),
+				'title' => esc_html__('Wapic Fields Options Example', 'wapic-fields'),
 				'id'    => $this->id,
 				'type'  => 'setting',
 			)
@@ -57,9 +57,9 @@ class Example_Option {
 		// Start Tabs
 		Field::start_controls_section(
 			array(
-				'general'     => esc_html__('General', 'wapic-field'),
-				'conditional' => esc_html__('Conditional', 'wapic-field'),
-				'advanced'    => esc_html__('Advanced', 'wapic-field'),
+				'general'     => esc_html__('General', 'wapic-fields'),
+				'conditional' => esc_html__('Conditional', 'wapic-fields'),
+				'advanced'    => esc_html__('Advanced', 'wapic-fields'),
 			),
 			array(
 				'layout' => 'top',
@@ -101,7 +101,7 @@ class Example_Option {
 		Field::add_control(
 			array(
 				'type'  => 'html',
-				'value' => '<p>' . esc_html__('Change the mobile browser address bar color using these settings.', 'wapic-field') . '</p>',
+				'value' => '<p>' . esc_html__('Change the mobile browser address bar color using these settings.', 'wapic-fields') . '</p>',
 			)
 		);
 
@@ -109,7 +109,7 @@ class Example_Option {
 			array(
 				'id'    => '_sample_text',
 				'type'  => 'text',
-				'label' => esc_html__('Text Field', 'wapic-field'),
+				'label' => esc_html__('Text Field', 'wapic-fields'),
 				'value' => get_option('_sample_text'),
 			)
 		);
@@ -118,7 +118,7 @@ class Example_Option {
 			array(
 				'id'    => '_sample_email',
 				'type'  => 'email',
-				'label' => esc_html__('Email Address', 'wapic-field'),
+				'label' => esc_html__('Email Address', 'wapic-fields'),
 				'value' => get_option('_sample_email'),
 			)
 		);
@@ -127,7 +127,7 @@ class Example_Option {
 			array(
 				'id'    => '_sample_phone',
 				'type'  => 'phone',
-				'label' => esc_html__('Phone Number', 'wapic-field'),
+				'label' => esc_html__('Phone Number', 'wapic-fields'),
 				'value' => get_option('_sample_phone'),
 			)
 		);
@@ -136,7 +136,7 @@ class Example_Option {
 			array(
 				'id'         => '_sample_number',
 				'type'       => 'number',
-				'label'      => esc_html__('Number Field', 'wapic-field'),
+				'label'      => esc_html__('Number Field', 'wapic-fields'),
 				'value'      => get_option('_sample_number'),
 				'attributes' => array(
 					'min' => 0,
@@ -149,7 +149,7 @@ class Example_Option {
 			array(
 				'id'    => '_sample_url',
 				'type'  => 'url',
-				'label' => esc_html__('Website URL', 'wapic-field'),
+				'label' => esc_html__('Website URL', 'wapic-fields'),
 				'value' => get_option('_sample_url'),
 			)
 		);
@@ -158,7 +158,7 @@ class Example_Option {
 			array(
 				'id'    => '_sample_textarea',
 				'type'  => 'textarea',
-				'label' => esc_html__('Textarea', 'wapic-field'),
+				'label' => esc_html__('Textarea', 'wapic-fields'),
 				'value' => get_option('_sample_textarea'),
 			)
 		);
@@ -167,11 +167,11 @@ class Example_Option {
 			array(
 				'id'      => '_sample_select',
 				'type'    => 'select',
-				'label'   => esc_html__('Dropdown Select', 'wapic-field'),
+				'label'   => esc_html__('Dropdown Select', 'wapic-fields'),
 				'options' => array(
-					'option_1' => esc_html__('Option 1', 'wapic-field'),
-					'option_2' => esc_html__('Option 2', 'wapic-field'),
-					'option_3' => esc_html__('Option 3', 'wapic-field'),
+					'option_1' => esc_html__('Option 1', 'wapic-fields'),
+					'option_2' => esc_html__('Option 2', 'wapic-fields'),
+					'option_3' => esc_html__('Option 3', 'wapic-fields'),
 				),
 				'value'   => get_option('_sample_select'),
 			)
@@ -181,11 +181,11 @@ class Example_Option {
 			array(
 				'id'      => '_sample_checkbox',
 				'type'    => 'checkbox',
-				'label'   => esc_html__('Checkbox Options', 'wapic-field'),
+				'label'   => esc_html__('Checkbox Options', 'wapic-fields'),
 				'options' => array(
-					'option_1' => esc_html__('Option 1', 'wapic-field'),
-					'option_2' => esc_html__('Option 2', 'wapic-field'),
-					'option_3' => esc_html__('Option 3', 'wapic-field'),
+					'option_1' => esc_html__('Option 1', 'wapic-fields'),
+					'option_2' => esc_html__('Option 2', 'wapic-fields'),
+					'option_3' => esc_html__('Option 3', 'wapic-fields'),
 				),
 				'value' => get_option('_sample_checkbox'),
 			)
@@ -195,11 +195,11 @@ class Example_Option {
 			array(
 				'id'      => '_sample_radio',
 				'type'    => 'radio',
-				'label'   => esc_html__('Radio Options', 'wapic-field'),
+				'label'   => esc_html__('Radio Options', 'wapic-fields'),
 				'options' => array(
-					'option_1' => esc_html__('Option 1', 'wapic-field'),
-					'option_2' => esc_html__('Option 2', 'wapic-field'),
-					'option_3' => esc_html__('Option 3', 'wapic-field'),
+					'option_1' => esc_html__('Option 1', 'wapic-fields'),
+					'option_2' => esc_html__('Option 2', 'wapic-fields'),
+					'option_3' => esc_html__('Option 3', 'wapic-fields'),
 				),
 				'value' => get_option('_sample_radio'),
 			)
@@ -215,8 +215,8 @@ class Example_Option {
 			array(
 				'id'          => '_sample_text_required',
 				'type'        => 'text',
-				'label'       => esc_html__('Required Text Field', 'wapic-field'),
-				'description' => esc_html__('This field must not be empty.', 'wapic-field'),
+				'label'       => esc_html__('Required Text Field', 'wapic-fields'),
+				'description' => esc_html__('This field must not be empty.', 'wapic-fields'),
 				'value'       => get_option('_sample_text_required'),
 				'required'    => true,
 			)
@@ -226,7 +226,7 @@ class Example_Option {
 			array(
 				'id'    => '_sample_price',
 				'type'  => 'number',
-				'label' => esc_html__('Regular Price', 'wapic-field'),
+				'label' => esc_html__('Regular Price', 'wapic-fields'),
 				'class' => 'regular-price',
 				'value' => get_option('_sample_price'),
 			)
@@ -236,22 +236,22 @@ class Example_Option {
 			array(
 				'id'          => '_sample_sale_price',
 				'type'        => 'number',
-				'label'       => esc_html__('Sale Price', 'wapic-field'),
+				'label'       => esc_html__('Sale Price', 'wapic-fields'),
 				'class'       => 'sale-price',
-				'description' => esc_html__('Sale price must be lower than the regular price.', 'wapic-field'),
+				'description' => esc_html__('Sale price must be lower than the regular price.', 'wapic-fields'),
 				'value'       => get_option('_sample_sale_price'),
 			)
 		);
 
 		Field::add_control(array(
 			'type'  => 'heading',
-			'label' => esc_html__('Cascading Logic Example (A -> B -> C)', 'wapic-field'),
+			'label' => esc_html__('Cascading Logic Example (A -> B -> C)', 'wapic-fields'),
 		));
 
 		Field::add_control(array(
 			'id'    => '_sample_input_a',
 			'type'  => 'toggle',
-			'label' => esc_html__('Input A (Active B)', 'wapic-field'),
+			'label' => esc_html__('Input A (Active B)', 'wapic-fields'),
 			'value' => get_option('_sample_input_a', 'no'),
 		));
 
@@ -259,7 +259,7 @@ class Example_Option {
 			array(
 				'id'    => '_sample_input_b',
 				'type'  => 'toggle',
-				'label' => esc_html__('Input B (Visible if A is ON, Active C)', 'wapic-field'),
+				'label' => esc_html__('Input B (Visible if A is ON, Active C)', 'wapic-fields'),
 				'value' => get_option('_sample_input_b', 'no'),
 				'condition' => array(
 					'field' => '_sample_input_a',
@@ -272,9 +272,9 @@ class Example_Option {
 			array(
 				'id'    => '_sample_input_c',
 				'type'  => 'text',
-				'label' => esc_html__('Input C (Visible if B is ON)', 'wapic-field'),
+				'label' => esc_html__('Input C (Visible if B is ON)', 'wapic-fields'),
 				'value' => get_option('_sample_input_c'),
-				'description' => esc_html__('If you turn off Input A, both B and C will hide.', 'wapic-field'),
+				'description' => esc_html__('If you turn off Input A, both B and C will hide.', 'wapic-fields'),
 				'condition' => array(
 					'field' => '_sample_input_b',
 					'value' => 'yes',
@@ -288,18 +288,18 @@ class Example_Option {
 
 		Field::add_control(array(
 			'type'  => 'heading',
-			'label' => esc_html__('Multi-Condition Logic (AND / OR)', 'wapic-field'),
+			'label' => esc_html__('Multi-Condition Logic (AND / OR)', 'wapic-fields'),
 		));
 
 		Field::add_control(
 			array(
 				'id'      => '_sample_mc_type',
 				'type'    => 'select',
-				'label'   => esc_html__('Select Type', 'wapic-field'),
+				'label'   => esc_html__('Select Type', 'wapic-fields'),
 				'options' => array(
-					'text'  => 'Text',
-					'image' => 'Image',
-					'both'  => 'Both',
+					'text'  => esc_html__('Text', 'wapic-fields'),
+					'image' => esc_html__('Image', 'wapic-fields'),
+					'both'  => esc_html__('Both', 'wapic-fields'),
 				),
 				'value'   => get_option('_sample_mc_type', 'text'),
 			)
@@ -309,7 +309,7 @@ class Example_Option {
 			array(
 				'id'    => '_sample_mc_advanced',
 				'type'  => 'toggle',
-				'label' => esc_html__('Show Advanced', 'wapic-field'),
+				'label' => esc_html__('Show Advanced', 'wapic-fields'),
 				'value' => get_option('_sample_mc_advanced', 'no'),
 			)
 		);
@@ -319,8 +319,8 @@ class Example_Option {
 			array(
 				'id'    => '_sample_mc_and_field',
 				'type'  => 'text',
-				'label' => esc_html__('Field AND Relation', 'wapic-field'),
-				'description' => esc_html__('Visible only if Type is "Both" AND Advanced is "ON"', 'wapic-field'),
+				'label' => esc_html__('Field AND Relation', 'wapic-fields'),
+				'description' => esc_html__('Visible only if Type is "Both" AND Advanced is "ON"', 'wapic-fields'),
 				'value' => get_option('_sample_mc_and_field'),
 				'condition' => array(
 					'relation' => 'AND',
@@ -341,8 +341,8 @@ class Example_Option {
 			array(
 				'id'    => '_sample_mc_or_field',
 				'type'  => 'text',
-				'label' => esc_html__('Field OR Relation', 'wapic-field'),
-				'description' => esc_html__('Visible if Type is "Image" OR Type is "Both"', 'wapic-field'),
+				'label' => esc_html__('Field OR Relation', 'wapic-fields'),
+				'description' => esc_html__('Visible if Type is "Image" OR Type is "Both"', 'wapic-fields'),
 				'value' => get_option('_sample_mc_or_field'),
 				'condition' => array(
 					'relation' => 'OR',
@@ -368,8 +368,8 @@ class Example_Option {
 			array(
 				'id'          => '_sample_image',
 				'type'        => 'image',
-				'label'       => esc_html__('Image Upload', 'wapic-field'),
-				'description' => esc_html__('Upload a single image.', 'wapic-field'),
+				'label'       => esc_html__('Image Upload', 'wapic-fields'),
+				'description' => esc_html__('Upload a single image.', 'wapic-fields'),
 				'value'       => get_option('_sample_image'),
 			)
 		);
@@ -378,8 +378,8 @@ class Example_Option {
 			array(
 				'id'          => '_sample_gallery',
 				'type'        => 'gallery',
-				'label'       => esc_html__('Image Gallery', 'wapic-field'),
-				'description' => esc_html__('Upload multiple images.', 'wapic-field'),
+				'label'       => esc_html__('Image Gallery', 'wapic-fields'),
+				'description' => esc_html__('Upload multiple images.', 'wapic-fields'),
 				'value'       => get_option('_sample_gallery'),
 			)
 		);
@@ -388,8 +388,8 @@ class Example_Option {
 			array(
 				'id'          => '_sample_file',
 				'type'        => 'file',
-				'label'       => esc_html__('File Upload', 'wapic-field'),
-				'description' => esc_html__('Upload any file type.', 'wapic-field'),
+				'label'       => esc_html__('File Upload', 'wapic-fields'),
+				'description' => esc_html__('Upload any file type.', 'wapic-fields'),
 				'value'       => get_option('_sample_file'),
 			)
 		);
@@ -398,8 +398,8 @@ class Example_Option {
 			array(
 				'id'          => '_sample_toggle',
 				'type'        => 'toggle',
-				'label'       => esc_html__('Toggle Switch', 'wapic-field'),
-				'description' => esc_html__('Simple on/off switch.', 'wapic-field'),
+				'label'       => esc_html__('Toggle Switch', 'wapic-fields'),
+				'description' => esc_html__('Simple on/off switch.', 'wapic-fields'),
 				'value'       => get_option('_sample_toggle'),
 			)
 		);
@@ -408,8 +408,8 @@ class Example_Option {
 			array(
 				'id'          => '_sample_color',
 				'type'        => 'color',
-				'label'       => esc_html__('Color Picker', 'wapic-field'),
-				'description' => esc_html__('Pick a color.', 'wapic-field'),
+				'label'       => esc_html__('Color Picker', 'wapic-fields'),
+				'description' => esc_html__('Pick a color.', 'wapic-fields'),
 				'value'       => get_option('_sample_color'),
 			)
 		);
@@ -418,8 +418,8 @@ class Example_Option {
 			array(
 				'id'          => '_sample_date',
 				'type'        => 'date',
-				'label'       => esc_html__('Date Picker', 'wapic-field'),
-				'description' => esc_html__('Select a date.', 'wapic-field'),
+				'label'       => esc_html__('Date Picker', 'wapic-fields'),
+				'description' => esc_html__('Select a date.', 'wapic-fields'),
 				'value'       => get_option('_sample_date'),
 			)
 		);
@@ -428,23 +428,23 @@ class Example_Option {
 			array(
 				'id'         => '_sample_select2',
 				'type'       => 'select2',
-				'label'      => esc_html__('Multi Select', 'wapic-field'),
+				'label'      => esc_html__('Multi Select', 'wapic-fields'),
 				'value'      => get_option('_sample_select2'),
 				'options'    => array(
-					'option1'  => esc_html__('Option 1', 'wapic-field'),
-					'option2'  => esc_html__('Option 2', 'wapic-field'),
-					'option3'  => esc_html__('Option 3', 'wapic-field'),
-					'option4'  => esc_html__('Option 4', 'wapic-field'),
-					'option5'  => esc_html__('Option 5', 'wapic-field'),
-					'option6'  => esc_html__('Option 6', 'wapic-field'),
-					'option7'  => esc_html__('Option 7', 'wapic-field'),
-					'option8'  => esc_html__('Option 8', 'wapic-field'),
-					'option9'  => esc_html__('Option 9', 'wapic-field'),
-					'option10' => esc_html__('Option 10', 'wapic-field'),
+					'option1'  => esc_html__('Option 1', 'wapic-fields'),
+					'option2'  => esc_html__('Option 2', 'wapic-fields'),
+					'option3'  => esc_html__('Option 3', 'wapic-fields'),
+					'option4'  => esc_html__('Option 4', 'wapic-fields'),
+					'option5'  => esc_html__('Option 5', 'wapic-fields'),
+					'option6'  => esc_html__('Option 6', 'wapic-fields'),
+					'option7'  => esc_html__('Option 7', 'wapic-fields'),
+					'option8'  => esc_html__('Option 8', 'wapic-fields'),
+					'option9'  => esc_html__('Option 9', 'wapic-fields'),
+					'option10' => esc_html__('Option 10', 'wapic-fields'),
 				),
 				'attributes' => array(
 					'multiple'    => true,
-					'placeholder' => esc_html__('Select one or more options...', 'wapic-field'),
+					'placeholder' => esc_html__('Select one or more options...', 'wapic-fields'),
 					'allow_clear' => true,
 				),
 			)
@@ -454,8 +454,8 @@ class Example_Option {
 			array(
 				'id'          => '_sample_editor',
 				'type'        => 'editor',
-				'label'       => esc_html__('Content Editor', 'wapic-field'),
-				'description' => esc_html__('Rich text editor with full WP editor tools.', 'wapic-field'),
+				'label'       => esc_html__('Content Editor', 'wapic-fields'),
+				'description' => esc_html__('Rich text editor with full WP editor tools.', 'wapic-fields'),
 				'value'       => get_option('_sample_editor'),
 			)
 		);
@@ -464,8 +464,8 @@ class Example_Option {
 			array(
 				'id'    => '_sample_slider',
 				'type'  => 'slider',
-				'label' => esc_html__('Slider Number', 'wapic-field'),
-				'description' => esc_html__('Drag to select a numeric value.', 'wapic-field'),
+				'label' => esc_html__('Slider Number', 'wapic-fields'),
+				'description' => esc_html__('Drag to select a numeric value.', 'wapic-fields'),
 				'value' => get_option('_sample_slider', 50),
 				'attributes' => array(
 					'min'  => 0,
@@ -479,8 +479,8 @@ class Example_Option {
 			array(
 				'id'      => '_sample_image_select_row',
 				'type'    => 'image_select',
-				'label'   => esc_html__('Image Select', 'wapic-field'),
-				'description' => esc_html__('Horizontal layout for visual options.', 'wapic-field'),
+				'label'   => esc_html__('Image Select', 'wapic-fields'),
+				'description' => esc_html__('Horizontal layout for visual options.', 'wapic-fields'),
 				'options' => array(
 					'option_1' => array(
 						'label' => 'Standard',
@@ -506,8 +506,8 @@ class Example_Option {
 			array(
 				'id'          => '_sample_code',
 				'type'        => 'code_editor',
-				'label'       => esc_html__('Code Editor (HTML)', 'wapic-field'),
-				'description' => esc_html__('Edit HTML with syntax highlighting.', 'wapic-field'),
+				'label'       => esc_html__('Code Editor (HTML)', 'wapic-fields'),
+				'description' => esc_html__('Edit HTML with syntax highlighting.', 'wapic-fields'),
 				'value'       => get_option('_sample_code', '<p>Hello World</p>'),
 				'attributes'  => array(
 					'language' => 'text/html',
@@ -519,8 +519,8 @@ class Example_Option {
 			array(
 				'id'          => '_sample_code_css',
 				'type'        => 'code_editor',
-				'label'       => esc_html__('Code Editor (CSS)', 'wapic-field'),
-				'description' => esc_html__('Edit CSS with syntax highlighting.', 'wapic-field'),
+				'label'       => esc_html__('Code Editor (CSS)', 'wapic-fields'),
+				'description' => esc_html__('Edit CSS with syntax highlighting.', 'wapic-fields'),
 				'value'       => get_option('_sample_code_css', 'body { background: #fff; }'),
 				'attributes'  => array(
 					'language' => 'text/css',
@@ -568,15 +568,24 @@ class Example_Option {
 			'_sample_code_css'           => 'code_editor',
 		);
 
+		// Per-field attributes (e.g. min/max) so numeric values are clamped
+		// server-side to the same constraints declared at render time.
+		$field_attributes = array(
+			'_sample_number' => array('min' => 0, 'max' => 100),
+			'_sample_slider' => array('min' => 0, 'max' => 100),
+		);
+
 		foreach ($fields as $field_name => $field_type) {
+			$attributes = isset($field_attributes[$field_name]) ? $field_attributes[$field_name] : array();
+
 			register_setting(
 				$this->id,
 				$field_name,
 				array(
-					'sanitize_callback' => function ($value, $option = '') use ($field_type, $field_name) {
+					'sanitize_callback' => function ($value, $option = '') use ($field_type, $field_name, $attributes) {
 
 						if (isset($_POST[$field_name . '_is_hidden']) && $_POST[$field_name . '_is_hidden'] === '1') {
-							return Field::sanitize_value($field_type, $value);
+							return Field::sanitize_value($field_type, $value, $attributes);
 						}
 
 						$validation = Field::validate_value($field_type, $value);
@@ -586,7 +595,7 @@ class Example_Option {
 							return get_option($field_name, '');
 						}
 
-						return Field::sanitize_value($field_type, $value);
+						return Field::sanitize_value($field_type, $value, $attributes);
 					},
 				)
 			);

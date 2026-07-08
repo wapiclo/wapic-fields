@@ -86,43 +86,43 @@ class Example_Taxonomy {
         Field::add_control(array(
             'id'    => '_sample_text',
             'type'  => 'text',
-            'label' => 'Text',
+            'label' => esc_html__('Text', 'wapic-fields'),
             'value' => $term_id ? get_term_meta($term_id, '_sample_text', true) : '',
         ));
 
         Field::add_control(array(
             'id'    => '_sample_number',
             'type'  => 'number',
-            'label' => 'Number',
+            'label' => esc_html__('Number', 'wapic-fields'),
             'value' => $term_id ? get_term_meta($term_id, '_sample_number', true) : '',
         ));
 
         Field::add_control(array(
             'id'    => '_sample_email',
             'type'  => 'email',
-            'label' => 'Email',
+            'label' => esc_html__('Email', 'wapic-fields'),
             'value' => $term_id ? get_term_meta($term_id, '_sample_email', true) : '',
         ));
 
         Field::add_control(array(
             'id'    => '_sample_textarea',
             'type'  => 'textarea',
-            'label' => 'Textarea',
+            'label' => esc_html__('Textarea', 'wapic-fields'),
             'value' => $term_id ? get_term_meta($term_id, '_sample_textarea', true) : '',
         ));
 
         Field::add_control(array(
             'id'          => '_sample_image',
             'type'        => 'image',
-            'label'       => 'Image',
-            'description' => 'Upload an image',
+            'label'       => esc_html__('Image', 'wapic-fields'),
+            'description' => esc_html__('Upload an image', 'wapic-fields'),
             'value'       => $term_id ? get_term_meta($term_id, '_sample_image', true) : '',
         ));
 
         Field::add_control(array(
             'id'    => '_sample_color',
             'type'  => 'color',
-            'label' => 'Color',
+            'label' => esc_html__('Color', 'wapic-fields'),
             'value' => $term_id ? get_term_meta($term_id, '_sample_color', true) : '',
         ));
     }
@@ -132,10 +132,15 @@ class Example_Taxonomy {
      */
     public function save_field($term_id, $tt_id) {
 
-        if (
-            ! isset($_POST["{$this->id}_taxonomy_nonce"]) ||
-            ! wp_verify_nonce($_POST["{$this->id}_taxonomy_nonce"], "{$this->id}_taxonomy_save")
-        ) {
+        if (! current_user_can('manage_categories')) {
+            return;
+        }
+
+        $nonce = isset($_POST["{$this->id}_taxonomy_nonce"])
+            ? sanitize_text_field(wp_unslash($_POST["{$this->id}_taxonomy_nonce"]))
+            : '';
+
+        if (! wp_verify_nonce($nonce, "{$this->id}_taxonomy_save")) {
             return;
         }
 
@@ -156,7 +161,7 @@ class Example_Taxonomy {
             // Field exists → validate & save
             if (isset($_POST[$key])) {
 
-                $value      = $_POST[$key];
+                $value      = wp_unslash($_POST[$key]); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized by Field::sanitize_value() below.
                 $validation = Field::validate_value($type, $value);
 
                 if (! empty($validation)) {

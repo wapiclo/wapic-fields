@@ -150,10 +150,14 @@ class Example_Meta {
 
 		Field::add_control(
 			array(
-				'id'    => '_sample_number',
-				'type'  => 'number',
-				'label' => esc_html__('Number', 'wapic-fields'),
-				'value' => get_post_meta($post->ID, '_sample_number', true),
+				'id'         => '_sample_number',
+				'type'       => 'number',
+				'label'      => esc_html__('Number', 'wapic-fields'),
+				'value'      => get_post_meta($post->ID, '_sample_number', true),
+				'attributes' => array(
+					'min' => 0,
+					'max' => 100,
+				),
 			)
 		);
 
@@ -395,13 +399,20 @@ class Example_Meta {
 			return;
 		}
 
+		// Only handle the post type this metabox is registered for.
+		if (get_post_type($post_id) !== 'post') {
+			return;
+		}
+
 		if (! current_user_can('edit_post', $post_id)) {
 			return;
 		}
 
-		if (! isset($_POST["{$this->id}_metabox_nonce"]) ||
-			! wp_verify_nonce($_POST["{$this->id}_metabox_nonce"], "{$this->id}_metabox_save")
-		) {
+		$nonce = isset($_POST["{$this->id}_metabox_nonce"])
+			? sanitize_text_field(wp_unslash($_POST["{$this->id}_metabox_nonce"]))
+			: '';
+
+		if (! wp_verify_nonce($nonce, "{$this->id}_metabox_save")) {
 			return;
 		}
 
@@ -430,19 +441,26 @@ class Example_Meta {
 			'_sample_editor'             => 'editor',
 		);
 
+		// Per-field attributes (e.g. min/max) so numeric values are clamped
+		// server-side to the same constraints declared at render time.
+		$field_attributes = array(
+			'_sample_number' => array('min' => 0, 'max' => 100),
+		);
+
 		$error_message = array();
 
 		foreach ($fields as $key => $type) {
 
 			if (isset($_POST[$key])) {
 
-				$value      = $_POST[$key];
+				$value      = wp_unslash($_POST[$key]); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized by Field::sanitize_value() below.
 				$validation = Field::validate_value($type, $value);
 
 				if (! empty($validation)) {
 					$error_message[] = $validation;
 				} else {
-					$sanitized = Field::sanitize_value($type, $value);
+					$attributes = isset($field_attributes[$key]) ? $field_attributes[$key] : array();
+					$sanitized  = Field::sanitize_value($type, $value, $attributes);
 					update_post_meta($post_id, $key, $sanitized);
 				}
 

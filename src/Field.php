@@ -270,9 +270,8 @@ abstract class Field {
      */
     public static function add_control(array $args = []): void {
         $type = $args['type'] ?? 'text';
-        $class_name = 'Wapic_Fields\\Fields\\' . ucfirst($type);
 
-        // Handle special cases or mapping if needed
+        // Whitelist of supported field types mapped to their class names.
         $map = [
             'text' => 'Text',
             'textarea' => 'Textarea',
@@ -300,18 +299,18 @@ abstract class Field {
             'slider' => 'Slider',
         ];
 
-        if (isset($map[$type])) {
-            $class_name = 'Wapic_Fields\\Fields\\' . $map[$type];
+        // Resolve against the whitelist only; unknown types fall back to Text
+        // so an unvalidated type string is never used to probe for a class.
+        $class_name = isset($map[$type])
+            ? 'Wapic_Fields\\Fields\\' . $map[$type]
+            : \Wapic_Fields\Fields\Text::class;
+
+        if (! class_exists($class_name)) {
+            $class_name = \Wapic_Fields\Fields\Text::class;
         }
 
-        if (class_exists($class_name)) {
-            $field = new $class_name($args);
-            $field->render();
-        } else {
-            // Fallback to text or error
-            $field = new \Wapic_Fields\Fields\Text($args);
-            $field->render();
-        }
+        $field = new $class_name($args);
+        $field->render();
     }
 
     // Static methods for panel rendering (moved from original Field class)
@@ -449,9 +448,10 @@ abstract class Field {
      *
      * @param string $type
      * @param mixed  $value
+     * @param array  $attributes Optional field attributes (e.g. min/max for number/slider).
      * @return mixed
      */
-    public static function sanitize_value(string $type, $value) {
+    public static function sanitize_value(string $type, $value, array $attributes = []) {
         switch ($type) {
             case 'select2':
                 if (empty($value)) {
@@ -508,7 +508,19 @@ abstract class Field {
 
             case 'number':
             case 'slider':
-                return is_numeric($value) ? $value + 0 : null;
+                if (! is_numeric($value)) {
+                    return null;
+                }
+                $number = $value + 0;
+                // Clamp to the field's own min/max when provided, so a crafted
+                // request cannot bypass the client-side constraints.
+                if (isset($attributes['min']) && is_numeric($attributes['min'])) {
+                    $number = max($number, $attributes['min'] + 0);
+                }
+                if (isset($attributes['max']) && is_numeric($attributes['max'])) {
+                    $number = min($number, $attributes['max'] + 0);
+                }
+                return $number;
 
             case 'email':
                 return sanitize_email((string) $value);
@@ -523,7 +535,12 @@ abstract class Field {
                 return '';
 
             case 'code_editor':
-                return (string) $value; // Do not sanitize code as it might contain valid code
+                // Stored raw so valid HTML/CSS/JS snippets stay intact. This field
+                // must only be exposed to trusted, high-capability users (e.g.
+                // manage_options / edit_theme_options). It is re-escaped with
+                // esc_textarea() on the edit screen, but integrators MUST escape
+                // this value themselves before echoing it on the front end.
+                return (string) $value;
 
             default:
                 return sanitize_text_field((string) $value);

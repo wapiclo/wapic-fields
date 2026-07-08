@@ -96,8 +96,8 @@ class Assets {
 
 		// Load JavaScript libraries
 		if ($this->required_assets['select2']) {
-			wp_enqueue_style('select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.css');
-			wp_enqueue_script('select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.js', array('jquery'), null, true);
+			wp_enqueue_style('select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.css', array(), WAPIC_FIELDS_VERSION);
+			wp_enqueue_script('select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.js', array('jquery'), WAPIC_FIELDS_VERSION, true);
 			wp_enqueue_script('wapic-field-select2', WAPIC_FIELDS_ASSETS . 'assets/js/select2.min.js', array(), WAPIC_FIELDS_VERSION, true);
 		}
 
@@ -128,9 +128,9 @@ class Assets {
 
 		if ($this->required_assets['editor']) {
 			wp_enqueue_editor();
-			// Panggil stylesheet bawaan editor
-			wp_enqueue_style('wp-tinymce-skin', site_url('/wp-includes/js/tinymce/skins/lightgray/skin.min.css'), array(), null);
-			wp_enqueue_style('wp-editor-core', site_url('/wp-includes/css/editor.min.css'), array(), get_bloginfo('version'));
+			// Load the editor's bundled stylesheets via the core URL helper.
+			wp_enqueue_style('wp-tinymce-skin', includes_url('js/tinymce/skins/lightgray/skin.min.css'), array(), get_bloginfo('version'));
+			wp_enqueue_style('wp-editor-core', includes_url('css/editor.min.css'), array(), get_bloginfo('version'));
 		}
 
 		if ($this->required_assets['code_editor']) {
