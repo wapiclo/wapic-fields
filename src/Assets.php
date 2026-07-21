@@ -96,9 +96,9 @@ class Assets {
 
 		// Load JavaScript libraries
 		if ($this->required_assets['select2']) {
-			wp_enqueue_style('select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.css', array(), WAPIC_FIELDS_VERSION);
-			wp_enqueue_script('select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.js', array('jquery'), WAPIC_FIELDS_VERSION, true);
-			wp_enqueue_script('wapic-field-select2', WAPIC_FIELDS_ASSETS . 'assets/js/select2.min.js', array(), WAPIC_FIELDS_VERSION, true);
+			wp_enqueue_style('select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.css', array(), '4.1.0');
+			wp_enqueue_script('select2', WAPIC_FIELDS_ASSETS . 'assets/select2/select2.min.js', array('jquery'), '4.1.0', true);
+			wp_enqueue_script('wapic-field-select2', WAPIC_FIELDS_ASSETS . 'assets/js/select2.min.js', array('select2'), WAPIC_FIELDS_VERSION, true);
 		}
 
 		if ($this->required_assets['colorpicker']) {

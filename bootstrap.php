@@ -5,7 +5,7 @@
  *
  * @package    Wapic_Fields
  * @subpackage Core
- * @since      2.2.0
+ * @since      2.3.0
  * @author     Wapiclo Team
  * @license    GPL-2.0+
  * @link       https://wapiclo.com/
@@ -20,7 +20,7 @@ if (defined('WAPIC_FIELDS_INIT')) {
 }
 
 define('WAPIC_FIELDS_INIT', true);
-define('WAPIC_FIELDS_VERSION', '2.2.0');
+define('WAPIC_FIELDS_VERSION', '2.3.0');
 define('WAPIC_FIELDS_DIR', __DIR__);
 define('WAPIC_FIELDS_PATH', plugin_dir_path(__FILE__));
 define('WAPIC_FIELDS_ASSETS', plugin_dir_url(__FILE__));

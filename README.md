@@ -77,5 +77,15 @@ To load the examples in the WordPress admin, add the following code to your main
 
 ```define('WAPIC_FIELDS_LOAD_EXAMPLES', true);```
 
+## Credits & Third-Party Libraries
+
+Wapic Fields is built to stay lightweight, so it bundles as little third-party code as possible.
+
+| Library | Version | License | Used for |
+|---|---|---|---|
+| [Select2](https://github.com/select2/select2) | 4.1.0 | [MIT](https://github.com/select2/select2/blob/master/LICENSE.md) | Powers the **Select2** field (searchable, multi-select dropdowns) |
+
+All other scripts and styles (validation, conditional logic, tabs, sliders, image-select, etc.) are custom-written for this plugin — see `assets/source/`.
+
 ## Changelog
 [Changelog](https://github.com/wapiclo/wapic-fields/wiki/Changelog)
