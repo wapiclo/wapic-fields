@@ -225,11 +225,14 @@ class Assets {
 					'validEmail'          => esc_html__('Please enter a valid email address', 'wapic-fields'),
 					'validUrl'            => esc_html__('Please enter a valid URL', 'wapic-fields'),
 					'validNumber'         => esc_html__('Please enter a valid number', 'wapic-fields'),
+					/* translators: %s: Minimum allowed numeric value. */
 					'minNumber'           => esc_html__('Value must be at least %s', 'wapic-fields'),
+					/* translators: %s: Maximum allowed numeric value. */
 					'maxNumber'           => esc_html__('Value must be at most %s', 'wapic-fields'),
 					'compareRegularPrice' => esc_html__('Regular price must be greater than sale price', 'wapic-fields'),
 					'compareSalePrice'    => esc_html__('Sale price must be less than regular price', 'wapic-fields'),
 					'submitFailed'        => esc_html__('Oops! Form submission failed due to validation issues. Please review the highlighted fields:', 'wapic-fields'),
+					/* translators: %s: Number of fields with validation errors in a tab. */
 					'tabErrors'           => esc_html__('%s fields need attention', 'wapic-fields'),
 				),
 			)

@@ -498,15 +498,15 @@ class Example_Option {
 				'options' => array(
 					'option_1' => array(
 						'label' => 'Standard',
-						'image' => 'https://placehold.co/300x300',
+						'image' => WAPIC_FIELDS_ASSETS . 'assets/images/placeholder.webp',
 					),
 					'option_2' => array(
 						'label' => 'Compact',
-						'image' => 'https://placehold.co/300x300',
+						'image' => WAPIC_FIELDS_ASSETS . 'assets/images/placeholder.webp',
 					),
 					'option_3' => array(
 						'label' => 'List',
-						'image' => 'https://placehold.co/300x300',
+						'image' => WAPIC_FIELDS_ASSETS . 'assets/images/placeholder.webp',
 					),
 				),
 				'value' => get_option('_sample_image_select_row'),

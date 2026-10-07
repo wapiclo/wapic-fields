@@ -112,7 +112,9 @@ class Repeater extends Field {
 		}
 		$rows       = array_pad( $rows, $count, array() );
 		$token      = '__' . wp_unique_id( 'wcf_row_' ) . '__';
+		/* translators: %s: Minimum number of repeater items. */
 		$min_label  = $min > 0 ? sprintf( __( 'Minimum: %s.', 'wapic-fields' ), $min ) : '';
+		/* translators: %s: Minimum number of repeater items that must remain. */
 		$min_message = sprintf( _n( 'At least %s item must remain.', 'At least %s items must remain.', $min, 'wapic-fields' ), $min );
 		$max_message = __( 'Maximum reached. Remove an item to add another.', 'wapic-fields' );
 		$attributes = array(
@@ -121,8 +123,11 @@ class Repeater extends Field {
 			'data-next-key'        => count( $rows ),
 			'data-min-rows'        => $min,
 			'data-max-rows'        => $max,
+			/* translators: 1: Current number of repeater items, 2: Maximum number of repeater items. */
 			'data-count-label'     => __( '%1$s of %2$s items', 'wapic-fields' ),
+			/* translators: %s: Number of repeater items. */
 			'data-count-one'       => __( '%s item', 'wapic-fields' ),
+			/* translators: %s: Number of repeater items. */
 			'data-count-many'      => __( '%s items', 'wapic-fields' ),
 			'data-min-label'       => $min_label,
 			'data-min-message'     => $min_message,
@@ -152,7 +157,13 @@ class Repeater extends Field {
 		echo '</template><button type="button" class="button wcf-repeater-add"' . ( $at_max ? ' disabled title="' . esc_attr( $max_message ) . '" aria-describedby="' . esc_attr( $this->id . '-status' ) . '"' : '' ) . '>';
 		echo esc_html( $this->config['button_label'] ?? __( 'Add Row', 'wapic-fields' ) );
 		echo '</button>';
-		$status = $max > 0 ? sprintf( __( '%1$s of %2$s items', 'wapic-fields' ), count( $rows ), $max ) : sprintf( _n( '%s item', '%s items', count( $rows ), 'wapic-fields' ), count( $rows ) );
+		if ( $max > 0 ) {
+			/* translators: 1: Current number of repeater items, 2: Maximum number of repeater items. */
+			$status = sprintf( __( '%1$s of %2$s items', 'wapic-fields' ), count( $rows ), $max );
+		} else {
+			/* translators: %s: Number of repeater items. */
+			$status = sprintf( _n( '%s item', '%s items', count( $rows ), 'wapic-fields' ), count( $rows ) );
+		}
 		if ( $min > 0 ) {
 			$status .= ' ' . $min_label;
 		}

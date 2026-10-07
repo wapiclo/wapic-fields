@@ -30,12 +30,13 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 	require_once __DIR__ . '/vendor/autoload.php';
 }
 
-// Load text domain
+// Register bundled translations on init, including when used as a nested library.
 add_action(
-	'plugins_loaded',
+	'init',
 	function () {
-		load_plugin_textdomain('wapic-fields', false, WAPIC_FIELDS_DIR . '/languages');
-	}
+		load_plugin_textdomain( 'wapic-fields', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+	},
+	0
 );
 
 // Inisialisasi
