@@ -2,7 +2,11 @@
 * text=auto
 
 # Exclude development/source files from git archive
+examples      export-ignore
 examples/**    export-ignore
+LICENSE.md     export-ignore
+package.json   export-ignore
+package-lock.json export-ignore
 assets/**/*.map export-ignore
 assets/source/ export-ignore
 assets/images/ export-ignore
