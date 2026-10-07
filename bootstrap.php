@@ -5,10 +5,10 @@
  *
  * @package    Wapic_Fields
  * @subpackage Core
- * @since      2.3.0
  * @author     Wapiclo Team
  * @license    GPL-2.0+
  * @link       https://wapiclo.com/
+ * @version    2.4.0
  */
 
 if (! defined('ABSPATH')) {
