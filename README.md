@@ -82,7 +82,7 @@ To load the examples in the WordPress admin, add the following code to your main
 Repeaters render ordinary Wapic Fields controls and submit one nested array. The
 Options Example includes a **Repeaters** tab. Repeater items always use a block layout;
 no layout option is needed.
-With `confirm_delete` enabled, the delete button opens a dark confirmation popover
+With `confirm_delete` enabled (the default), the delete button opens a dark confirmation popover
 with **Remove** and **Cancel**. The message is configurable with
 `confirm_delete_message`; Escape or a click outside also cancels deletion.
 
@@ -92,7 +92,7 @@ $features = [
     'type' => 'repeater',
     'label' => 'Features',
     'sortable' => true,
-    'confirm_delete' => false,
+    'confirm_delete' => true, // Default; set false to delete without confirmation.
     'confirm_delete_message' => 'Are you sure you want to delete this row?',
     'button_label' => 'Add Row',
     'min_rows' => 0,
@@ -100,7 +100,7 @@ $features = [
     'default_rows' => 0, // Used only when no saved array exists.
     'row_label' => '{{title}}', // Empty titles fall back to Features - 1, Features - 2, etc.
     'fields' => [
-        ['id' => 'title', 'type' => 'text', 'label' => 'Title'],
+        ['id' => 'title', 'type' => 'text', 'label' => 'Title', 'required' => true],
         ['id' => 'show_link', 'type' => 'toggle', 'label' => 'Add link'],
         ['id' => 'link', 'type' => 'url', 'label' => 'URL',
          'condition' => ['field' => 'show_link', 'value' => 'yes']],
@@ -109,6 +109,13 @@ $features = [
 
 register_setting('my_settings', 'features', [
     'sanitize_callback' => static function ($value) use ($features) {
+        $errors = \Wapic_Fields\Field::validate_fields([$features], ['features' => $value]);
+        if ($errors) {
+            foreach ($errors as $path => $message) {
+                add_settings_error('my_settings', 'validation_' . $path, $message, 'error');
+            }
+            return get_option('features', []);
+        }
         return \Wapic_Fields\Field::sanitize_value('repeater', $value, $features);
     },
 ]);
@@ -134,6 +141,11 @@ the form instead of a browser alert.
 Tabs with invalid fields display a warning and error count after submission.
 Each failed submission opens the first invalid tab in navigation order; once its
 fields are corrected, the next submission opens the next tab needing attention.
+Each error in the notice links to its field, opening the relevant tab and collapsed
+repeater items before focusing the control. Repeated child labels include their
+item headings so errors in different rows remain distinguishable.
+Repeaters show their current item count, maximum (when configured), minimum, and
+the reason adding or deleting is disabled. Counts update when items are added or removed.
 If a positive `max_rows` is smaller than `min_rows`, the minimum takes precedence.
 Saved empty arrays remain empty, unless `min_rows` requires rows.
 
@@ -141,12 +153,47 @@ Dynamic controls reuse the `wcf_fields_initialized` document event with
 `event.detail.root` identifying the inserted row. Media and slider handlers use
 delegation; Select2, color, date, rich text and code editors initialize in that scope.
 
-Integration checks on a WordPress installation:
+Build assets:
 
 ```sh
-wp --skip-plugins --skip-themes eval-file tests/repeater.php
 npm run gulp
 ```
+
+## Server validation
+
+Use `Field::validate_fields($definitions, $values)` before writing options or
+metadata. Pass the same complete schemas used for rendering, and unslashed values
+keyed by logical field ID. It returns error messages keyed by field path, such as
+`features[1][title]`. Required values, repeater limits and nested children are
+validated. Conditional visibility is resolved from sibling schemas and submitted
+values, including cascading and AND/OR rules; browser `_is_hidden` flags are ignored.
+Numeric zero is a valid required value. A required toggle must be enabled, and a
+required image must have a positive attachment ID.
+
+```php
+$definitions = [$features]; // Include dependency schemas if the container is conditional.
+register_setting('my_settings', 'features', [
+    'sanitize_callback' => static function ($value) use ($definitions, $features) {
+        // Settings API values are already unslashed. For direct POST reads use wp_unslash().
+        $errors = \Wapic_Fields\Field::validate_fields($definitions, ['features' => $value]);
+        if ($errors) {
+            foreach ($errors as $path => $message) {
+                add_settings_error('my_settings', 'validation_' . $path, $message, 'error');
+            }
+            return get_option('features', []);
+        }
+        return \Wapic_Fields\Field::sanitize_value('repeater', $value, $features);
+    },
+]);
+```
+
+For metadata, validate the entire submitted scope first; preserve existing values
+for fields with errors, then sanitize valid values before `update_post_meta()` or
+`update_term_meta()`. Sanitization remains separate from validation.
+`Field::validate_value('text', $value, ['required' => true])` validates a single
+value unconditionally; use `validate_fields()` for conditional dependencies.
+Existing two-argument `validate_value()` calls remain compatible.
+The options and metabox examples enforce their required fields on the server.
 
 ## Credits & Third-Party Libraries
 

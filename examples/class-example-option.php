@@ -647,6 +647,17 @@ class Example_Option {
             $field_attributes[$definition['id']] = $definition;
         }
 
+        $definitions = array();
+        foreach ($fields as $field_name => $field_type) {
+            $definitions[$field_name] = array('id' => $field_name, 'type' => $field_type);
+        }
+        $definitions['_sample_text_required']['required'] = true;
+        $definitions['_sample_text_required']['label'] = __('Required Text Field', 'wapic-fields');
+        foreach ($this->repeater_fields() as $definition) {
+            $definitions[$definition['id']] = $definition;
+        }
+        $submitted = array_intersect_key(wp_unslash($_POST), $definitions); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Schema validated here and sanitized in each callback.
+
 		foreach ($fields as $field_name => $field_type) {
 			$attributes = isset($field_attributes[$field_name]) ? $field_attributes[$field_name] : array();
 
@@ -654,16 +665,17 @@ class Example_Option {
 				$this->id,
 				$field_name,
 				array(
-					'sanitize_callback' => function ($value, $option = '') use ($field_type, $field_name, $attributes) {
-
-						if (isset($_POST[$field_name . '_is_hidden']) && $_POST[$field_name . '_is_hidden'] === '1') {
-							return Field::sanitize_value($field_type, $value, $attributes);
-						}
-
-						$validation = Field::validate_value($field_type, $value);
-
-						if (! empty($validation)) {
-							add_settings_error($this->id, 'validation_error', $validation, 'error');
+					'sanitize_callback' => function ($value, $option = '') use ($field_type, $field_name, $attributes, $definitions, $submitted) {
+                        $values = $submitted;
+                        $values[$field_name] = $value;
+                        $errors = Field::validate_fields($definitions, $values);
+                        $own_errors = array_filter($errors, static function ($path) use ($field_name) {
+                            return $path === $field_name || strpos($path, $field_name . '[') === 0;
+                        }, ARRAY_FILTER_USE_KEY);
+						if ($own_errors) {
+                            foreach ($own_errors as $path => $message) {
+                                add_settings_error($this->id, 'validation_' . $path, $message, 'error');
+                            }
 							return get_option($field_name, '');
 						}
 

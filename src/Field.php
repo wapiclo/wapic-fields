@@ -262,8 +262,20 @@ abstract class Field {
      */
     protected function get_attributes_string(): string {
         $attrs = '';
+        $allowed = [
+            'accept', 'autocomplete', 'autofocus', 'cols', 'disabled', 'inputmode',
+            'lang', 'language', 'max', 'maxlength', 'min', 'minlength', 'multiple',
+            'pattern', 'placeholder', 'readonly', 'required', 'rows', 'size',
+            'spellcheck', 'step', 'title', 'wrap', 'allow_clear', 'width', 'layout',
+        ];
         foreach ($this->attributes as $key => $value) {
-            $attrs .= ' ' . esc_attr($key) . '="' . esc_attr($value) . '"';
+            if (! is_string($key) || ! (in_array(strtolower($key), $allowed, true) || preg_match('/^(?:data|aria)-[a-z0-9_-]+$/i', $key))) {
+                continue;
+            }
+            if (! is_scalar($value)) {
+                continue;
+            }
+            $attrs .= ' ' . esc_attr($key) . '="' . esc_attr((string) $value) . '"';
         }
         return $attrs;
     }
@@ -410,11 +422,20 @@ abstract class Field {
      *
      * @param string $type
      * @param mixed  $value
+     * @param array  $definition Optional field schema, including required and nested fields.
      * @return string Error message or empty string.
      */
-    public static function validate_value(string $type, $value): string {
+    public static function validate_value(string $type, $value, array $definition = []): string {
+        if ($definition) {
+            $definition['id'] = $definition['id'] ?? 'value';
+            $definition['type'] = $type;
+            // Single-value validation is unconditional; use validate_fields()
+            // to evaluate dependencies against complete sibling schemas.
+            unset($definition['condition']);
+            return implode(' ', self::validate_fields([$definition], [$definition['id'] => $value]));
+        }
         if (empty($value)) {
-            return ''; // Let empty values pass, use required attribute in form if needed
+            return ''; // Legacy calls validate format only; required checks need a schema.
         }
 
         $error = '';
@@ -447,6 +468,11 @@ abstract class Field {
         }
 
         return $error;
+    }
+
+    /** Validate complete field schemas against unslashed values in their scope. */
+    public static function validate_fields(array $definitions, array $values): array {
+        return Validation::fields($definitions, $values);
     }
 
     /**

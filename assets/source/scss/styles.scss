@@ -27,6 +27,13 @@
   --wcf-content-compact-size: 600px;
 }
 
+.wcf-validation-notice a {
+  color: inherit;
+  text-decoration: underline;
+
+  &:hover, &:focus, &:visited { color: inherit; }
+}
+
 // Confirmation is attached to the body so field containers cannot clip it.
 .wcf-repeater-confirm {
   position: fixed;
@@ -147,7 +154,17 @@
 
   &-handle { cursor: grab; touch-action: none; }
   &-row.is-collapsed > &-content { display: none; }
+  &-row.is-collapsed > &-header {
+    border-bottom: 0;
+    border-radius: var(--wcf-border-radius);
+  }
   &-delete:not(:disabled):hover { color: var(--wcf-color-danger); }
+
+  &-status {
+    margin: 8px 0 0;
+    color: var(--wcf-color-meta);
+    font-size: 12px;
+  }
 
   &-content {
     display: flex;

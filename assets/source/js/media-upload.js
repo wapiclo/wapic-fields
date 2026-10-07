@@ -62,14 +62,16 @@
           targetInput.value = attachment.id;
           targetInput.dispatchEvent(new Event("change", { bubbles: true }));
 
-          preview.innerHTML = `
-          <span class="wcf-field-image-thumb">
-            <img src="${thumb}">
-            <a href="#" class="wcf-field-remove-image">×</a>
-          </span>
-        `;
-
-          console.log(preview);
+          const wrapper = document.createElement("span");
+          wrapper.className = "wcf-field-image-thumb";
+          const image = document.createElement("img");
+          image.src = thumb;
+          const remove = document.createElement("a");
+          remove.href = "#";
+          remove.className = "wcf-field-remove-image";
+          remove.textContent = "×";
+          wrapper.append(image, remove);
+          preview.replaceChildren(wrapper);
 
           if (isTermForm) button.textContent = "Change Thumbnail";
         });
@@ -163,13 +165,21 @@
                 const imgUrl = (data.sizes && data.sizes.thumbnail?.url) || data.icon || data.url || "";
 
                 if (imgUrl) {
-                  preview.insertAdjacentHTML(
-                    "beforeend",
-                    `<span class="wcf-field-gallery-thumb" data-id="${id}">
-                    <img src="${imgUrl}" style="max-width:80px;height:auto;" alt="">
-                    <a href="#" class="wcf-field-remove-gallery-thumb" title="Remove image">×</a>
-                  </span>`
-                  );
+                  const wrapper = document.createElement("span");
+                  wrapper.className = "wcf-field-gallery-thumb";
+                  wrapper.dataset.id = String(id);
+                  const image = document.createElement("img");
+                  image.src = imgUrl;
+                  image.style.maxWidth = "80px";
+                  image.style.height = "auto";
+                  image.alt = "";
+                  const remove = document.createElement("a");
+                  remove.href = "#";
+                  remove.className = "wcf-field-remove-gallery-thumb";
+                  remove.title = "Remove image";
+                  remove.textContent = "×";
+                  wrapper.append(image, remove);
+                  preview.append(wrapper);
                 }
               });
             });

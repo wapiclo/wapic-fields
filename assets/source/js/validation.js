@@ -52,6 +52,39 @@
       this.submitNotices.delete(form);
     }
 
+    focusErrorField(input) {
+      if (!input.isConnected || input.disabled || input.closest('[hidden]')) return;
+      const ancestors = [];
+      for (let parent = input.parentElement; parent; parent = parent.parentElement) ancestors.unshift(parent);
+      ancestors.forEach((element) => {
+        if (element.classList.contains('wcf-tab-content')) {
+          const container = element.closest('.wcf-tabs');
+          const link = container && Array.from(container.querySelectorAll('.wcf-tabs-nav a')).find((item) => item.closest('.wcf-tabs') === container && item.getAttribute('href') === '#' + element.id);
+          if (link) link.click();
+        }
+        if (element.matches('.wcf-repeater-row.is-collapsed')) {
+          const toggle = element.querySelector(':scope > .wcf-repeater-header > .wcf-repeater-collapse');
+          if (toggle) toggle.click();
+        }
+      });
+      requestAnimationFrame(() => {
+        const field = input.closest('.wcf-field');
+        const editor = window.tinymce && window.tinymce.get(input.id);
+        const code = field.querySelector('.CodeMirror');
+        if (input.classList.contains('select2-hidden-accessible') && window.jQuery && window.jQuery.fn.select2) {
+          window.jQuery(input).select2('open');
+        } else if (editor && !editor.isHidden()) {
+          editor.focus();
+        } else if (code && code.CodeMirror) {
+          code.CodeMirror.focus();
+        } else {
+          const control = input.type === 'hidden' ? field.querySelector('button:not(:disabled), input:not([type="hidden"]):not(:disabled), select:not(:disabled), textarea:not(:disabled)') : input;
+          if (control) control.focus({ preventScroll: true });
+        }
+        field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+
     showSubmitNotice(form, messages) {
       const notice = document.createElement('div');
       notice.className = 'notice notice-error wcf-validation-notice';
@@ -64,7 +97,14 @@
         const list = document.createElement('ol');
         messages.forEach((message) => {
           const item = document.createElement('li');
-          item.textContent = message;
+          const link = document.createElement('a');
+          link.href = '#' + message.input.id;
+          link.textContent = message.text;
+          link.addEventListener('click', (event) => {
+            event.preventDefault();
+            this.focusErrorField(message.input);
+          });
+          item.appendChild(link);
           list.appendChild(item);
         });
         notice.appendChild(list);
@@ -236,11 +276,19 @@
           const errorElement = document.getElementById(`${input.id}_error`);
           const errorText = errorElement ? errorElement.textContent.trim() : "";
 
-          const labelEl = document.querySelector(`label[for="${input.id}"]`);
+          const labelEl = input.labels && input.labels[0];
           const labelText = labelEl ? labelEl.textContent.trim() : input.name || input.id;
 
+          // Include row headings so identical child labels remain distinguishable.
+          const headings = [];
+          for (let row = input.closest('.wcf-repeater-row'); row; row = row.parentElement.closest('.wcf-repeater-row')) {
+            const heading = row.querySelector(':scope > .wcf-repeater-header > .wcf-repeater-title');
+            if (heading) headings.unshift(heading.textContent.trim());
+          }
+          headings.push(labelText);
+
           if (errorText !== "") {
-            errorMessages.push(`${labelText}: ${errorText}`);
+            errorMessages.push({ input: input, text: `${headings.join(' / ')}: ${errorText}` });
           }
         }
       });
@@ -251,9 +299,6 @@
         e.preventDefault();
         // Reuse the existing tab engine and follow navigation order on every submit.
         if (firstInvalidTab) firstInvalidTab.click();
-
-        // Remove duplicate messages
-        errorMessages = [...new Set(errorMessages)];
 
         this.showSubmitNotice(form, errorMessages);
       }

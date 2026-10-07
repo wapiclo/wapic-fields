@@ -104,6 +104,8 @@
     const prefix = repeater.getAttribute('data-name-prefix');
     const min = Number(repeater.getAttribute('data-min-rows'));
     const max = Number(repeater.getAttribute('data-max-rows'));
+    const count = list.children.length;
+    const status = repeater.querySelector(':scope > .wcf-repeater-status');
     Array.from(list.children).forEach(function (row, index) {
       const previous = prefix + '[' + row.getAttribute('data-row-index') + ']';
       const next = prefix + '[' + index + ']';
@@ -124,9 +126,22 @@
       const heading = rowLabel || (repeater.getAttribute('data-fallback-label') + ' - ' + (index + 1));
       row.querySelector(':scope > .wcf-repeater-header > .wcf-repeater-title').textContent = heading;
       const button = row.querySelector(':scope > .wcf-repeater-header > .wcf-repeater-delete');
-      button.disabled = list.children.length <= min;
+      button.disabled = count <= min;
+      button.title = button.disabled ? repeater.getAttribute('data-min-message') : '';
+      if (button.disabled) button.setAttribute('aria-describedby', status.id);
+      else button.removeAttribute('aria-describedby');
     });
-    repeater.querySelector(':scope > .wcf-repeater-add').disabled = max > 0 && list.children.length >= max;
+    const add = repeater.querySelector(':scope > .wcf-repeater-add');
+    add.disabled = max > 0 && count >= max;
+    add.title = add.disabled ? repeater.getAttribute('data-max-message') : '';
+    if (add.disabled) add.setAttribute('aria-describedby', status.id);
+    else add.removeAttribute('aria-describedby');
+    let summary = max > 0 ? repeater.getAttribute('data-count-label').replace('%1$s', count).replace('%2$s', max) : repeater.getAttribute(count === 1 ? 'data-count-one' : 'data-count-many').replace('%s', count);
+    if (min > 0) summary += ' ' + repeater.getAttribute('data-min-label');
+    if (add.disabled) summary += ' ' + repeater.getAttribute('data-max-message');
+    if (min > 0 && count <= min) summary += ' ' + repeater.getAttribute('data-min-message');
+    // Avoid repeated live announcements when only a row title changes.
+    if (status.textContent !== summary) status.textContent = summary;
     document.dispatchEvent(new CustomEvent('wcf_repeater_updated'));
   }
 

@@ -112,14 +112,23 @@ class Repeater extends Field {
 		}
 		$rows       = array_pad( $rows, $count, array() );
 		$token      = '__' . wp_unique_id( 'wcf_row_' ) . '__';
+		$min_label  = $min > 0 ? sprintf( __( 'Minimum: %s.', 'wapic-fields' ), $min ) : '';
+		$min_message = sprintf( _n( 'At least %s item must remain.', 'At least %s items must remain.', $min, 'wapic-fields' ), $min );
+		$max_message = __( 'Maximum reached. Remove an item to add another.', 'wapic-fields' );
 		$attributes = array(
 			'data-name-prefix'     => $this->name,
 			'data-row-token'       => $token,
 			'data-next-key'        => count( $rows ),
 			'data-min-rows'        => $min,
 			'data-max-rows'        => $max,
+			'data-count-label'     => __( '%1$s of %2$s items', 'wapic-fields' ),
+			'data-count-one'       => __( '%s item', 'wapic-fields' ),
+			'data-count-many'      => __( '%s items', 'wapic-fields' ),
+			'data-min-label'       => $min_label,
+			'data-min-message'     => $min_message,
+			'data-max-message'     => $max_message,
 			'data-sortable'        => ( $this->config['sortable'] ?? true ) ? 'true' : 'false',
-			'data-confirm-delete'  => ! empty( $this->config['confirm_delete'] ) ? 'true' : 'false',
+			'data-confirm-delete'  => ( $this->config['confirm_delete'] ?? true ) ? 'true' : 'false',
 			'data-confirm-message' => $this->config['confirm_delete_message'] ?? __( 'Are you sure you want to delete this row?', 'wapic-fields' ),
 			'data-remove-label'    => __( 'Remove', 'wapic-fields' ),
 			'data-cancel-label'    => __( 'Cancel', 'wapic-fields' ),
@@ -139,9 +148,21 @@ class Repeater extends Field {
 		}
 		echo '</div><template class="wcf-repeater-template">';
 		$this->render_row( $token, array(), 0 );
-		echo '</template><button type="button" class="button wcf-repeater-add"' . ( $max > 0 && count( $rows ) >= $max ? ' disabled' : '' ) . '>';
+		$at_max = $max > 0 && count( $rows ) >= $max;
+		echo '</template><button type="button" class="button wcf-repeater-add"' . ( $at_max ? ' disabled title="' . esc_attr( $max_message ) . '" aria-describedby="' . esc_attr( $this->id . '-status' ) . '"' : '' ) . '>';
 		echo esc_html( $this->config['button_label'] ?? __( 'Add Row', 'wapic-fields' ) );
-		echo '</button></div>';
+		echo '</button>';
+		$status = $max > 0 ? sprintf( __( '%1$s of %2$s items', 'wapic-fields' ), count( $rows ), $max ) : sprintf( _n( '%s item', '%s items', count( $rows ), 'wapic-fields' ), count( $rows ) );
+		if ( $min > 0 ) {
+			$status .= ' ' . $min_label;
+		}
+		if ( $at_max ) {
+			$status .= ' ' . $max_message;
+		}
+		if ( $min > 0 && count( $rows ) <= $min ) {
+			$status .= ' ' . $min_message;
+		}
+		echo '<p id="' . esc_attr( $this->id . '-status' ) . '" class="wcf-repeater-status" aria-live="polite" aria-atomic="true">' . esc_html( $status ) . '</p></div>';
 	}
 
 	/**

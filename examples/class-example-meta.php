@@ -449,7 +449,19 @@ class Example_Meta {
 
 		$error_message = array();
 
+        $definitions = array();
+        foreach ($fields as $key => $type) {
+            $definitions[] = array('id' => $key, 'type' => $type, 'required' => $key === '_sample_text_required', 'label' => $key === '_sample_text_required' ? __('Required Text Field', 'wapic-fields') : $key);
+        }
+        $submitted = array_intersect_key(wp_unslash($_POST), $fields); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated by schema below, then sanitized before saving.
+        $errors = Field::validate_fields($definitions, $submitted);
+
 		foreach ($fields as $key => $type) {
+
+            if (isset($errors[$key])) {
+                $error_message[] = $errors[$key];
+                continue; // Keep existing metadata, including when a required field is omitted.
+            }
 
 			if (isset($_POST[$key])) {
 
