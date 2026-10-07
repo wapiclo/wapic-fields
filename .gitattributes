@@ -2,7 +2,10 @@
 * text=auto
 
 # Exclude development/source files from git archive
+examples/**    export-ignore
+assets/**/*.map export-ignore
 assets/source/ export-ignore
+assets/images/ export-ignore
 vendor/        export-ignore
 .env           export-ignore
 .env.local     export-ignore
@@ -10,6 +13,8 @@ phpunit.xml    export-ignore
 *.log          export-ignore
 wapic-fields.php export-ignore
 README.md export-ignore
+CHANGELOG.md export-ignore
+readme.txt export-ignore
 gulpfile.js export-ignore
 autoload.php export-ignore
 .gitattributes export-ignore

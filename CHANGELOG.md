@@ -1,45 +1,48 @@
+### 2.4.0
+- **New:** Repeater fields with reusable nested controls, sortable rows, collapsible items, row limits, and delete confirmation.
+- **New:** Row-scoped conditional logic and server-side required and repeater limit validation.
+- **Improvement:** Validation links to affected fields, invalid tabs and repeater rows are marked, and the last viewed tab is restored.
+- **Fix:** Select2 choice close-button spacing and translation loading path; added translator context for placeholder strings.
+
 ### 2.3.0
-- **Updated Select2 Library**: Bundled Select2 library updated from 4.0.13 to 4.1.0.
+- **Improvement:** Updated the bundled Select2 library from 4.0.13 to 4.1.0.
 
 ### 2.2.0
-- **Added Slider Number Field**: Interactive numeric input control using a slider.
-- **Added Image Select Field**: Allows users to select options using visual images or icons.
-- **Added Code Editor Field**: Professional code editor with syntax highlighting using WordPress core libraries (CodeMirror).
-- **Added Tab Layout Options**: Supports navigation tab placement at the top (`top`) or on the side (`left`).
-- **Added FOUC Fix**: Resolved "Flash of Unstyled Content" for toggles and other UI elements by moving CSS enqueuing to the header.
+- **New:** Slider number field with an interactive numeric control.
+- **New:** Image select field for visual choices.
+- **New:** Code editor field using the WordPress bundled CodeMirror library.
+- **New:** Top and side tab layout options.
+- **Fix:** Reduced flashes of unstyled fields by moving CSS enqueuing to the header.
 
 ### 2.1.0
-- **Multi-Conditional Logic**: Added support for complex conditional logic using `AND` / `OR` relations (similar to Carbon Fields).
-- **Heading Field Type**: New field type for section titles with border-underneath styling.
-- **Separator Field Type**: New field type for horizontal line dividers (replaces `divider`).
-- **Required Hidden Handling**: Improved JavaScript validation to automatically disable hidden conditional fields, preventing them from blocking form submission.
+- **New:** Conditional logic with `AND` / `OR` relations.
+- **New:** Heading and separator field types.
+- **Fix:** Hidden conditional fields no longer block form submission through required validation.
 
 ### 2.0.4
-- **Fix:** improve price comparison validation to only run when sale price is filled.
+- **Fix:** Price comparison validation runs only when the sale price is filled.
 ### 2.0.3
-- **Fix:** Backward Incompatible for PHP 7.4 
+- **Fix:** PHP 7.4 compatibility.
 
 ### 2.0.2
-- **Improvement:** Allow HTML in descriptions.
+- **Improvement:** Allow HTML in field descriptions.
 
 ### 2.0.1
-- **Fix:** Error load composer vendor.
+- **Fix:** Composer autoloading.
 
 ### 2.0.0
-- **New:** Refactored field structures by separating each field into its own file for better modularity.
-
-- **New:** Implemented static class usage to simplify field initialization and access.
-
-- **New:** Added an example demonstrating how to store multiple options inside a single array-based option.
+- **New:** Static methods for creating fields.
+- **New:** Example for storing multiple settings in one array option.
+- **Improvement:** Refactored field classes into separate files.
 
 ### 1.2.2
-- **Fix:** Corrected default value handling when the option is not set in the database.
+- **Fix:** Default values when an option has not been saved.
 
 ### 1.2.0
-- **Fix:** Resolved incorrect default values for toggle, editor, select, select2, radio, and checkbox fields.
+- **Fix:** Default values for toggle, editor, select, Select2, radio, and checkbox fields.
 
 ### 1.1.0
-- **New:** Migrated to **PSR-4** autoloading standard for improved structure and compatibility.
+- **Improvement:** Migrated to PSR-4 autoloading.
 
 ### 1.0.0
 - **New:** Initial release.
