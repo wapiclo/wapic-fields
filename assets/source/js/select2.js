@@ -1,9 +1,10 @@
 (function () {
-  function WapicFieldSelect2Init() {
+  function WapicFieldSelect2Init(event) {
     if (typeof jQuery === "undefined" || typeof jQuery.fn.select2 === "undefined") return;
 
-    jQuery(".wcf-field-select2").each(function () {
+    jQuery(event && event.detail && event.detail.root || document).find(".wcf-field-select2").each(function () {
       const $select = jQuery(this);
+      if ($select.hasClass("select2-hidden-accessible")) return;
 
       const $field = $select.closest(".wcf-field");
       const $hidden = $field.find('input[type="hidden"]');
@@ -49,17 +50,18 @@
       });
     });
 
-    // Ensure form submission handles Select2 fields correctly
+  }
+  document.addEventListener("DOMContentLoaded", WapicFieldSelect2Init);
+  document.addEventListener("wcf_fields_initialized", WapicFieldSelect2Init);
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof jQuery === "undefined") return;
     jQuery(document).on("submit", "form", function () {
       jQuery(".wcf-field-select2[multiple]").each(function () {
         const $select = jQuery(this);
-        const $field = $select.closest(".wcf-field");
-        const $hidden = $field.find('input[type="hidden"]');
+        const $hidden = $select.closest(".wcf-field").find('input[type="hidden"]');
         const values = $select.val() || [];
         $hidden.val(Array.isArray(values) ? values.join(",") : values);
       });
-      return true;
     });
-  }
-  document.addEventListener("DOMContentLoaded", WapicFieldSelect2Init);
+  });
 })();

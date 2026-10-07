@@ -35,7 +35,7 @@ class Editor extends Field {
         ];
 
         echo '<div class="wcf-field-editor-wrap">';
-        if (function_exists('wp_editor')) {
+        if (function_exists('wp_editor') && empty($this->config['_repeater_child'])) {
             ob_start();
             wp_editor((string) $this->value, $editor_id, $settings);
             echo ob_get_clean();

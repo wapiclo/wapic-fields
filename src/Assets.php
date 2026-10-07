@@ -54,6 +54,7 @@ class Assets {
 		'code_editor'  => false,
 		'slider'       => false,
 		'image_select' => false,
+		'repeater'     => false,
 	);
 
 	/**
@@ -137,21 +138,27 @@ class Assets {
 			$settings = wp_enqueue_code_editor(array('type' => 'text/html'));
 			if (false !== $settings) {
 				wp_add_inline_script('code-editor', sprintf(
-					'jQuery( function() { 
-						var baseSettings = %s;
-						jQuery(".wcf-code-editor").each(function() { 
-							var $el = jQuery(this);
-							var lang = $el.data("language") || "text/html";
-							var settings = jQuery.extend(true, {}, baseSettings);
-							settings.codemirror.mode = lang;
-							if (lang === "text/css") settings.codemirror.lint = true;
-							var editor = wp.codeEditor.initialize($el, settings); 
-							setTimeout(function() {
-								editor.codemirror.refresh();
-							}, 200);
-						}); 
-					});', 
-					wp_json_encode($settings)
+				    'jQuery(function($) {
+				        var baseSettings = %s;
+				        function initialize(root) {
+				            $(root).find(".wcf-code-editor").each(function() {
+				                var $el = $(this);
+				                if ($el.data("wcf-code-editor")) return;
+				                var settings = $.extend(true, {}, baseSettings);
+				                settings.codemirror.mode = $el.data("language") || "text/html";
+				                if (settings.codemirror.mode === "text/css") settings.codemirror.lint = true;
+				                var editor = wp.codeEditor.initialize($el, settings);
+				                $el.data("wcf-code-editor", editor);
+				                editor.codemirror.on("change", function() { editor.codemirror.save(); });
+				                setTimeout(function() { editor.codemirror.refresh(); }, 200);
+				            });
+				        }
+				        initialize(document);
+				        document.addEventListener("wcf_fields_initialized", function(event) {
+                            initialize(event.detail && event.detail.root || document);
+				        });
+				    });',
+				    wp_json_encode($settings)
 				));
 			}
 		}
@@ -166,6 +173,22 @@ class Assets {
 
 		// Enqueue the main admin script as a module
 		$this->enqueue_admin_script();
+
+		if ($this->required_assets['repeater']) {
+			$dependencies = array('jquery', 'jquery-ui-sortable', 'wapic-field-conditional');
+			foreach (array('select2', 'colorpicker', 'datepicker', 'slider', 'image_select') as $asset) {
+				if ($this->required_assets[$asset]) {
+					$dependencies[] = 'wapic-field-' . str_replace('_', '-', $asset);
+				}
+			}
+			if ($this->required_assets['editor']) {
+				$dependencies[] = 'editor';
+			}
+			if ($this->required_assets['code_editor']) {
+				$dependencies[] = 'code-editor';
+			}
+			wp_enqueue_script('wapic-field-repeater', WAPIC_FIELDS_ASSETS . 'assets/js/repeater.min.js', $dependencies, WAPIC_FIELDS_VERSION, true);
+		}
 	}
 
 	/**
@@ -207,6 +230,7 @@ class Assets {
 					'compareRegularPrice' => esc_html__('Regular price must be greater than sale price', 'wapic-fields'),
 					'compareSalePrice'    => esc_html__('Sale price must be less than regular price', 'wapic-fields'),
 					'submitFailed'        => esc_html__('Oops! Form submission failed due to validation issues. Please review the highlighted fields:', 'wapic-fields'),
+					'tabErrors'           => esc_html__('%s fields need attention', 'wapic-fields'),
 				),
 			)
 		);

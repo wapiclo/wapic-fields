@@ -1,6 +1,7 @@
 :root {
   --wcf-color-base: #fff;
-  --wcf-color-primary: #2271b1;
+  --wcf-color-primary: #3858e9;
+  --wcf-color-primary-rgb: 56, 88, 233;
   --wcf-color-meta: #666;
 
   --wcf-color-background: #fff;
@@ -10,7 +11,7 @@
   --wcf-border-color-soft: #e2e4e7;
   --wcf-border-radius: 5px;
 
-  --wcf-btn-backround: #2271b1;
+  --wcf-btn-backround: var(--wcf-color-primary);
   --wcf-btn-color: #fff;
 
   --wcf-color-info: #476fdf;
@@ -24,6 +25,157 @@
 
   --wcf-component-spacing: clamp(20px, 2vw, 40px);
   --wcf-content-compact-size: 600px;
+}
+
+// Confirmation is attached to the body so field containers cannot clip it.
+.wcf-repeater-confirm {
+  position: fixed;
+  z-index: 160001;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: max-content;
+  max-width: calc(100vw - 16px);
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border-radius: 6px;
+  background: #1d2937;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+  font-size: 13px;
+  line-height: 1.5;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: var(--wcf-confirm-arrow-left);
+    top: 100%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom: 0;
+    border-top-color: #1d2937;
+  }
+
+  &.is-below::after {
+    top: auto;
+    bottom: 100%;
+    border-top: 0;
+    border-bottom: 6px solid #1d2937;
+  }
+
+  &-message {
+    min-width: 0;
+    max-width: 280px;
+    overflow-wrap: anywhere;
+  }
+
+  button {
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: #b8c1cb;
+    font: inherit;
+    cursor: pointer;
+
+    &:hover { text-decoration: underline; }
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  }
+
+  button.wcf-repeater-confirm-remove { color: #ff6347; }
+}
+
+// Repeater containers reuse Wapic's spacing, border and color tokens.
+.wcf-repeater {
+  width: 100%;
+  min-width: 0;
+
+  &-rows {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  &-row {
+    min-width: 0;
+    border: 1px solid var(--wcf-border-color-soft);
+    border-radius: var(--wcf-border-radius);
+    background: var(--wcf-color-background);
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--wcf-color-foreground);
+    border-bottom: 1px solid var(--wcf-border-color-soft);
+    border-radius: var(--wcf-border-radius) var(--wcf-border-radius) 0 0;
+  }
+
+  &-title {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  &-warning {
+    flex: 0 0 20px;
+    color: var(--wcf-color-danger);
+
+    &[hidden] { display: none; }
+  }
+
+  &-handle, &-delete, &-collapse {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 3px;
+    background: transparent;
+    color: var(--wcf-color-meta);
+    cursor: pointer;
+
+    &:focus-visible { outline: 2px solid var(--wcf-color-primary); }
+    &:disabled { opacity: .35; cursor: default; }
+  }
+
+  &-handle { cursor: grab; touch-action: none; }
+  &-row.is-collapsed > &-content { display: none; }
+  &-delete:not(:disabled):hover { color: var(--wcf-color-danger); }
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 18px;
+
+    > .form-field {
+      flex: 1;
+      min-width: 0;
+      margin: 0 !important;
+      padding: 0;
+    }
+
+    > .form-field:has(> .wcf-field[hidden]) { display: none; }
+
+    .wcf-field { margin: 0; min-width: 0; }
+    .wcf-field[hidden] { display: none !important; }
+    .wcf-field__input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]) { width: 100%; max-width: 100%; }
+    .wcf-field-image-preview img { max-width: 100%; height: auto; }
+    .select2-container { max-width: 100%; }
+  }
+
+  &-placeholder {
+    border: 1px dashed var(--wcf-color-primary);
+    border-radius: var(--wcf-border-radius);
+    background: var(--wcf-color-foreground);
+  }
 }
 
 .wcf {
@@ -298,6 +450,18 @@
     margin-bottom: 0;
   }
 
+  .wcf-tab-warning {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-inline-start: 6px;
+    color: var(--wcf-color-danger);
+    vertical-align: middle;
+    font-weight: 600;
+
+    .dashicons { font-size: 16px; width: 16px; height: 16px; }
+  }
+
   li a {
     display: block;
     padding: 10px;
@@ -369,7 +533,7 @@
 
         &:hover {
           background-color: #eeeff0;
-          color: #2271b1;
+          color: var(--wcf-color-primary);
         }
       }
 
@@ -705,6 +869,7 @@
         color: #1e1e1e;
         border-radius: 2px;
         padding: 0 8px;
+        padding-left: 26px;
         margin: 3px 8px 3px 0;
         font-size: 13px;
         line-height: 1.8;
@@ -715,8 +880,11 @@
 
         &__remove {
           color: #757575;
-          margin-right: 4px;
-          padding-right: 4px;
+          position: absolute;
+          left: 4px;
+          width: 16px;
+          margin-right: 0;
+          padding: 0;
           font-size: 18px;
           line-height: 1;
           border: none;
@@ -787,10 +955,10 @@
   --wcf-datepicker-border: #757575;
   --wcf-datepicker-text: #1e1e1e;
   --wcf-datepicker-hover: #f0f0f0;
-  --wcf-datepicker-active: #2271b1;
+  --wcf-datepicker-active: var(--wcf-color-primary);
   --wcf-datepicker-disabled: #f0f0f0;
   --wcf-datepicker-disabled-text: #a7aaad;
-  --wcf-datepicker-today: #f0f7fc;
+  --wcf-datepicker-today: #f0f2ff;
 
   &.ui-datepicker {
     background: var(--wcf-datepicker-bg);
@@ -992,8 +1160,8 @@
 
       button {
         background: #f6f7f7;
-        border: 1px solid #2271b1;
-        color: #2271b1;
+        border: 1px solid var(--wcf-color-primary);
+        color: var(--wcf-color-primary);
         padding: 4px 12px;
         margin: 0;
         font-size: 13px;
@@ -1004,9 +1172,9 @@
         transition: all 0.1s ease-in-out;
 
         &:hover {
-          background: #f0f6fc;
-          border-color: #2271b1;
-          color: #135e96;
+          background: #f0f2ff;
+          border-color: var(--wcf-color-primary);
+          color: #2145e6;
         }
 
         &:focus {
@@ -1137,7 +1305,7 @@
     &.is-selected {
       border-color: var(--wcf-color-primary) !important;
       box-shadow: 0 0 0 1px var(--wcf-color-primary) !important;
-      background-color: rgba(var(--wcf-color-primary-rgb, 34, 113, 177), 0.02);
+      background-color: rgba(var(--wcf-color-primary-rgb, 56, 88, 233), 0.02);
       z-index: 1;
     }
 

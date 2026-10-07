@@ -98,6 +98,9 @@ abstract class Field {
      */
     protected array $attributes;
 
+    /** @var array Complete configuration, including container context. */
+    protected array $config;
+
     /**
      * Field style (e.g., 'table').
      *
@@ -128,6 +131,7 @@ abstract class Field {
         ];
 
         $args = wp_parse_args($args, $defaults);
+        $this->config = $args;
 
         $this->id          = (string) $args['id'];
         $this->name        = $args['name'] ?: $this->id;
@@ -202,8 +206,9 @@ abstract class Field {
             }
         }
 
-        $is_term  = filter_input(INPUT_GET, 'taxonomy') && filter_input(INPUT_GET, 'tag_ID');
-        $is_table = $this->style === 'table';
+        $is_child = ! empty($this->config['_repeater_child']);
+        $is_term  = ! $is_child && filter_input(INPUT_GET, 'taxonomy') && filter_input(INPUT_GET, 'tag_ID');
+        $is_table = ! $is_child && $this->style === 'table';
 
         if ($is_table || $is_term) {
             $required_mark = ! empty($this->required) ? '<span class="required">*</span>' : '';
@@ -214,7 +219,8 @@ abstract class Field {
             echo '<div class="form-field term-group">';
         }
 
-        echo '<div class="' . $wrapper_class . '" ' . $data_cond . '>';
+        $field_key = $this->config['_repeater_key'] ?? $this->id;
+        echo '<div class="' . $wrapper_class . '" data-wcf-field-key="' . esc_attr($field_key) . '" ' . $data_cond . '>';
 
         if ($this->label && ! in_array($this->type, ['toggle', 'checkbox', 'radio', 'heading', 'separator'], true) && ! $is_term && ! $is_table) {
             $required_mark = ! empty($this->required) ? '<span class="required">*</span>' : '';
@@ -448,11 +454,14 @@ abstract class Field {
      *
      * @param string $type
      * @param mixed  $value
-     * @param array  $attributes Optional field attributes (e.g. min/max for number/slider).
+     * @param array  $attributes Optional field attributes, or the complete repeater definition including fields.
      * @return mixed
      */
     public static function sanitize_value(string $type, $value, array $attributes = []) {
         switch ($type) {
+            case 'repeater':
+                return \Wapic_Fields\Fields\Repeater::sanitize_rows($value, $attributes);
+
             case 'select2':
                 if (empty($value)) {
                     return [];

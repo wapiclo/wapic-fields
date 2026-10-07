@@ -22,14 +22,32 @@
    * @param {string} fieldId - The field ID or name
    * @returns {string|Array|null}
    */
-  function getFieldValue(fieldId) {
-    let trigger = document.getElementById(fieldId);
+  function getFieldValue(fieldId, dependent) {
+    const row = dependent.closest(".wcf-repeater-row");
+    let trigger;
+    if (row) {
+      const field = Array.from(row.querySelectorAll("[data-wcf-field-key]")).find(function (element) {
+        return element.getAttribute("data-wcf-field-key") === fieldId && element.closest(".wcf-repeater-row") === row;
+      });
+      if (!field) return null;
+      const controls = Array.from(field.querySelectorAll("input, select, textarea")).filter(function (input) {
+        return input.closest(".wcf-field") === field;
+      });
+      trigger = controls.find(input => input.type !== "hidden") || controls[0];
+      if (!trigger || (!row && trigger.closest(".wcf-repeater-row"))) return null;
+      if (field.closest("[hidden]")) return "";
+      if (trigger.type === "checkbox" && !field.classList.contains("wcf-field-type-toggle")) {
+        return controls.filter(input => input.checked).map(input => input.value);
+      }
+    } else {
+      trigger = document.getElementById(fieldId);
+    }
 
-    if (!trigger) {
+    if (!trigger && !row) {
       trigger = document.querySelector('[name="' + fieldId + '"]');
     }
 
-    if (!trigger) return null;
+    if (!trigger || (!row && trigger.closest('.wcf-repeater-row'))) return null;
 
     // IF the trigger's wrapper is hidden, treat the value as empty (for cascading)
     const wrapper = trigger.closest(".wcf-field-conditional");
@@ -56,12 +74,12 @@
    * @param {Object} cond - The condition object
    * @returns {boolean}
    */
-  function evaluateSingleCondition(cond) {
+  function evaluateSingleCondition(cond, wrapper) {
     const field = cond.field || cond.id;
     const condValue = cond.value;
     const operator = cond.operator || cond.compare || "==";
 
-    const currentValue = getFieldValue(field);
+    const currentValue = getFieldValue(field, wrapper);
 
     if (currentValue === null) return false;
 
@@ -135,13 +153,32 @@
 
     let isMatch = relation === "AND";
     conditions.forEach(function (cond) {
-      const match = evaluateSingleCondition(cond);
+      const match = evaluateSingleCondition(cond, wrapper);
       if (relation === "AND") {
         isMatch = isMatch && match;
       } else {
         isMatch = isMatch || match;
       }
     });
+
+    // Repeater controls retain their types and values while hidden. Row names are
+    // nested arrays, so legacy scalar _is_hidden flags would corrupt submitted values.
+    if (wrapper.closest(".wcf-repeater") || wrapper.querySelector(".wcf-repeater")) {
+      if (wrapper.hidden === isMatch) {
+        wrapper.hidden = !isMatch;
+        setTimeout(WapicFieldConditionalFields, 0);
+      }
+      document.querySelectorAll(".wcf-repeater input, .wcf-repeater select, .wcf-repeater textarea, .wcf-repeater button").forEach(function (input) {
+        if (input.closest("[hidden]")) {
+          if (!input.disabled) input.setAttribute("data-wcf-condition-disabled", "true");
+          input.disabled = true;
+        } else if (input.hasAttribute("data-wcf-condition-disabled")) {
+          input.disabled = false;
+          input.removeAttribute("data-wcf-condition-disabled");
+        }
+      });
+      return;
+    }
 
     if (isMatch) {
       if (wrapper.hidden) {
@@ -215,6 +252,8 @@
   }
 
   document.addEventListener("DOMContentLoaded", WapicFieldConditionalFieldsInit);
+  document.addEventListener("wcf_fields_initialized", WapicFieldConditionalFields);
+  document.addEventListener("wcf_repeater_updated", WapicFieldConditionalFields);
 })();
 
 /**

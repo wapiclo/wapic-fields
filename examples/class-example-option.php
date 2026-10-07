@@ -60,6 +60,7 @@ class Example_Option {
 				'general'     => esc_html__('General', 'wapic-fields'),
 				'conditional' => esc_html__('Conditional', 'wapic-fields'),
 				'advanced'    => esc_html__('Advanced', 'wapic-fields'),
+                'repeater'    => esc_html__('Repeaters', 'wapic-fields'),
 			),
 			array(
 				'layout' => 'top',
@@ -86,6 +87,19 @@ class Example_Option {
 		Field::start_controls_group(array('id' => 'advanced'));
 		$this->group_controls_advanced();
 		Field::end_controls_group();
+
+        Field::start_controls_group(array('id' => 'repeater'));
+        Field::add_control(array(
+            'id' => '_sample_repeater_enabled',
+            'type' => 'toggle',
+            'label' => __('Show features repeater', 'wapic-fields'),
+            'value' => get_option('_sample_repeater_enabled', 'yes'),
+        ));
+        foreach ($this->repeater_fields() as $definition) {
+            $definition['value'] = get_option($definition['id']);
+            Field::add_control($definition);
+        }
+        Field::end_controls_group();
 
 		// End Tabs
 		Field::end_controls_section();
@@ -529,6 +543,58 @@ class Example_Option {
 		);
 	}
 
+    /**
+     * Shared schemas for rendering and sanitizing the repeater examples.
+     *
+     * @return array Repeater definitions.
+     */
+    private function repeater_fields(): array {
+        return array(
+            array(
+                'id' => '_sample_features',
+                'type' => 'repeater',
+                'label' => __('Features', 'wapic-fields'),
+                'default_rows' => 1,
+                'button_label' => __('Add Feature', 'wapic-fields'),
+                'condition' => array('field' => '_sample_repeater_enabled', 'value' => 'yes'),
+                'fields' => array(
+                    array('id' => 'title', 'type' => 'text', 'label' => __('Title', 'wapic-fields'), 'required' => true),
+                    array('id' => 'description', 'type' => 'textarea', 'label' => __('Description', 'wapic-fields')),
+                    array('id' => 'image', 'type' => 'image', 'label' => __('Image', 'wapic-fields')),
+                    array(
+                        'id' => 'categories', 'type' => 'select2', 'label' => __('Categories', 'wapic-fields'),
+                        'options' => array('speed' => 'Performance', 'design' => 'Design', 'support' => 'Support'),
+                        'attributes' => array('multiple' => true, 'allow_clear' => true),
+                    ),
+                    array('id' => 'show_link', 'type' => 'toggle', 'label' => __('Add a link', 'wapic-fields')),
+                    array(
+                        'id' => 'link', 'type' => 'url', 'label' => __('Link URL', 'wapic-fields'), 'required' => true,
+                        'condition' => array('field' => 'show_link', 'value' => 'yes'),
+                    ),
+                ),
+            ),
+            array(
+                'id' => '_sample_prices',
+                'type' => 'repeater',
+                'label' => __('Pricing Plans', 'wapic-fields'),
+                'min_rows' => 1,
+                'max_rows' => 4,
+                'default_rows' => 2,
+                'confirm_delete' => true,
+                'button_label' => __('Add Plan', 'wapic-fields'),
+                'fields' => array(
+                    array('id' => 'title', 'type' => 'text', 'label' => __('Plan name', 'wapic-fields'), 'required' => true),
+                    array('id' => 'price', 'type' => 'number', 'label' => __('Price', 'wapic-fields'), 'attributes' => array('min' => 0, 'max' => 9999)),
+                    array('id' => 'featured', 'type' => 'toggle', 'label' => __('Featured plan', 'wapic-fields')),
+                    array(
+                        'id' => 'badge', 'type' => 'text', 'label' => __('Badge text', 'wapic-fields'),
+                        'condition' => array('field' => 'featured', 'value' => 'yes'),
+                    ),
+                ),
+            ),
+        );
+    }
+
 	/**
 	 * Sanitize and Save Options
 	 */
@@ -574,6 +640,12 @@ class Example_Option {
 			'_sample_number' => array('min' => 0, 'max' => 100),
 			'_sample_slider' => array('min' => 0, 'max' => 100),
 		);
+
+        $fields['_sample_repeater_enabled'] = 'toggle';
+        foreach ($this->repeater_fields() as $definition) {
+            $fields[$definition['id']] = 'repeater';
+            $field_attributes[$definition['id']] = $definition;
+        }
 
 		foreach ($fields as $field_name => $field_type) {
 			$attributes = isset($field_attributes[$field_name]) ? $field_attributes[$field_name] : array();

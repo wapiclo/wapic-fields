@@ -1,20 +1,104 @@
 (function () {
   class WapicFieldValidation {
     constructor() {
+      this.submitNotices = new WeakMap();
+      this.invalidInputs = new WeakMap();
       this.init();
     }
 
     /*------------------------------------------------
     | Helpers
     ------------------------------------------------*/
+    updateTabWarnings(form, invalidInputs) {
+      const activeErrors = Array.from(invalidInputs).filter((input) => input.isConnected && !input.disabled && !input.closest('[hidden]'));
+      let firstInvalidLink = null;
+      form.querySelectorAll('.wcf-tabs-nav a').forEach((link) => {
+        const container = link.closest('.wcf-tabs');
+        const targetId = (link.getAttribute('href') || '').slice(1);
+        const panel = Array.from(container.querySelectorAll('.wcf-tab-content')).find((element) => element.id === targetId && element.closest('.wcf-tabs') === container);
+        const count = panel ? activeErrors.filter((input) => panel.contains(input)).length : 0;
+        let badge = link.querySelector('.wcf-tab-warning');
+        link.parentElement.classList.toggle('has-tab-error', count > 0);
+        if (!count) {
+          if (badge) badge.remove();
+          return;
+        }
+        if (!firstInvalidLink) firstInvalidLink = link;
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'wcf-tab-warning';
+          const icon = document.createElement('span');
+          icon.className = 'dashicons dashicons-warning';
+          icon.setAttribute('aria-hidden', 'true');
+          const number = document.createElement('span');
+          number.className = 'wcf-tab-error-count';
+          number.setAttribute('aria-hidden', 'true');
+          const description = document.createElement('span');
+          description.className = 'screen-reader-text';
+          badge.append(icon, number, description);
+          link.appendChild(badge);
+        }
+        const message = wapic_field.validation.tabErrors.replace('%s', count);
+        badge.querySelector('.wcf-tab-error-count').textContent = count;
+        badge.querySelector('.screen-reader-text').textContent = message;
+        badge.title = message;
+      });
+      return firstInvalidLink;
+    }
+
+    clearSubmitNotice(form) {
+      const notice = this.submitNotices.get(form);
+      if (notice) notice.remove();
+      this.submitNotices.delete(form);
+    }
+
+    showSubmitNotice(form, messages) {
+      const notice = document.createElement('div');
+      notice.className = 'notice notice-error wcf-validation-notice';
+      notice.setAttribute('role', 'alert');
+      notice.tabIndex = -1;
+      const summary = document.createElement('p');
+      summary.textContent = wapic_field.validation.submitFailed;
+      notice.appendChild(summary);
+      if (messages.length) {
+        const list = document.createElement('ol');
+        messages.forEach((message) => {
+          const item = document.createElement('li');
+          item.textContent = message;
+          list.appendChild(item);
+        });
+        notice.appendChild(list);
+      }
+      form.before(notice);
+      this.submitNotices.set(form, notice);
+      notice.focus({ preventScroll: true });
+      notice.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    updateRepeaterWarning(row) {
+      if (!row) return;
+      const hasError = Array.from(row.querySelectorAll('.wcf-field.has-field-error')).some((field) => {
+        return !field.closest('[hidden]') && Array.from(field.querySelectorAll('input, textarea, select')).some((input) => !input.disabled);
+      });
+      const warning = row.querySelector(':scope > .wcf-repeater-header > .wcf-repeater-warning');
+      if (warning) warning.hidden = !hasError;
+      row.classList.toggle('has-validation-warning', hasError);
+    }
+
     showError(input, message) {
       const field = input.closest(".wcf-field");
       const error = document.getElementById(`${input.id}_error`);
       if (!error) return;
 
       field.classList.add("has-field-error");
+      const row = input.closest('.wcf-repeater-row.is-collapsed');
+      if (row) {
+        const toggle = row.querySelector(':scope > .wcf-repeater-header > .wcf-repeater-collapse');
+        if (toggle) toggle.click();
+      }
       error.textContent = message;
       error.style.display = "block";
+      this.updateRepeaterWarning(input.closest('.wcf-repeater-row'));
     }
 
     clearError(input) {
@@ -25,6 +109,7 @@
       field.classList.remove("has-field-error");
       error.textContent = "";
       error.style.display = "none";
+      this.updateRepeaterWarning(input.closest('.wcf-repeater-row'));
     }
 
     isNumber(val) {
@@ -43,6 +128,7 @@
     | Field Validation
     ------------------------------------------------*/
     validateField(input) {
+      if (input.disabled || input.closest("[hidden]")) return true;
       const val = input.value.trim();
       const required = input.hasAttribute("required") || input.hasAttribute("data-required");
 
@@ -136,13 +222,16 @@
      */
     handleFormSubmit(e) {
       const form = e.target;
+      this.clearSubmitNotice(form);
       const inputs = form.querySelectorAll(".wcf-field input, .wcf-field textarea, .wcf-field select");
       let allValid = true;
       let errorMessages = [];
+      const invalidInputs = new Set();
 
       inputs.forEach((input) => {
         if (!this.validateField(input)) {
           allValid = false;
+          invalidInputs.add(input);
 
           const errorElement = document.getElementById(`${input.id}_error`);
           const errorText = errorElement ? errorElement.textContent.trim() : "";
@@ -156,20 +245,17 @@
         }
       });
 
+      this.invalidInputs.set(form, invalidInputs);
+      const firstInvalidTab = this.updateTabWarnings(form, invalidInputs);
       if (!allValid) {
         e.preventDefault();
+        // Reuse the existing tab engine and follow navigation order on every submit.
+        if (firstInvalidTab) firstInvalidTab.click();
 
         // Remove duplicate messages
         errorMessages = [...new Set(errorMessages)];
 
-        const globalMessage = `${wapic_field.validation.submitFailed}\n\n${errorMessages.map((msg, i) => `${i + 1}. ${msg}`).join("\n")}`;
-
-        alert(globalMessage);
-
-        const firstError = form.querySelector(".has-field-error");
-        if (firstError) {
-          firstError.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+        this.showSubmitNotice(form, errorMessages);
       }
     }
 
@@ -178,7 +264,14 @@
     ------------------------------------------------*/
     onInputChange(e) {
       if (e.target.matches(".wcf-field input, .wcf-field textarea, .wcf-field select")) {
-        this.validateField(e.target);
+        const valid = this.validateField(e.target);
+        const form = e.target.closest('form');
+        const invalidInputs = form && this.invalidInputs.get(form);
+        if (invalidInputs) {
+          if (valid) invalidInputs.delete(e.target);
+          else invalidInputs.add(e.target);
+          this.updateTabWarnings(form, invalidInputs);
+        }
       }
     }
 
@@ -200,6 +293,9 @@
 
       // Initial validation on page load
       document.querySelectorAll(".wcf-field input, .wcf-field textarea, .wcf-field select").forEach((input) => {
+        // Repeater rows start collapsed. Validate their children on edit or
+        // submit so a required field does not open every row during page load.
+        if (input.closest(".wcf-repeater-row")) return;
         this.validateField(input);
       });
     }
