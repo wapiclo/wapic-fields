@@ -1,7 +1,7 @@
-### 2.3.0 - 2026-07-21
+### 2.3.0
 - **Updated Select2 Library**: Bundled Select2 library updated from 4.0.13 to 4.1.0.
 
-### 2.2.0 - 2026-05-14
+### 2.2.0
 - **Added Slider Number Field**: Interactive numeric input control using a slider.
 - **Added Image Select Field**: Allows users to select options using visual images or icons.
 - **Added Code Editor Field**: Professional code editor with syntax highlighting using WordPress core libraries (CodeMirror).

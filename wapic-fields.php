@@ -22,3 +22,8 @@ if (! defined('ABSPATH')) {
 
 // Load the bootstrap file.
 require_once __DIR__ . '/bootstrap.php';
+
+// Load examples
+if (defined('WAPIC_FIELDS_LOAD_EXAMPLES') && WAPIC_FIELDS_LOAD_EXAMPLES === true) {
+	require_once __DIR__ . '/examples/example.php';
+}

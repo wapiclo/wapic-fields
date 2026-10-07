@@ -30,10 +30,6 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 	require_once __DIR__ . '/vendor/autoload.php';
 }
 
-// Load examples
-if (defined('WAPIC_FIELDS_LOAD_EXAMPLES') && WAPIC_FIELDS_LOAD_EXAMPLES === true) {
-	require_once __DIR__ . '/examples/example.php';
-}
 // Load text domain
 add_action(
 	'plugins_loaded',
