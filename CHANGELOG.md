@@ -1,3 +1,6 @@
+### 2.4.1
+- **Fix:** Exclude examples, package metadata, license file, and source maps from Git release archives used for Composer distribution.
+
 ### 2.4.0
 - **New:** Repeater fields with reusable nested controls, sortable rows, collapsible items, row limits, and delete confirmation.
 - **New:** Row-scoped conditional logic and server-side required and repeater limit validation.

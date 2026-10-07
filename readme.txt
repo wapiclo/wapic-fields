@@ -4,7 +4,7 @@ Tags: custom-fields, options, post-meta, taxonomy, repeater
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.4.0
+Stable tag: 2.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,9 @@ No. Wapic Fields is a developer library. Developers register field definitions i
 Yes. Repeater fields support nested field definitions, sortable rows, minimum and maximum row limits, and server-side validation.
 
 == Changelog ==
+
+= 2.4.1 =
+* Fix: Excluded examples, package metadata, license file, and source maps from Git release archives used for Composer distribution.
 
 = 2.4.0 =
 * New: Repeater fields with nested controls, sortable rows, collapsing, row limits, and delete confirmation.

@@ -8,7 +8,7 @@
  * @author     Wapiclo Team
  * @license    GPL-2.0+
  * @link       https://wapiclo.com/
- * @version    2.4.0
+ * @version    2.4.1
  */
 
 if (! defined('ABSPATH')) {
@@ -20,7 +20,7 @@ if (defined('WAPIC_FIELDS_INIT')) {
 }
 
 define('WAPIC_FIELDS_INIT', true);
-define('WAPIC_FIELDS_VERSION', '2.4.0');
+define('WAPIC_FIELDS_VERSION', '2.4.1');
 define('WAPIC_FIELDS_DIR', __DIR__);
 define('WAPIC_FIELDS_PATH', plugin_dir_path(__FILE__));
 define('WAPIC_FIELDS_ASSETS', plugin_dir_url(__FILE__));
